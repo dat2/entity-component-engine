@@ -5,6 +5,8 @@
 
 namespace components
 {
+
+  // this allows systems to have a bit mask of components.
   enum ComponentType
   {
     TRANSFORM   = 1 << 0,
@@ -13,14 +15,14 @@ namespace components
     MODEL       = 1 << 3,
     TEXTURE     = 1 << 4
   };
-
   inline ComponentType operator|(ComponentType a, ComponentType b)
   {
     return static_cast<ComponentType>(static_cast<int>(a) | static_cast<int>(b));
   }
 
   /**
-   * Base polymorphic component class.
+   * Base polymorphic component class. You must define a "print" method, so as
+   * to make debugging easier.
    */
   class Component
   {

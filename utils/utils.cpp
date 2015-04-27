@@ -39,9 +39,4 @@ namespace utils
   {
     return sf::Vector3f(v.x, v.y, v.z);
   }
-
-  std::ostream& printVector(std::ostream& os, sf::Vector3f& v)
-  {
-    return os << "(" << v.x << "," << v.y << "," << v.z << ")";
-  }
 }
