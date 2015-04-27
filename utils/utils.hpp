@@ -11,7 +11,7 @@
 #include <SFML/System/Vector3.hpp>
 
 #define printGlError() printOglError(__FILE__, __LINE__)
-int printOglError(char *file, int line);
+int printOglError(const char *file, int line);
 
 // convert sfml vectors to glm vectors
 namespace utils

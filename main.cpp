@@ -199,7 +199,6 @@ int main()
   InputSystem inputSystem(camera);
   RenderSystem renderSystem(program, camera);
 
-  sf::Clock clock;
   while (window.isOpen())
   {
     // TODO move to input system
@@ -211,8 +210,6 @@ int main()
         window.close();
       }
     }
-
-    sf::Time elapsed = clock.restart();
     inputSystem.handle(controller);
 
     glClearColor(0, 0, 0, 1); // black
@@ -220,7 +217,6 @@ int main()
 
     renderSystem.setCamera();
     renderSystem.renderModel(transform, model, texture);
-    printGlError();
 
     window.display();
   }

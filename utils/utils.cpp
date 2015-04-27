@@ -8,16 +8,21 @@
 #include <utils/utils.hpp>
 
 // http://www.lighthouse3d.com/cg-topics/error-tracking-in-opengl/
-int printOglError(char *file, int line)
+int printOglError(const char *file, int line)
 {
   GLenum glErr;
-  int    retCode = 0;
+  int retCode = 0;
 
   glErr = glGetError();
   if (glErr != GL_NO_ERROR)
   {
-    printf("glError in file %s @ line %d: %s\n",
-       file, line, gluErrorString(glErr));
+    // ignore deprecated warnings about gluErrorString
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
+    printf("glError in file %s @ line %d: %s\n", file, line, gluErrorString(glErr));
+
+    #pragma GCC diagnostic pop
     retCode = 1;
   }
   return retCode;
