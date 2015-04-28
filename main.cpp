@@ -193,27 +193,25 @@ static void CreatePlayer(Engine& engine)
 
 static void CreateEntities(Engine& engine, Program& program)
 {
+  // shared variables
+  auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
+  auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "resources/images/wooden-crate.jpg");
+
   // box testing
   auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+  auto transform2 = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
 
-  auto model = std::make_shared<Model>();
-  model->generate();
-  model->bind();
-  model->loadBuffer(cubeVertices(), cubeUVs());
-  model->prepareVertexArray(program, "vert", "vertTexCoord");
-  model->unbind();
-
-  auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "wood");
-  texture->generate(1);
-  texture->bind(0);
-  texture->setImage(Magick::Image("resources/images/wooden-crate.jpg"));
-  texture->unbind();
-
-  Entity& box = engine.createEntity("box");
-  box.addComponent(std::move(transform));
-  box.addComponent(std::move(model));
-  box.addComponent(std::move(texture));
+  auto& box = engine.createEntity("box");
+  box.addComponent(transform);
+  box.addComponent(model);
+  box.addComponent(texture);
   std::cout << box << std::endl;
+
+  auto& box2 = engine.createEntity("box2");
+  box2.addComponent(transform2);
+  box2.addComponent(model);
+  box2.addComponent(texture);
+  std::cout << box2 << std::endl;
 }
 
 int main()

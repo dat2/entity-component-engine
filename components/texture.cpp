@@ -6,8 +6,8 @@
 
 namespace components
 {
-  Texture::Texture(GLenum target, std::string uniform)
-    : Component(TEXTURE), mTarget(target), mNTextures(0), mUniform(uniform.c_str())
+  Texture::Texture(GLenum target, std::string filename)
+    : Component(TEXTURE), mFilename(filename), mTarget(target), mNTextures(0)
   {
   }
 
@@ -48,14 +48,6 @@ namespace components
     glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, wrapMode);
     glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, wrapMode);
   }
-  void Texture::setActive(GLenum activeTexture)
-  {
-    glActiveTexture(activeTexture);
-  }
-  void Texture::setUniform(Program &program)
-  {
-    glUniform1i(program.uniform(uniform()), 0);
-  }
 
   void Texture::bind(int n)
   {
@@ -66,9 +58,9 @@ namespace components
     glBindTexture(mTarget, 0);
   }
 
-  const GLchar *Texture::uniform() const
+  const std::string& Texture::getFilename() const
   {
-    return mUniform;
+    return mFilename;
   }
 
   void Texture::print(std::ostream& where) const
@@ -76,7 +68,6 @@ namespace components
     where << "Texture("
       << "width=" << mImage.columns()
       << ", height=" << mImage.rows()
-      << ", uniform=" << mUniform
       << ")";
   }
 }

@@ -35,6 +35,42 @@ namespace systems
     }
   }
 
+  void RenderSystem::activateTexture(GLenum activeTexture, GLint texture, const std::string uniform)
+  {
+    glActiveTexture(activeTexture);
+    glUniform1i(mProgram.uniform((GLchar *)uniform.c_str()), texture);
+  }
+
+  void RenderSystem::entityAdded(Entity& entity)
+  {
+    // flyweight of models
+    auto model = std::dynamic_pointer_cast<Model>(entity.getComponent(MODEL));
+    auto modelsCheck = mModels.find(model->getName());
+    if(modelsCheck == mModels.end())
+    {
+      mModels.insert(model->getName());
+
+      model->generate();
+      model->bind();
+      model->loadBuffer();
+      model->prepareVAO(mProgram, "vert", "vertTexCoord");
+      model->unbind();
+    }
+
+    // flyweight of textures
+    auto texture = std::dynamic_pointer_cast<Texture>(entity.getComponent(TEXTURE));
+    auto texturesCheck = mTextures.find(texture->getFilename());
+    if(texturesCheck == mTextures.end())
+    {
+      auto r = mTextures.emplace(texture->getFilename(),texture->getFilename());
+
+      texture->generate(1);
+      texture->bind(0);
+      texture->setImage(r.first->second);
+      texture->unbind();
+    }
+  }
+
   void RenderSystem::entityChanged(Entity& entity, ComponentType newComponent)
   {
     if(mCamera == nullptr && newComponent == CAMERA)
@@ -78,11 +114,10 @@ namespace systems
       glUniformMatrix4fv(modelIndex, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
       // set the texture
-      texture.setActive(GL_TEXTURE0);
       texture.bind(0);
-      texture.setUniform(mProgram);
+      activateTexture(GL_TEXTURE0, 0, "wood");
 
-      model.drawArrays();
+      model.draw();
 
       // unbind
       texture.unbind();

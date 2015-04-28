@@ -14,7 +14,7 @@ namespace entities
 
   void Entity::addComponent(ComponentPtr c)
   {
-    mEngine.addComponentToEntity(*this, std::move(c));
+    mEngine.addComponentToEntity(*this, c);
   }
 
   void Entity::removeComponent(ComponentType t)

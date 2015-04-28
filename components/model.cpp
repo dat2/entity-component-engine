@@ -12,12 +12,16 @@
 #include <components/model.hpp>
 #include <utils/utils.hpp>
 
-// std::cout << glm::to_string(sfmlToGlm(vert)) << std::endl;
 namespace components
 {
-  Model::Model()
-    : Component(MODEL), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)
+  Model::Model(const std::string name, std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs)
+    : Component(MODEL), mName(name), mVertices(std::move(vertices)), mUvs(std::move(uvs)), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(mVertices.size())
   {
+  }
+
+  const std::string Model::getName() const
+  {
+    return mName;
   }
 
   void Model::generate()
@@ -32,23 +36,21 @@ namespace components
     mVertexArray.bind(0);
   }
 
-  void Model::loadBuffer(std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs)
+  void Model::loadBuffer()
   {
     std::vector<GLfloat> data;
-    for( auto &vert : vertices )
+    for( auto &vert : mVertices )
     {
       data.push_back(vert.x);
       data.push_back(vert.y);
       data.push_back(vert.z);
     }
-    for( auto &uv : uvs )
+    for( auto &uv : mUvs )
     {
       data.push_back(uv.x);
       data.push_back(uv.y);
     }
     mVertexBuffer.buffer(data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
-
-    mNumVertices = vertices.size();
   }
 
   void Model::unbind()
@@ -63,7 +65,7 @@ namespace components
    * @param vertAttribute [description]
    * @param uvAttribute   [description]
    */
-  void Model::prepareVertexArray(Program &program, std::string vertAttribute, std::string uvAttribute)
+  void Model::prepareVAO(Program &program, std::string vertAttribute, std::string uvAttribute)
   {
     // enable the "vert" attribute of the shader
     const GLchar* vert = vertAttribute.c_str();
@@ -76,7 +78,7 @@ namespace components
     program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, 0, (const GLvoid*)(mNumVertices*3*sizeof(GLfloat)));
   }
 
-  void Model::drawArrays()
+  void Model::draw()
   {
     mVertexArray.bind(0);
 

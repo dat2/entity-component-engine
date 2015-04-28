@@ -24,30 +24,28 @@ namespace components
   class Texture : public Component
   {
   public:
-    Texture(GLenum target, std::string uniform);
+    Texture(GLenum target, std::string filename);
     ~Texture();
 
     void generate(int n);
 
     void setImage(Magick::Image image, GLint filter=GL_LINEAR, GLint wrapMode=GL_REPEAT);
-    void setActive(GLenum activeTexture);
-    void setUniform(Program &program);
 
     void bind(int n);
     void unbind();
 
-    const GLchar *uniform() const;
+    const std::string& getFilename() const;
 
   protected:
     virtual void print(std::ostream& where) const;
 
   private:
+    std::string mFilename;
     Magick::Image mImage;
 
     GLenum mTarget;
     int mNTextures;
     GLuint *mTextures;
-    const GLchar *mUniform;
   };
 }
 

@@ -23,19 +23,25 @@ namespace components
   {
   public:
 
-    Model();
+    Model(const std::string name, std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs);
+
+    const std::string getName() const;
 
     void generate();
     void bind();
-    void loadBuffer(std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs);
+    void loadBuffer();
     void unbind();
 
-    void prepareVertexArray(Program &program, std::string vertAttribute, std::string uvAttribute);
-    void drawArrays();
+    void prepareVAO(Program &program, std::string vertAttribute, std::string uvAttribute);
+    void draw();
 
   protected:
     virtual void print(std::ostream& where) const;
   private:
+    const std::string mName;
+    std::vector< sf::Vector3f > mVertices;
+    std::vector< sf::Vector2f > mUvs;
+
     VertexBufferObject mVertexBuffer;
     VertexArrayObject mVertexArray;
 
