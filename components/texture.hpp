@@ -29,9 +29,7 @@ namespace components
 
     void generate(int n);
 
-    void setMinMagFilter(GLint filter);
-    void setWrap(GLint wrapMode);
-    void setImage(Magick::Image image);
+    void setImage(Magick::Image image, GLint filter=GL_LINEAR, GLint wrapMode=GL_REPEAT);
     void setActive(GLenum activeTexture);
     void setUniform(Program &program);
 

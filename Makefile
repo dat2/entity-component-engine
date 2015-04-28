@@ -17,13 +17,25 @@ LIBS = -lsfml-window -lsfml-system -lGLEW -lMagick++-6.Q16.6 -lMagickCore-6.Q16 
 MAGICK_CONFIG = -DMAGICKCORE_HDRI_ENABLE=false -DMAGICKCORE_QUANTUM_DEPTH=16
 MAGICK_SCRIPT = `Magick++-config --cppflags --cxxflags --ldflags --libs`
 
-# all cpp files get an object file
-%.o: %.cpp
-	$(CC) $(INCLUDE) $(CFLAGS) $(MAGICK_CONFIG) -c -o $@ $<
 
 # main depends on all objects
 main: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(MAGICK_SCRIPT)
+
+# copied from
+# http://stackoverflow.com/questions/2394609/makefile-header-dependencies
+# easier dependencies management
+depend: .depend
+
+.depend: $(SRCS)
+	rm -f ./.depend
+	$(CC) $(INCLUDE) $(CFLAGS) $(MAGICK_CONFIG) -MM $^ > ./.depend;
+
+include .depend
+
+# all cpp files get an object file
+%.o: %.cpp
+	$(CC) $(INCLUDE) $(CFLAGS) $(MAGICK_CONFIG) -c -o $@ $<
 
 # clean deletes all objects
 clean:

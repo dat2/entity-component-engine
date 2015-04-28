@@ -3,7 +3,7 @@
 
 namespace components
 {
-  Component:: Component(ComponentType type)
+  Component::Component(ComponentType type)
     : mType(type)
   { }
 
@@ -16,5 +16,10 @@ namespace components
   {
     c.print(os);
     return os;
+  }
+
+  void Component::print(std::ostream& where) const
+  {
+
   }
 }

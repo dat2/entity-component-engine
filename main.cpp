@@ -15,6 +15,12 @@
 #include <utils/cube.hpp>
 #include <utils/utils.hpp>
 
+// engine
+#include <engine/engine.hpp>
+
+// entities
+#include <entities/entity.hpp>
+
 // components
 #include <components/transform.hpp>
 #include <components/camera.hpp>
@@ -32,6 +38,8 @@
 
 using namespace components;
 using namespace systems;
+using namespace entities;
+using namespace engine;
 
 static Program *CompileProgram()
 {
@@ -80,81 +88,132 @@ static void InitOpenGL()
   glDepthFunc(GL_LESS);
 }
 
-static Controller CreateController()
+static ComponentPtr CreateController()
 {
-  Controller controller(1.0f, 36.0f);
+  auto controller = std::make_shared<Controller>(1.0f, 36.0f);
+
   // move left
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::Left, sf::Keyboard::A },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(-cam.left() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // move right
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::Right, sf::Keyboard::D },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(cam.left() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // move fwd
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::Up, sf::Keyboard::W },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(cam.forward() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // move bwd
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::Down, sf::Keyboard::S },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(-cam.forward() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // move up
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::Q },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(cam.up() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // move down
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::E },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.move(glmToSfml(-cam.up() * c.getMoveSpeed() * elapsed.asSeconds()));
     }
   );
   // rotate left
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::J },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.rotate(0, -c.getRotateSpeed() * elapsed.asSeconds());
     }
   );
   // rotate right
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::L },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.rotate(0, c.getRotateSpeed() * elapsed.asSeconds());
     }
   );
   // rotate up
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::I },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.rotate(-c.getRotateSpeed() * elapsed.asSeconds(), 0);
     }
   );
   // rotate down
-  controller.addKeyAction(
+  controller->addKeyAction(
     { sf::Keyboard::K },
     [](Controller& c, Camera& cam, sf::Time &elapsed) {
       cam.rotate(c.getRotateSpeed() * elapsed.asSeconds(), 0);
     }
   );
 
-  return controller;
+  return std::move(controller);
+}
+
+static void CreateSystems(Engine& engine, Program& program)
+{
+  auto inputSystem = std::make_shared<InputSystem>();
+  auto renderSystem = std::make_shared<RenderSystem>(program);
+
+  engine.addSystem(std::move(renderSystem));
+  engine.addSystem(std::move(inputSystem));
+}
+
+static void CreatePlayer(Engine& engine)
+{
+  // simple player entity
+  auto camera = std::make_shared<Camera>(sf::Vector3f(0, 3, 3), 45.0f, ASPECT_RATIO, 0.1f, 100.0f);
+  camera->lookAt(sf::Vector3f(0, 0, 0));
+
+  auto controller = CreateController();
+
+  Entity& player = engine.createEntity("player");
+
+  player.addComponent(std::move(camera));
+  player.addComponent(std::move(controller));
+
+  std::cout << player << std::endl;
+}
+
+static void CreateEntities(Engine& engine, Program& program)
+{
+  // box testing
+  auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+
+  auto model = std::make_shared<Model>();
+  model->generate();
+  model->bind();
+  model->loadBuffer(cubeVertices(), cubeUVs());
+  model->prepareVertexArray(program, "vert", "vertTexCoord");
+  model->unbind();
+
+  auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "wood");
+  texture->generate(1);
+  texture->bind(0);
+  texture->setImage(Magick::Image("resources/images/wooden-crate.jpg"));
+  texture->unbind();
+
+  Entity& box = engine.createEntity("box");
+  box.addComponent(std::move(transform));
+  box.addComponent(std::move(model));
+  box.addComponent(std::move(texture));
+  std::cout << box << std::endl;
 }
 
 int main()
@@ -167,37 +226,13 @@ int main()
   // program
   Program program = *CompileProgram();
 
-  // components
-  Camera camera(sf::Vector3f(0, 3, 3), 45.0f, ASPECT_RATIO, 0.1f, 100.0f);
-  camera.lookAt(sf::Vector3f(0, 0, 0));
-  std::cout << camera << std::endl;
+  Engine engine;
 
-  Transform transform(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
-  std::cout << transform << std::endl;
+  CreateSystems(engine, program);
+  CreatePlayer(engine);
+  CreateEntities(engine, program);
 
-  Model model;
-  model.generate();
-  model.bind();
-  model.loadBuffer(cubeVertices(), cubeUVs());
-  model.prepareVertexArray(program, "vert", "vertTexCoord");
-  model.unbind();
-  std::cout << model << std::endl;
-
-  Texture texture(GL_TEXTURE_2D, "wood");
-  texture.generate(1);
-  texture.bind(0);
-  texture.setMinMagFilter(GL_LINEAR);
-  texture.setWrap(GL_CLAMP_TO_EDGE);
-  texture.setImage(Magick::Image("resources/images/wooden-crate.jpg"));
-  texture.unbind();
-  std::cout << texture << std::endl;
-
-  Controller controller = CreateController();
-  std::cout << controller << std::endl;
-
-  // systems
-  InputSystem inputSystem(camera);
-  RenderSystem renderSystem(program, camera);
+  // std::cout << player << std::endl;
 
   while (window.isOpen())
   {
@@ -210,13 +245,10 @@ int main()
         window.close();
       }
     }
-    inputSystem.handle(controller);
-
     glClearColor(0, 0, 0, 1); // black
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    renderSystem.setCamera();
-    renderSystem.renderModel(transform, model, texture);
+    engine.run();
 
     window.display();
   }

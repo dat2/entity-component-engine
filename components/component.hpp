@@ -2,6 +2,7 @@
 #define _COMPONENT_HPP
 
 #include <iostream>
+#include <functional>
 
 namespace components
 {
@@ -9,6 +10,7 @@ namespace components
   // this allows systems to have a bit mask of components.
   enum ComponentType
   {
+    EMPTY,
     TRANSFORM   = 1 << 0,
     CAMERA      = 1 << 1,
     CONTROLLER  = 1 << 2,
@@ -18,6 +20,19 @@ namespace components
   inline ComponentType operator|(ComponentType a, ComponentType b)
   {
     return static_cast<ComponentType>(static_cast<int>(a) | static_cast<int>(b));
+  }
+
+  inline const char* ToString(ComponentType a)
+  {
+    switch(a)
+    {
+      case TRANSFORM: return "TRANSFORM";
+      case CAMERA: return "CAMERA";
+      case CONTROLLER: return "CONTROLLER";
+      case MODEL: return "MODEL";
+      case TEXTURE: return "TEXTURE";
+      default: return "";
+    }
   }
 
   /**
@@ -32,10 +47,12 @@ namespace components
 
     friend std::ostream& operator<<(std::ostream& os, Component const& c);
   protected:
-    virtual void print(std::ostream& where) const = 0;
+    virtual void print(std::ostream& where) const;
   private:
     ComponentType mType;
   };
+
+  typedef std::shared_ptr<Component> ComponentPtr;
 }
 
 #endif

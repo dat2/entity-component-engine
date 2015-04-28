@@ -16,14 +16,16 @@ namespace systems
   class InputSystem : public System
   {
   public:
-    InputSystem(Camera& camera)
-    : System(CAMERA | CONTROLLER), mCamera(camera) {}
+    InputSystem();
 
-    void handle(Controller &controller);
+    void entityAdded(Entity& entity);
+    void run();
 
   private:
-    Camera& mCamera;
     sf::Clock clock;
+
+    std::shared_ptr<Camera> mCamera;
+    std::shared_ptr<Controller> mController;
   };
 }
 #endif

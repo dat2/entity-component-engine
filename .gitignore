@@ -1,5 +1,7 @@
 # ignore object files
 *.o
+.depend
 
 # ignore binaries
 main
+

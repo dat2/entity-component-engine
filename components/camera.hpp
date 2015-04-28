@@ -26,6 +26,9 @@ namespace components
     void rotate(float vertical, float horizontal);
     void lookAt(sf::Vector3f pos);
 
+    const bool needsUpdate() const;
+    void update();
+
     const glm::mat4 mwv() const;
     const glm::mat4 mcv() const;
     const glm::mat4 mwc() const;
@@ -49,6 +52,8 @@ namespace components
 
     float mVerticalAngle;
     float mHorizontalAngle;
+
+    bool mNeedsUpdate;
   };
 }
 

@@ -22,15 +22,16 @@ namespace systems
   class RenderSystem : public System
   {
   public:
-    RenderSystem(Program& program, Camera& camera);
+    RenderSystem(Program& program);
 
-    void setCamera();
+    void updateCamera();
 
-    void renderModel(Transform &transform, Model &model, Texture &texture);
+    void entityChanged(Entity& entity, ComponentType newComponent);
+    void run();
 
   private:
     Program& mProgram;
-    Camera& mCamera;
+    std::shared_ptr<Camera> mCamera;
   };
 }
 

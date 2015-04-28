@@ -27,17 +27,7 @@ namespace components
 
     glGenTextures(mNTextures, mTextures);
   }
-  void Texture::setMinMagFilter(GLint filter)
-  {
-    glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, filter);
-    glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, filter);
-  }
-  void Texture::setWrap(GLint wrapMode)
-  {
-    glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, wrapMode);
-    glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, wrapMode);
-  }
-  void Texture::setImage(Magick::Image image)
+  void Texture::setImage(Magick::Image image, GLint filter, GLint wrapMode)
   {
     mImage = image;
     mImage.flip();
@@ -50,6 +40,13 @@ namespace components
     glTexImage2D(mTarget, 0, GL_RGBA,
       (GLsizei)image.columns(), (GLsizei)image.rows(), 0, GL_RGBA,
       GL_UNSIGNED_BYTE, (GLubyte*)blob.data());
+
+    // set some texture parameters
+    glTexParameteri(mTarget, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(mTarget, GL_TEXTURE_MAG_FILTER, filter);
+
+    glTexParameteri(mTarget, GL_TEXTURE_WRAP_S, wrapMode);
+    glTexParameteri(mTarget, GL_TEXTURE_WRAP_T, wrapMode);
   }
   void Texture::setActive(GLenum activeTexture)
   {

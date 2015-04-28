@@ -3,6 +3,7 @@
 
 // standard libraries
 #include <iostream>
+#include <memory>
 
 // opengl
 #include <glm/glm.hpp>

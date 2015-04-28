@@ -22,19 +22,21 @@ namespace components
   Camera::Camera(sf::Vector3f pos, float fov, float ratio, float near, float far)
     : Component(CAMERA),
       mPosition(sfmlToGlm(pos)), mFieldOfView(fov), mAspectRatio(ratio), mNear(near), mFar(far),
-      mVerticalAngle(0.0f), mHorizontalAngle(0.0f)
+      mVerticalAngle(0.0f), mHorizontalAngle(0.0f), mNeedsUpdate(false)
   {
   }
 
   void Camera::move(const sf::Vector3f diff)
   {
     mPosition += sfmlToGlm(diff);
+    mNeedsUpdate = true;
   }
 
   void Camera::rotate(float vertical, float horizontal)
   {
     mVerticalAngle += glm::radians(vertical);
     mHorizontalAngle += glm::radians(horizontal);
+    mNeedsUpdate = true;
   }
 
   void Camera::lookAt(sf::Vector3f pos)
@@ -42,6 +44,17 @@ namespace components
     glm::vec3 dir = glm::normalize(sfmlToGlm(pos) - mPosition);
     mVerticalAngle = glm::asin(-dir.y);
     mHorizontalAngle = -glm::atan(-dir.x, -dir.z);
+    mNeedsUpdate = true;
+  }
+
+  const bool Camera::needsUpdate() const
+  {
+    return mNeedsUpdate;
+  }
+
+  void Camera::update()
+  {
+    mNeedsUpdate = false;
   }
 
   const glm::mat4 Camera::mwv() const
