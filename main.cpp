@@ -60,18 +60,8 @@ static Program *CompileProgram()
   return program;
 }
 
-static void InitGLEW()
+static void PrintGLInfo()
 {
-  // get opengl at runtime
-  glewExperimental = GL_TRUE;
-  if(glewInit() != GLEW_OK)
-  {
-    std::cerr << "failed to initialize glew" << std::endl;
-    exit(-1);
-  }
-  glGetError(); // remove annoying glewExperimental error
-  std::cout << "successfully initialized glew" << std::endl;
-
   // print out info
   std::cout << "============================================" << std::endl;
   std::cout << "Renderer: " <<  glGetString (GL_RENDERER) << std::endl;
@@ -79,6 +69,21 @@ static void InitGLEW()
   std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
   std::cout << "OpenGL version supported " << glGetString (GL_VERSION) << std::endl;
   std::cout << "============================================" << std::endl;
+}
+
+static void InitGLEW()
+{
+  // get opengl at runtime
+  glewExperimental = GL_TRUE;
+  if(glewInit() != GLEW_OK)
+  {
+    std::cerr << "Failed to initialize GLEW" << std::endl;
+    exit(-1);
+  }
+  glGetError(); // remove annoying glewExperimental error
+  std::cout << "Initialized GLEW" << std::endl;
+
+  PrintGLInfo();
 }
 
 static void InitOpenGL()
@@ -197,9 +202,15 @@ static void CreateEntities(Engine& engine, Program& program)
   auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
   auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "resources/images/wooden-crate.jpg");
 
+  std::cout << *model << std::endl;
+  std::cout << *texture << std::endl;
+
   // box testing
   auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
   auto transform2 = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+
+  std::cout << *transform << std::endl;
+  std::cout << *transform2 << std::endl;
 
   auto& box = engine.createEntity("box");
   box.addComponent(transform);

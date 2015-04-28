@@ -66,7 +66,8 @@ namespace components
   void Texture::print(std::ostream& where) const
   {
     where << "Texture("
-      << "width=" << mImage.columns()
+      << "filename='" << mFilename
+      << "', width=" << mImage.columns()
       << ", height=" << mImage.rows()
       << ")";
   }
