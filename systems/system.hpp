@@ -24,7 +24,7 @@ namespace systems
   friend class engine::Engine;
 
   public:
-    System(ComponentType requiredTypes);
+    System(std::string name, ComponentType requiredTypes);
 
     bool hasTypes(const Entity& entity) const;
 
@@ -37,6 +37,7 @@ namespace systems
   protected:
     std::vector< EntityRef > mEntities;
   private:
+    const std::string mName;
     ComponentType mRequiredTypes;
   };
 

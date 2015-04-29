@@ -22,19 +22,6 @@ namespace entities
     mEngine.removeComponentFromEntity(*this, t);
   }
 
-  ComponentPtr Entity::getComponent(ComponentType t)
-  {
-    auto& components = getComponents();
-    auto result = std::find_if(std::begin(components), std::end(components),
-      [&t](const ComponentPtr& c) { return c->getType() == t; }
-    );
-    if(result != std::end(components))
-    {
-      return *result;
-    }
-    return nullptr;
-  }
-
   const std::vector< ComponentPtr > Entity::getComponents() const
   {
     return mEngine.getComponents(*this);

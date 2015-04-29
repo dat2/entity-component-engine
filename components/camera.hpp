@@ -22,7 +22,7 @@ namespace components
   public:
     Camera(sf::Vector3f pos, float fov, float ratio, float near, float far);
 
-    void move(const sf::Vector3f diff);
+    void move(const glm::vec3 diff);
     void rotate(float vertical, float horizontal);
     void lookAt(sf::Vector3f pos);
 

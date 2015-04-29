@@ -95,89 +95,74 @@ static void InitOpenGL()
 
 static ComponentPtr CreateController()
 {
-  auto controller = std::make_shared<Controller>(1.0f, 36.0f);
+  auto controller = std::make_shared<Controller>();
 
-  // move left
-  controller->addKeyAction(
-    { sf::Keyboard::Left, sf::Keyboard::A },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(-cam.left() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // move right
-  controller->addKeyAction(
-    { sf::Keyboard::Right, sf::Keyboard::D },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(cam.left() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // move fwd
-  controller->addKeyAction(
-    { sf::Keyboard::Up, sf::Keyboard::W },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(cam.forward() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // move bwd
-  controller->addKeyAction(
-    { sf::Keyboard::Down, sf::Keyboard::S },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(-cam.forward() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // move up
-  controller->addKeyAction(
-    { sf::Keyboard::Q },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(cam.up() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // move down
-  controller->addKeyAction(
-    { sf::Keyboard::E },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.move(glmToSfml(-cam.up() * c.getMoveSpeed() * elapsed.asSeconds()));
-    }
-  );
-  // rotate left
-  controller->addKeyAction(
-    { sf::Keyboard::J },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.rotate(0, -c.getRotateSpeed() * elapsed.asSeconds());
-    }
-  );
-  // rotate right
-  controller->addKeyAction(
-    { sf::Keyboard::L },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.rotate(0, c.getRotateSpeed() * elapsed.asSeconds());
-    }
-  );
-  // rotate up
-  controller->addKeyAction(
-    { sf::Keyboard::I },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.rotate(-c.getRotateSpeed() * elapsed.asSeconds(), 0);
-    }
-  );
-  // rotate down
-  controller->addKeyAction(
-    { sf::Keyboard::K },
-    [](Controller& c, Camera& cam, sf::Time &elapsed) {
-      cam.rotate(c.getRotateSpeed() * elapsed.asSeconds(), 0);
+  controller->createKeyboardAction("moveLeft", { sf::Keyboard::Left, sf::Keyboard::A });
+  controller->createKeyboardAction("moveRight", { sf::Keyboard::Right, sf::Keyboard::D });
+  controller->createKeyboardAction("moveForward", { sf::Keyboard::Up, sf::Keyboard::W });
+  controller->createKeyboardAction("moveBackward", { sf::Keyboard::Down, sf::Keyboard::S });
+  controller->createKeyboardAction("moveUp", { sf::Keyboard::Q });
+  controller->createKeyboardAction("moveDown", { sf::Keyboard::E });
+
+  controller->createKeyboardAction("rotateLeft", { sf::Keyboard::J });
+  controller->createKeyboardAction("rotateRight", { sf::Keyboard::L });
+  controller->createKeyboardAction("rotateUp", { sf::Keyboard::I });
+  controller->createKeyboardAction("rotateDown", { sf::Keyboard::K });
+
+  // TODO tie in physics somehow
+  controller->addUpdateCallback(
+    [](Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    {
+      auto cam = entity.getComponent<Camera>(CAMERA);
+      if(cam == nullptr)
+      {
+        return;
+      }
+
+      float elapsed = time.asSeconds();
+
+      // move the camera
+      float moveSpeed = 3.0; // units/s
+      float moveDist = moveSpeed * elapsed; // m/s * s == m
+
+      int x = controller.getActionState("moveRight") - controller.getActionState("moveLeft");
+      glm::vec3 xDiff = x * moveDist * cam->left();
+
+      int y = controller.getActionState("moveUp") - controller.getActionState("moveDown");
+      glm::vec3 yDiff = y * moveDist * cam->up();
+
+      int z = controller.getActionState("moveForward") - controller.getActionState("moveBackward");
+      glm::vec3 zDiff = z * moveDist * cam->forward();
+
+      if(x || y || z)
+      {
+        cam->move(xDiff + yDiff + zDiff);
+      }
+
+      // rotate the camera
+      float rotateSpeed = 120.0f; // 360degrees / 3seconds;
+      float rotateDist = rotateSpeed * elapsed;
+
+      int horizontal = controller.getActionState("rotateRight") - controller.getActionState("rotateLeft");
+      int vertical = controller.getActionState("rotateUp") - controller.getActionState("rotateDown");
+
+      if(horizontal || vertical)
+      {
+        cam->rotate(-vertical * rotateDist, horizontal * rotateDist);
+      }
     }
   );
 
-  return std::move(controller);
+  return controller;
 }
 
-static void CreateSystems(Engine& engine, Program& program)
+static void CreateSystems(Engine& engine, Program& program, sf::Window& window)
 {
-  auto inputSystem = std::make_shared<InputSystem>();
+  auto inputSystem = std::make_shared<InputSystem>(window);
   auto renderSystem = std::make_shared<RenderSystem>(program);
 
-  engine.addSystem(std::move(renderSystem));
-  engine.addSystem(std::move(inputSystem));
+  engine.addSystem(renderSystem);
+  engine.addSystem(inputSystem);
 }
 
 static void CreatePlayer(Engine& engine)
@@ -190,8 +175,8 @@ static void CreatePlayer(Engine& engine)
 
   Entity& player = engine.createEntity("player");
 
-  player.addComponent(std::move(camera));
-  player.addComponent(std::move(controller));
+  player.addComponent(camera);
+  player.addComponent(controller);
 
   std::cout << player << std::endl;
 }
@@ -202,15 +187,9 @@ static void CreateEntities(Engine& engine, Program& program)
   auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
   auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "resources/images/wooden-crate.jpg");
 
-  std::cout << *model << std::endl;
-  std::cout << *texture << std::endl;
-
   // box testing
   auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
   auto transform2 = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
-
-  std::cout << *transform << std::endl;
-  std::cout << *transform2 << std::endl;
 
   auto& box = engine.createEntity("box");
   box.addComponent(transform);
@@ -237,7 +216,7 @@ int main()
 
   Engine engine;
 
-  CreateSystems(engine, program);
+  CreateSystems(engine, program, window);
   CreatePlayer(engine);
   CreateEntities(engine, program);
 

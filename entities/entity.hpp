@@ -30,12 +30,24 @@ namespace entities
 
     const std::vector< ComponentPtr > getComponents() const;
 
-    ComponentPtr getComponent(ComponentType t);
-
     const std::string& getName() const;
 
     friend bool operator==(const Entity& a, const Entity& b);
     friend std::ostream& operator<<(std::ostream& os, Entity const& e);
+
+    template <class T>
+    std::shared_ptr<T> getComponent(ComponentType t)
+    {
+      auto& components = getComponents();
+      auto result = std::find_if(std::begin(components), std::end(components),
+        [&t](const ComponentPtr& c) { return c->getType() == t; }
+      );
+      if(result != std::end(components))
+      {
+        return std::dynamic_pointer_cast<T>(*result);
+      }
+      return nullptr;
+    }
   private:
     engine::Engine& mEngine;
     std::string mName;

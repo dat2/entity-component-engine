@@ -4,28 +4,32 @@
 // my own
 #include <systems/input.hpp>
 
+#include <components/controller.hpp>
+
+using namespace components;
+
 namespace systems
 {
-  InputSystem::InputSystem()
-    : System(CAMERA | CONTROLLER), mCamera(nullptr), mController(nullptr)
+  InputSystem::InputSystem(sf::Window& window)
+    : System("input", CONTROLLER), mWindow(window)
   {
-  }
-
-  void InputSystem::entityAdded(Entity& entity)
-  {
-    mCamera = std::dynamic_pointer_cast<Camera>(entity.getComponent(CAMERA));
-    mController = std::dynamic_pointer_cast<Controller>(entity.getComponent(CONTROLLER));
   }
 
   void InputSystem::run()
   {
     sf::Time elapsed = clock.restart();
-    if(mCamera != nullptr && mController != nullptr)
+
+    for( auto &e : mEntities )
     {
-      auto actions = mController->getKeyActions();
-      for( auto &action : actions )
+      auto entity = e.get();
+      auto controller = entity.getComponent<Controller>(CONTROLLER);
+
+      controller->updateActionStates();
+
+      auto callbacks = controller->getUpdateCallbacks();
+      for(auto &callback : callbacks)
       {
-        action(*mController, *mCamera, elapsed);
+        callback(e, *controller, mWindow, elapsed);
       }
     }
   }

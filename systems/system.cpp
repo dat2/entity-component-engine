@@ -6,8 +6,8 @@
 
 namespace systems
 {
-  System::System(ComponentType requiredTypes)
-    : mRequiredTypes(requiredTypes)
+  System::System(std::string name, ComponentType requiredTypes)
+    : mName(name), mRequiredTypes(requiredTypes)
   {
   }
 
@@ -21,11 +21,17 @@ namespace systems
       allComponentTypes = allComponentTypes | c->getType();
     }
 
-    return allComponentTypes == mRequiredTypes;
+    return ((mRequiredTypes & allComponentTypes) == mRequiredTypes);
   }
 
-  void System::entityAdded(Entity& entity) { }
+  void System::entityAdded(Entity& entity)
+  {
+    std::cout << entity.getName() << " added to system " << mName << std::endl;
+  }
   void System::entityChanged(Entity& entity, ComponentType newComponent) { }
-  void System::entityRemoved(Entity& entity) { }
+  void System::entityRemoved(Entity& entity)
+  {
+    std::cout << entity.getName() << " removed from system " << mName << std::endl;
+  }
   void System::run() { }
 }

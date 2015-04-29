@@ -26,9 +26,9 @@ namespace components
   {
   }
 
-  void Camera::move(const sf::Vector3f diff)
+  void Camera::move(glm::vec3 diff)
   {
-    mPosition += sfmlToGlm(diff);
+    mPosition += diff;
     mNeedsUpdate = true;
   }
 

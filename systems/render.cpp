@@ -17,7 +17,7 @@ using namespace components;
 namespace systems
 {
   RenderSystem::RenderSystem(Program& program)
-    : System(TRANSFORM | MODEL | TEXTURE), mProgram(program), mCamera(nullptr)
+    : System("render", TRANSFORM | MODEL | TEXTURE), mProgram(program), mCamera(nullptr)
   {
   }
 
@@ -43,8 +43,10 @@ namespace systems
 
   void RenderSystem::entityAdded(Entity& entity)
   {
+    System::entityAdded(entity);
+
     // flyweight of models
-    auto model = std::dynamic_pointer_cast<Model>(entity.getComponent(MODEL));
+    auto model = entity.getComponent<Model>(MODEL);
     auto modelsCheck = mModels.find(model->getName());
     if(modelsCheck == mModels.end())
     {
@@ -58,7 +60,7 @@ namespace systems
     }
 
     // flyweight of textures
-    auto texture = std::dynamic_pointer_cast<Texture>(entity.getComponent(TEXTURE));
+    auto texture = entity.getComponent<Texture>(TEXTURE);
     auto texturesCheck = mTextures.find(texture->getFilename());
     if(texturesCheck == mTextures.end())
     {
@@ -75,27 +77,32 @@ namespace systems
   {
     if(mCamera == nullptr && newComponent == CAMERA)
     {
-      mCamera = std::dynamic_pointer_cast<Camera>(entity.getComponent(CAMERA));
+      mCamera = entity.getComponent<Camera>(CAMERA);
       updateCamera();
     }
   }
 
   void RenderSystem::run()
   {
-    mProgram.use();
+    if(mCamera == nullptr)
+    {
+      return;
+    }
 
-    if(mCamera != nullptr && mCamera->needsUpdate())
+    if(mCamera->needsUpdate())
     {
       updateCamera();
     }
+
+    mProgram.use();
 
     for( auto &e : mEntities )
     {
       auto entity = e.get();
 
-      auto& transform = *std::dynamic_pointer_cast<Transform>(entity.getComponent(TRANSFORM));
-      auto& model = *std::dynamic_pointer_cast<Model>(entity.getComponent(MODEL));
-      auto& texture = *std::dynamic_pointer_cast<Texture>(entity.getComponent(TEXTURE));
+      auto& transform = *entity.getComponent<Transform>(TRANSFORM);
+      auto& model = *entity.getComponent<Model>(MODEL);
+      auto& texture = *entity.getComponent<Texture>(TEXTURE);
 
       GLint modelIndex = mProgram.uniform("model");
       glm::mat4 modelMatrix = glm::mat4();

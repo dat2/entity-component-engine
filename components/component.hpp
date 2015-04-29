@@ -21,7 +21,10 @@ namespace components
   {
     return static_cast<ComponentType>(static_cast<int>(a) | static_cast<int>(b));
   }
-
+  inline ComponentType operator&(ComponentType a, ComponentType b)
+  {
+    return static_cast<ComponentType>(static_cast<int>(a) & static_cast<int>(b));
+  }
   inline const char* ToString(ComponentType a)
   {
     switch(a)

@@ -7,48 +7,52 @@
 
 namespace components
 {
-  Controller::Controller(float moveSpeed, float rotateSpeed)
-    : Component(CONTROLLER), mMoveSpeed(moveSpeed), mRotateSpeed(rotateSpeed)
+  Controller::Controller()
+    : Component(CONTROLLER)
   {
   }
 
-  void  Controller::addKeyAction(Keys keys, Action action)
+  void Controller::createKeyboardAction(const std::string action, Keys keys)
   {
-    mKeyActions.insert(std::pair<Keys, Action>(keys, action));
+    mActionStates.emplace(action, std::make_pair(0, keys));
   }
-
-  std::vector< Action > Controller::getKeyActions() const
+  const int Controller::getActionState(const std::string action) const
   {
-    std::vector< Action > actions;
-
-    for( auto &pair : mKeyActions )
+    auto search = mActionStates.find(action);
+    if(search != mActionStates.end())
     {
-      auto keys = pair.first;
-      if(std::any_of(keys.begin(), keys.end(),
-        [](sf::Keyboard::Key key) { return sf::Keyboard::isKeyPressed(key); }))
-      {
-        actions.push_back(pair.second);
-      }
+      return search->second.first;
     }
+    return 0;
+  }
+  void Controller::updateActionStates()
+  {
+    for( auto &iterator : mActionStates )
+    {
+      auto& state = iterator.second.first;
 
-    return actions;
+      bool keyState = false;
+      auto& keys = iterator.second.second;
+      for(auto& key : keys)
+      {
+        keyState = keyState || sf::Keyboard::isKeyPressed(key);
+      }
+      state = keyState;
+    }
+  }
+  void Controller::addUpdateCallback(UpdateCallback callback)
+  {
+    mCallbacks.push_back(callback);
   }
 
-  const float Controller::getMoveSpeed() const
+  const std::vector< UpdateCallback >& Controller::getUpdateCallbacks() const
   {
-    return mMoveSpeed;
-  }
-
-  const float Controller::getRotateSpeed() const
-  {
-    return mRotateSpeed;
+    return mCallbacks;
   }
 
   void Controller::print(std::ostream& where) const
   {
     where << "Controller("
-      << "moveSpeed=" << mMoveSpeed
-      << ", rotateSpeed=" << mRotateSpeed
       << ")";
   }
 }

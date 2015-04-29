@@ -2,44 +2,45 @@
 #define _CONTROLLER_HPP
 
 // standard libraries
-#include <map>
+#include <unordered_map>
 #include <vector>
 #include <functional>
 
 // sfml
+#include <SFML/Window/Window.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Time.hpp>
 
 // my own
-#include <components/camera.hpp>
+#include <entities/entity.hpp>
+
+using namespace entities;
 
 namespace components
 {
   class Controller;
 
-  typedef std::function<void(Controller&, Camera&, sf::Time&)> Action;
+  typedef std::function<void(Entity&, Controller&, sf::Window&, sf::Time&)> UpdateCallback;
   typedef std::vector<sf::Keyboard::Key> Keys;
 
   class Controller : public Component
   {
   public:
-    Controller(float moveSpeed, float rotateSpeed);
+    Controller();
 
-    void addKeyAction(Keys keys, Action action);
-
-    std::vector< Action > getKeyActions() const;
-
-    const float getMoveSpeed() const;
-    const float getRotateSpeed() const;
+    void createKeyboardAction(const std::string action, Keys keys);
+    const int getActionState(const std::string action) const;
+    void updateActionStates();
+    void addUpdateCallback(UpdateCallback callback);
+    const std::vector< UpdateCallback >& getUpdateCallbacks() const;
 
   protected:
     virtual void print(std::ostream& where) const;
 
   private:
-    std::map< Keys, Action > mKeyActions;
+    std::unordered_map< std::string, std::pair<int, Keys> > mActionStates;
 
-    float mMoveSpeed;
-    float mRotateSpeed;
+    std::vector< UpdateCallback > mCallbacks;
   };
 
 }
