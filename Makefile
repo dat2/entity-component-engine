@@ -1,6 +1,6 @@
 # compiler options
 CC = g++
-CFLAGS = -Wall -std=c++11
+CFLAGS = -Wall -std=c++11 -g
 
 # allows infinitely recursive directories
 SRCS = $(shell find . -name '*.cpp')
@@ -19,7 +19,7 @@ MAGICK_SCRIPT = `Magick++-config --cppflags --cxxflags --ldflags --libs`
 
 
 # main depends on all objects
-main: $(OBJ)
+openglgame: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS) $(MAGICK_SCRIPT)
 
 # copied from

@@ -4,8 +4,11 @@
 // opengl
 #include <GL/GLEW.h>
 
+#include <glm/gtx/string_cast.hpp>
+
 // my own
 #include <utils/utils.hpp>
+#include <sstream>
 
 // http://www.lighthouse3d.com/cg-topics/error-tracking-in-opengl/
 int printOglError(const char *file, int line)
@@ -38,5 +41,16 @@ namespace utils
   sf::Vector3f glmToSfml(glm::vec3 v)
   {
     return sf::Vector3f(v.x, v.y, v.z);
+  }
+
+  std::string toString(sf::Vector3f v)
+  {
+    std::stringstream buf;
+    buf << "(" << v.x << "," << v.y << "," << v.z << ")";
+    return buf.str();
+  }
+  std::string toString(glm::vec3 v)
+  {
+    return glm::to_string(v);
   }
 }

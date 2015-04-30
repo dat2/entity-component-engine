@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <functional>
+#include <misc/printable.hpp>
 
 namespace components
 {
@@ -29,11 +30,11 @@ namespace components
   {
     switch(a)
     {
-      case TRANSFORM: return "TRANSFORM";
-      case CAMERA: return "CAMERA";
-      case CONTROLLER: return "CONTROLLER";
-      case MODEL: return "MODEL";
-      case TEXTURE: return "TEXTURE";
+      case TRANSFORM: return "Transform";
+      case CAMERA: return "Camera";
+      case CONTROLLER: return "Controller";
+      case MODEL: return "Model";
+      case TEXTURE: return "Texture";
       default: return "";
     }
   }
@@ -42,15 +43,12 @@ namespace components
    * Base polymorphic component class. You must define a "print" method, so as
    * to make debugging easier.
    */
-  class Component
+  class Component : public Printable
   {
   public:
     Component(ComponentType type);
     const ComponentType getType() const;
 
-    friend std::ostream& operator<<(std::ostream& os, Component const& c);
-  protected:
-    virtual void print(std::ostream& where) const;
   private:
     ComponentType mType;
   };

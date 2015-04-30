@@ -26,12 +26,12 @@ namespace systems
 
   void System::entityAdded(Entity& entity)
   {
-    std::cout << entity.getName() << " added to system " << mName << std::endl;
+    // std::cout << entity.getName() << " added to system " << mName << std::endl;
   }
   void System::entityChanged(Entity& entity, ComponentType newComponent) { }
   void System::entityRemoved(Entity& entity)
   {
-    std::cout << entity.getName() << " removed from system " << mName << std::endl;
+    // std::cout << entity.getName() << " removed from system " << mName << std::endl;
   }
   void System::run() { }
 }

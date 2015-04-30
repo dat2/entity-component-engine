@@ -1,5 +1,7 @@
-#include <algorithm>
+#include <string>
+#include <functional>
 
+#include <misc/printable.hpp>
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
 
@@ -8,7 +10,7 @@ using namespace engine;
 namespace entities
 {
   Entity::Entity(Engine& engine, std::string name)
-    : mEngine(engine), mName(name)
+    : Printable("Entity"), Named(name), mEngine(engine)
   {
   }
 
@@ -22,39 +24,15 @@ namespace entities
     mEngine.removeComponentFromEntity(*this, t);
   }
 
-  const std::vector< ComponentPtr > Entity::getComponents() const
+  const std::vector< ComponentPtr >& Entity::getComponents() const
   {
     return mEngine.getComponents(*this);
   }
 
-  const std::string& Entity::getName() const
+  void Entity::print(std::ostream& where) const
   {
-    return mName;
+    printField(where, "name", getName());
+    printVector(where, ", components", getComponents(), [](const ComponentPtr& c) { return ToString(c->getType()); });
   }
 
-  bool operator==(const Entity& a, const Entity& b)
-  {
-    return a.mName == b.mName;
-  }
-
-  std::ostream& operator<<(std::ostream& os, Entity const& e)
-  {
-    os << "Entity("
-       << "name=" << e.mName
-       << ", components=(";
-
-    // print each component, with an ',' after it
-    auto& components = e.getComponents();
-    if(components.size() >= 1)
-    {
-      std::for_each(std::begin(components), std::end(components) - 1,
-        [&](const ComponentPtr& c) { os << ToString(c->getType()) << ","; });
-
-      // except for the last element
-      auto& last = components.back();
-      os << ToString(last->getType());
-    }
-
-    return os << ")" << ")";
-  }
 }

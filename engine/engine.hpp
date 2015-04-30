@@ -24,7 +24,7 @@ namespace engine
 
     void addComponentToEntity(Entity &entity, ComponentPtr component);
     void removeComponentFromEntity(Entity& entity, ComponentType t);
-    const std::vector< ComponentPtr > getComponents(const Entity& entity) const;
+    const std::vector< ComponentPtr >& getComponents(const Entity& entity) const;
 
     void run();
 

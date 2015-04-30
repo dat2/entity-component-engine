@@ -35,8 +35,7 @@ namespace components
     void prepareVAO(Program &program, std::string vertAttribute, std::string uvAttribute);
     void draw();
 
-  protected:
-    virtual void print(std::ostream& where) const;
+    void print(std::ostream& where) const;
   private:
     const std::string mName;
     std::vector< sf::Vector3f > mVertices;

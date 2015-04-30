@@ -6,6 +6,9 @@
 
 // my own
 #include <components/transform.hpp>
+#include <utils/utils.hpp>
+
+using namespace utils;
 
 namespace components
 {
@@ -36,10 +39,8 @@ namespace components
 
   void Transform::print(std::ostream& where) const
   {
-    where << "Transform("
-      << "position=(" << mPosition.x << "," << mPosition.y << "," << mPosition.z << ")"
-      << ", rotation=(" << mRotation.x << "," << mRotation.y << "," << mRotation.z << ")"
-      << ", scale=(" << mScale.x << "," << mScale.y << "," << mScale.z << ")"
-      << ")";
+    printField(where, "position", toString(mPosition));
+    printField(where, ", rotation", toString(mRotation));
+    printField(where, ", scale", toString(mScale));
   }
 }

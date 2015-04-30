@@ -89,8 +89,6 @@ namespace components
 
   void Model::print(std::ostream& where) const
   {
-    where << "Model("
-      << "vertices=" << mNumVertices
-      << ")";
+    printField(where, "numVertices", mNumVertices);
   }
 }

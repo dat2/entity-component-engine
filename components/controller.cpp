@@ -52,7 +52,12 @@ namespace components
 
   void Controller::print(std::ostream& where) const
   {
-    where << "Controller("
-      << ")";
+    std::vector<std::string> actions;
+    for( auto &i : mActionStates )
+    {
+      actions.push_back(i.first);
+    }
+
+    printVector(where, "actions", actions);
   }
 }

@@ -13,6 +13,7 @@
 #include <SFML/System/Vector3.hpp>
 
 // my own
+#include <misc/printable.hpp>
 #include <components/component.hpp>
 
 namespace components
@@ -39,8 +40,7 @@ namespace components
     const glm::vec3 up() const;
     const glm::vec3 left() const;
 
-  protected:
-    virtual void print(std::ostream& where) const;
+    void print(std::ostream& where) const;
 
   private:
     glm::vec3 mPosition;

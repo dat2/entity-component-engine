@@ -49,7 +49,7 @@ namespace engine
     }
   }
 
-  const std::vector< ComponentPtr > Engine::getComponents(const Entity& entity) const
+  const std::vector< ComponentPtr >& Engine::getComponents(const Entity& entity) const
   {
     return mEntities.at(entity);
   }

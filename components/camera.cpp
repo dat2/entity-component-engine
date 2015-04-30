@@ -7,6 +7,7 @@
 #include <glm/gtx/compatibility.hpp>
 
 // my own
+#include <misc/printable.hpp>
 #include <components/camera.hpp>
 #include <utils/utils.hpp>
 
@@ -97,14 +98,12 @@ namespace components
 
   void Camera::print(std::ostream& where) const
   {
-    where << "Camera("
-      << "position=" << mPosition.x << "," << mPosition.y << "," << mPosition.z << ")"
-      << ", fov=" << mFieldOfView
-      << ", aspectRatio=" << mAspectRatio
-      << ", near=" << mNear
-      << ", far=" << mFar
-      << ", verticalAngle=" << glm::degrees(mVerticalAngle)
-      << ", horizontalAngle=" << glm::degrees(mHorizontalAngle)
-      << ")";
+    printField(where, "position", toString(mPosition));
+    printField(where, ", fov", mFieldOfView);
+    printField(where, ", aspectRatio", mAspectRatio);
+    printField(where, ", near", mNear);
+    printField(where, ", far", mFar);
+    printField(where, ", verticalAngle", glm::degrees(mVerticalAngle));
+    printField(where, ", horizontalAngle", glm::degrees(mHorizontalAngle));
   }
 }

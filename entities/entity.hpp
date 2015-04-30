@@ -11,13 +11,16 @@ namespace engine
   class Engine;
 }
 
+#include <misc/printable.hpp>
+#include <misc/named.hpp>
+
 #include <components/component.hpp>
 
 using namespace components;
 
 namespace entities
 {
-  class Entity
+  class Entity : public Printable, public Named
   {
   friend struct std::hash<Entity>;
   friend class engine::Engine;
@@ -28,12 +31,9 @@ namespace entities
     void addComponent(ComponentPtr c);
     void removeComponent(ComponentType t);
 
-    const std::vector< ComponentPtr > getComponents() const;
+    const std::vector< ComponentPtr >& getComponents() const;
 
-    const std::string& getName() const;
-
-    friend bool operator==(const Entity& a, const Entity& b);
-    friend std::ostream& operator<<(std::ostream& os, Entity const& e);
+    void print(std::ostream& where) const;
 
     template <class T>
     std::shared_ptr<T> getComponent(ComponentType t)
@@ -50,7 +50,6 @@ namespace entities
     }
   private:
     engine::Engine& mEngine;
-    std::string mName;
   };
 
   typedef std::shared_ptr<Entity> EntityPtr;
@@ -59,14 +58,8 @@ namespace entities
 
 namespace std
 {
-  template <> struct hash<entities::Entity>
+  template <> struct hash<entities::Entity> : hash<Named>
   {
-    size_t operator()(const entities::Entity& e) const
-    {
-      /* eg. return hash<int>()(x.value); */
-      return hash<std::string>()(e.mName);
-    }
   };
 }
-
 #endif

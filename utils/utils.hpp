@@ -30,6 +30,9 @@ namespace utils
    * @return   the equivalent sfml vector
    */
   sf::Vector3f glmToSfml(glm::vec3 v);
+
+  std::string toString(sf::Vector3f v);
+  std::string toString(glm::vec3 v);
 }
 
 #endif

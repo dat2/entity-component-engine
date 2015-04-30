@@ -5,4 +5,4 @@
 4. SFML
 
 # Building
-Run `make && ./main` to get the engine running.
+Run `make && ./openglgame` to get the engine running.

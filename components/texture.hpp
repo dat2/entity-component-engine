@@ -36,8 +36,7 @@ namespace components
 
     const std::string& getFilename() const;
 
-  protected:
-    virtual void print(std::ostream& where) const;
+    void print(std::ostream& where) const;
 
   private:
     std::string mFilename;
