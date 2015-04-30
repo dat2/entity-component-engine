@@ -41,9 +41,9 @@ namespace systems
     glUniform1i(mProgram.uniform((GLchar *)uniform.c_str()), texture);
   }
 
-  void RenderSystem::entityAdded(Entity& entity)
+  void RenderSystem::entityAdded(Engine& engine, Entity& entity)
   {
-    System::entityAdded(entity);
+    System::entityAdded(engine, entity);
 
     // flyweight of models
     auto model = entity.getComponent<Model>(MODEL);
@@ -73,7 +73,7 @@ namespace systems
     }
   }
 
-  void RenderSystem::entityChanged(Entity& entity, ComponentType newComponent)
+  void RenderSystem::entityChanged(Engine& engine, Entity& entity, ComponentType newComponent)
   {
     if(mCamera == nullptr && newComponent == CAMERA)
     {

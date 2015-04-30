@@ -7,7 +7,7 @@
 namespace systems
 {
   System::System(std::string name, ComponentType requiredTypes)
-    : mName(name), mRequiredTypes(requiredTypes)
+    : Printable("System"), Named(name), mRequiredTypes(requiredTypes)
   {
   }
 
@@ -24,14 +24,27 @@ namespace systems
     return ((mRequiredTypes & allComponentTypes) == mRequiredTypes);
   }
 
-  void System::entityAdded(Entity& entity)
-  {
-    // std::cout << entity.getName() << " added to system " << mName << std::endl;
-  }
-  void System::entityChanged(Entity& entity, ComponentType newComponent) { }
-  void System::entityRemoved(Entity& entity)
-  {
-    // std::cout << entity.getName() << " removed from system " << mName << std::endl;
-  }
+  void System::entityAdded(engine::Engine& engine, Entity& entity) { }
+  void System::entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
+  void System::entityRemoved(engine::Engine& engine, Entity& entity) { }
   void System::run() { }
+
+  void System::print(std::ostream& where) const
+  {
+    printField(where, "name", getName());
+
+    std::vector< std::string > requiredTypes;
+
+    // this loop checks the set bits in the required types bit mask
+    int shifts = 0;
+    for(int it = static_cast<int>(mRequiredTypes) << 1; (it = it >> 1); shifts++)
+    {
+      if(it & 1)
+      {
+        requiredTypes.push_back(ToString(static_cast<ComponentType>(1 << shifts)));
+      }
+    }
+
+    printVector(where, ", requiredTypes", requiredTypes);
+  }
 }

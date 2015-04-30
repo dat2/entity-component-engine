@@ -13,13 +13,15 @@ namespace engine
 
 #include <entities/entity.hpp>
 #include <components/component.hpp>
+#include <misc/named.hpp>
+#include <misc/printable.hpp>
 
 using namespace components;
 using namespace entities;
 
 namespace systems
 {
-  class System
+  class System : public Printable, public Named
   {
   friend class engine::Engine;
 
@@ -28,16 +30,17 @@ namespace systems
 
     bool hasTypes(const Entity& entity) const;
 
-    virtual void entityAdded(Entity& entity);
-    virtual void entityChanged(Entity& entity, ComponentType newComponent);
-    virtual void entityRemoved(Entity& entity);
+    virtual void entityAdded(engine::Engine& engine, Entity& entity);
+    virtual void entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent);
+    virtual void entityRemoved(engine::Engine& engine, Entity& entity);
 
     virtual void run();
+
+    void print(std::ostream& where) const;
 
   protected:
     std::vector< EntityRef > mEntities;
   private:
-    const std::string mName;
     ComponentType mRequiredTypes;
   };
 

@@ -109,6 +109,8 @@ static ComponentPtr CreateController()
   controller->createKeyboardAction("rotateUp", { sf::Keyboard::I });
   controller->createKeyboardAction("rotateDown", { sf::Keyboard::K });
 
+  controller->createKeyboardAction("quit", { sf::Keyboard::Escape });
+
   // TODO tie in physics somehow
   controller->addUpdateCallback(
     [](Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
@@ -153,6 +155,16 @@ static ComponentPtr CreateController()
     }
   );
 
+  controller->addUpdateCallback(
+    [](Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    {
+      if(controller.getActionState("quit"))
+      {
+        window.close();
+      }
+    }
+  );
+
   return controller;
 }
 
@@ -160,6 +172,9 @@ static void CreateSystems(Engine& engine, Program& program, sf::Window& window)
 {
   auto inputSystem = std::make_shared<InputSystem>(window);
   auto renderSystem = std::make_shared<RenderSystem>(program);
+
+  std::cout << *inputSystem << std::endl;
+  std::cout << *renderSystem << std::endl;
 
   engine.addSystem(renderSystem);
   engine.addSystem(inputSystem);

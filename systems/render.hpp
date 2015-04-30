@@ -6,6 +6,7 @@
 
 // my own
 // utils
+#include <engine/engine.hpp>
 #include <utils/rendering/program.hpp>
 
 // components
@@ -19,6 +20,7 @@
 
 using namespace utils;
 using namespace components;
+using namespace engine;
 
 namespace systems
 {
@@ -30,8 +32,8 @@ namespace systems
     void updateCamera();
     void activateTexture(GLenum activeTexture, GLint texture, const std::string uniform);
 
-    void entityAdded(Entity& entity);
-    void entityChanged(Entity& entity, ComponentType newComponent);
+    void entityAdded(Engine& engine, Entity& entity);
+    void entityChanged(Engine& engine, Entity& entity, ComponentType newComponent);
     void run();
 
   private:

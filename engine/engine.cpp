@@ -24,9 +24,9 @@ namespace engine
       if(system->hasTypes(entity))
       {
         system->mEntities.push_back(std::ref(entity));
-        system->entityAdded(entity);
+        system->entityAdded(*this, entity);
       }
-      system->entityChanged(entity, component->getType());
+      system->entityChanged(*this, entity, component->getType());
     }
   }
 
@@ -44,8 +44,9 @@ namespace engine
         auto entityPredicate = [&entity](const EntityRef& e) { return e.get().getName() == entity.getName(); };
         system->mEntities.erase(
           std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
+        system->entityRemoved(*this, entity);
       }
-      system->entityChanged(entity, t);
+      system->entityChanged(*this, entity, t);
     }
   }
 
