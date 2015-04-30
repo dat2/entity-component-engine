@@ -7,6 +7,7 @@
 #include <systems/render.hpp>
 #include <utils/utils.hpp>
 #include <assets/modelasset.hpp>
+#include <assets/textureasset.hpp>
 
 #define X_AXIS glm::vec3(1, 0, 0)
 #define Y_AXIS glm::vec3(0, 1, 0)
@@ -25,7 +26,7 @@ namespace systems
 
   void RenderSystem::updateCamera()
   {
-    if(mCamera != nullptr)
+    if(mCamera)
     {
       mProgram.use();
 
@@ -50,46 +51,53 @@ namespace systems
 
     // flyweight of models
     auto model = entity.getComponent<Model>(MODEL);
-    auto asset = engine.getAsset<ModelAsset>(model->getName());
+    auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
 
-    if(asset == nullptr)
+    if(!modelAsset)
     {
-      auto modelAsset = engine.createAsset<ModelAsset>(model->getName(), "");
+      auto newAsset = engine.createAsset<ModelAsset>(model->getName(), "");
 
       mProgram.use();
 
-      modelAsset->generate();
-      modelAsset->bind();
-      modelAsset->loadBuffer(model->getVertices(), model->getUvs());
-      modelAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
-      modelAsset->unbind();
+      newAsset->generate();
+      newAsset->bind();
+      newAsset->loadBuffer(model->getVertices(), model->getUvs());
+      newAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
+      newAsset->unbind();
 
       mProgram.unuse();
 
-      model->setAsset(modelAsset);
+      model->setAsset(newAsset);
     }
     else
     {
-      model->setAsset(asset);
+      model->setAsset(modelAsset);
     }
 
     // flyweight of textures
     auto texture = entity.getComponent<Texture>(TEXTURE);
-    auto texturesCheck = mTextures.find(texture->getFilename());
-    if(texturesCheck == mTextures.end())
-    {
-      auto r = mTextures.emplace(texture->getFilename(),texture->getFilename());
+    auto textureAsset = engine.getAsset<TextureAsset>(model->getName());
 
-      texture->generate(1);
-      texture->bind(0);
-      texture->setImage(r.first->second);
-      texture->unbind();
+    if(!textureAsset)
+    {
+      auto newAsset = engine.createAsset<TextureAsset>(texture->getName(), texture->getFilepath());
+
+      newAsset->generate(1);
+      newAsset->bind(0);
+      newAsset->set();
+      newAsset->unbind();
+
+      texture->setAsset(newAsset);
+    }
+    else
+    {
+      texture->setAsset(textureAsset);
     }
   }
 
   void RenderSystem::entityChanged(Engine& engine, Entity& entity, ComponentType newComponent)
   {
-    if(mCamera == nullptr && newComponent == CAMERA)
+    if(!mCamera && newComponent == CAMERA)
     {
       mCamera = entity.getComponent<Camera>(CAMERA);
       updateCamera();
@@ -98,7 +106,7 @@ namespace systems
 
   void RenderSystem::run()
   {
-    if(mCamera == nullptr)
+    if(!mCamera)
     {
       return;
     }

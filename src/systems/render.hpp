@@ -39,7 +39,6 @@ namespace systems
   private:
     Program& mProgram;
     std::shared_ptr<Camera> mCamera;
-    std::unordered_map< std::string, Magick::Image > mTextures;
   };
 }
 

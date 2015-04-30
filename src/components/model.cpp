@@ -21,7 +21,7 @@ namespace components
 
   void Model::draw()
   {
-    if(mAsset != nullptr)
+    if(mAsset)
     {
       mAsset->draw();
     }
@@ -45,7 +45,7 @@ namespace components
   void Model::print(std::ostream& where) const
   {
     where << "asset=(";
-    if(mAsset != nullptr)
+    if(mAsset)
     {
       mAsset->print(where);
     }

@@ -203,7 +203,7 @@ static void CreateEntities(Engine& engine, Program& program)
   // shared variables
   auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
   auto model2 = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
-  auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "resources/images/wooden-crate.jpg");
+  auto texture = std::make_shared<Texture>("woodenCrate", "images/wooden-crate.jpg");
 
   // box testing
   auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));

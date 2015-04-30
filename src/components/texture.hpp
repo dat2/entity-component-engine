@@ -4,47 +4,29 @@
 // standard libraries
 #include <string>
 
-// opengl
-#include <GL/GLEW.h>
-
-// sfml
-#include <SFML/Graphics/Texture.hpp>
-
-// imagemagick
-#include <Magick++.h>
-
 // my own
 #include <components/component.hpp>
-#include <assets/rendering/program.hpp>
+#include <assets/textureasset.hpp>
 
 using namespace assets;
 
 namespace components
 {
-  class Texture : public Component
+  class Texture : public Component, public Named
   {
   public:
-    Texture(GLenum target, std::string filename);
-    ~Texture();
-
-    void generate(int n);
-
-    void setImage(Magick::Image image, GLint filter=GL_LINEAR, GLint wrapMode=GL_REPEAT);
+    Texture(const std::string name, const std::string filepath);
 
     void bind(int n);
     void unbind();
-
-    const std::string& getFilename() const;
-
+    void setAsset(std::shared_ptr<TextureAsset> asset);
     void print(std::ostream& where) const;
 
-  private:
-    std::string mFilename;
-    Magick::Image mImage;
 
-    GLenum mTarget;
-    int mNTextures;
-    GLuint *mTextures;
+    const std::string& getFilepath() const;
+  private:
+    std::string mFilepath;
+    std::shared_ptr<TextureAsset> mAsset;
   };
 }
 
