@@ -1,10 +1,27 @@
 #include <assets/modelasset.hpp>
+#include <utils/utils.hpp>
 
 namespace assets
 {
   ModelAsset::ModelAsset(const std::string name, const std::string filepath)
-    : Asset(name, filepath), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)
+    : Asset(name, filepath), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0), mLoaded(false)
   {
+    auto path = Asset::getFilepath().c_str();
+
+    std::string err = tinyobj::LoadObj(mShapes, mMaterials, path);
+
+    if (!err.empty()) {
+      std::cerr << "Warning: Couldn't load " << getName() << "(" << path << "): " << err << std::endl;
+    }
+
+    if(mShapes.size())
+    {
+      for(auto& s : mShapes)
+      {
+        mNumVertices += s.mesh.positions.size() / 3;
+      }
+      mLoaded = true;
+    }
   }
 
   void ModelAsset::generate()
@@ -40,6 +57,31 @@ namespace assets
     }
     mVertexBuffer.buffer(data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
   }
+  void ModelAsset::loadBuffer()
+  {
+    // TODO combine shape vertices?
+    if(mLoaded)
+    {
+      std::vector<GLfloat> data;
+
+      for( auto& shape : mShapes )
+      {
+        auto& vertices = shape.mesh.positions;
+        auto& indices = shape.mesh.indices;
+        for(auto &i : indices)
+        {
+          auto x = vertices[i*3];
+          auto y = vertices[i*3+1];
+          auto z = vertices[i*3+2];
+          data.push_back(x);
+          data.push_back(y);
+          data.push_back(z);
+        }
+      }
+
+      mVertexBuffer.buffer(data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
+    }
+  }
   void ModelAsset::prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute)
   {
     // enable the "vert" attribute of the shader
@@ -51,6 +93,8 @@ namespace assets
     const GLchar* uv = uvAttribute.c_str();
     program.enableAttribute(uv);
     program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, 0, (const GLvoid*)(mNumVertices*3*sizeof(GLfloat)));
+
+    // TODO normals
   }
 
   void ModelAsset::draw()
@@ -65,6 +109,10 @@ namespace assets
   const int ModelAsset::getNumVertices() const
   {
     return mNumVertices;
+  }
+  const bool ModelAsset::isLoaded() const
+  {
+    return mLoaded;
   }
 
   void ModelAsset::print(std::ostream& where) const

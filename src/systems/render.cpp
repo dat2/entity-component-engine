@@ -20,7 +20,7 @@ using namespace components;
 namespace systems
 {
   RenderSystem::RenderSystem(Program& program)
-    : System("render", TRANSFORM | MODEL | TEXTURE), mProgram(program), mCamera(nullptr)
+    : System("render", TRANSFORM | MODEL), mProgram(program), mCamera(nullptr)
   {
   }
 
@@ -55,13 +55,22 @@ namespace systems
 
     if(!modelAsset)
     {
-      auto newAsset = engine.createAsset<ModelAsset>(model->getName(), "");
+      auto newAsset = engine.createAsset<ModelAsset>(model->getName(), model->getFilepath());
 
       mProgram.use();
 
       newAsset->generate();
       newAsset->bind();
-      newAsset->loadBuffer(model->getVertices(), model->getUvs());
+
+      if(newAsset->isLoaded())
+      {
+        newAsset->loadBuffer();
+      }
+      else
+      {
+        newAsset->loadBuffer(model->getVertices(), model->getUvs());
+      }
+
       newAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
       newAsset->unbind();
 
@@ -76,22 +85,25 @@ namespace systems
 
     // flyweight of textures
     auto texture = entity.getComponent<Texture>(TEXTURE);
-    auto textureAsset = engine.getAsset<TextureAsset>(model->getName());
-
-    if(!textureAsset)
+    if(texture)
     {
-      auto newAsset = engine.createAsset<TextureAsset>(texture->getName(), texture->getFilepath());
+      auto textureAsset = engine.getAsset<TextureAsset>(model->getName());
 
-      newAsset->generate(1);
-      newAsset->bind(0);
-      newAsset->set();
-      newAsset->unbind();
+      if(!textureAsset)
+      {
+        auto newAsset = engine.createAsset<TextureAsset>(texture->getName(), texture->getFilepath());
 
-      texture->setAsset(newAsset);
-    }
-    else
-    {
-      texture->setAsset(textureAsset);
+        newAsset->generate(1);
+        newAsset->bind(0);
+        newAsset->set();
+        newAsset->unbind();
+
+        texture->setAsset(newAsset);
+      }
+      else
+      {
+        texture->setAsset(textureAsset);
+      }
     }
   }
 
@@ -122,34 +134,50 @@ namespace systems
     {
       auto entity = e.get();
 
-      auto& transform = *entity.getComponent<Transform>(TRANSFORM);
-      auto& model = *entity.getComponent<Model>(MODEL);
-      auto& texture = *entity.getComponent<Texture>(TEXTURE);
+      auto transform = entity.getComponent<Transform>(TRANSFORM);
+      auto model = entity.getComponent<Model>(MODEL);
+      auto texture = entity.getComponent<Texture>(TEXTURE);
 
       GLint modelIndex = mProgram.uniform("model");
       glm::mat4 modelMatrix = glm::mat4();
 
       // rotate
-      const sf::Vector3f& rotation = transform.getRotation();
+      const sf::Vector3f& rotation = transform->getRotation();
       modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), X_AXIS);
       modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.y), Y_AXIS);
       modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.z), Z_AXIS);
 
       // scale
-      modelMatrix = glm::scale(modelMatrix, sfmlToGlm(transform.getScale()));
+      modelMatrix = glm::scale(modelMatrix, sfmlToGlm(transform->getScale()));
 
       // translate
-      modelMatrix = glm::translate(modelMatrix, sfmlToGlm(transform.getPosition()));
+      modelMatrix = glm::translate(modelMatrix, sfmlToGlm(transform->getPosition()));
       glUniformMatrix4fv(modelIndex, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
       // set the texture
-      texture.bind(0);
-      activateTexture(GL_TEXTURE0, 0, "wood");
+      if(texture)
+      {
+        texture->bind(0);
+        activateTexture(GL_TEXTURE0, 0, "tex");
+      }
+      else
+      {
+        GLint matColorIndex = mProgram.uniform("matColor");
+        glUniform4f(matColorIndex, 1.0, 1.0, 1.0, 1.0);
+      }
 
-      model.draw();
+      model->draw();
 
       // unbind
-      texture.unbind();
+      if(texture)
+      {
+        texture->unbind();
+      }
+      else
+      {
+        GLint matColorIndex = mProgram.uniform("matColor");
+        glUniform4f(matColorIndex, 0, 0, 0, 0);
+      }
     }
 
     mProgram.unuse();

@@ -21,6 +21,7 @@ namespace components
   {
   public:
     Model(const std::string name, std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs);
+    Model(const std::string name, const std::string filepath);
 
     void draw();
     void setAsset(std::shared_ptr<ModelAsset> asset);
@@ -29,7 +30,9 @@ namespace components
     const std::vector< sf::Vector2f > getUvs() const;
 
     void print(std::ostream& where) const;
+    const std::string& getFilepath() const;
   private:
+    std::string mFilepath;
     std::shared_ptr<ModelAsset> mAsset;
     std::vector< sf::Vector3f > mVertices;
     std::vector< sf::Vector2f > mUvs;

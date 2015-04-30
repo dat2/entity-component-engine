@@ -15,7 +15,12 @@
 namespace components
 {
   Model::Model(const std::string name, std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs)
-    : Component(MODEL), Named(name), mAsset(nullptr), mVertices(std::move(vertices)), mUvs(std::move(uvs))
+    : Component(MODEL), Named(name), mFilepath(""), mAsset(nullptr), mVertices(std::move(vertices)), mUvs(std::move(uvs))
+  {
+  }
+
+  Model::Model(const std::string name, const std::string filepath)
+    : Component(MODEL), Named(name), mFilepath(filepath), mAsset(nullptr)
   {
   }
 
@@ -50,5 +55,10 @@ namespace components
       mAsset->print(where);
     }
     where << ")";
+  }
+
+  const std::string& Model::getFilepath() const
+  {
+    return mFilepath;
   }
 }

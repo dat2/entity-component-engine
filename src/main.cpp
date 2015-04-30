@@ -201,25 +201,22 @@ static void CreatePlayer(Engine& engine)
 static void CreateEntities(Engine& engine, Program& program)
 {
   // shared variables
-  auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
-  auto model2 = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
-  auto texture = std::make_shared<Texture>("woodenCrate", "images/wooden-crate.jpg");
-
-  // box testing
-  auto transform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
-  auto transform2 = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+  auto boxModel = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
+  auto boxTransform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+  auto boxTexture = std::make_shared<Texture>("woodenCrate", "images/wooden-crate.jpg");
 
   auto& box = engine.createEntity("box");
-  box.addComponent(transform);
-  box.addComponent(model);
-  box.addComponent(texture);
+  box.addComponent(boxTransform);
+  box.addComponent(boxTexture);
+  box.addComponent(boxModel);
   std::cout << box << std::endl;
 
-  auto& box2 = engine.createEntity("box2");
-  box2.addComponent(transform2);
-  box2.addComponent(model2);
-  box2.addComponent(texture);
-  std::cout << box2 << std::endl;
+  auto treeModel = std::make_shared<Model>("tree", "models/Tree_01.obj");
+  auto treeTransform = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+  auto& tree = engine.createEntity("tree");
+  tree.addComponent(treeTransform);
+  tree.addComponent(treeModel);
+  std::cout << tree << std::endl;
 }
 
 int main()
