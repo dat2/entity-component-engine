@@ -2,10 +2,12 @@
 #include <iostream>
 
 #include <engine/engine.hpp>
+#include <assets/assetmanager.hpp>
 
 namespace engine
 {
-  Engine::Engine()
+  Engine::Engine(const std::string baseDirectory)
+    : mAssetManager(baseDirectory)
   {
   }
 

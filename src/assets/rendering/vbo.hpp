@@ -4,7 +4,7 @@
 // opengl
 #include <GL/glew.h>
 
-namespace utils
+namespace assets
 {
   /**
    * A simple wrapper class around VBO's in OpenGL

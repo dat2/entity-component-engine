@@ -6,11 +6,13 @@
 // my own
 #include <systems/render.hpp>
 #include <utils/utils.hpp>
+#include <assets/modelasset.hpp>
 
 #define X_AXIS glm::vec3(1, 0, 0)
 #define Y_AXIS glm::vec3(0, 1, 0)
 #define Z_AXIS glm::vec3(0, 0, 1)
 
+using namespace assets;
 using namespace utils;
 using namespace components;
 
@@ -25,8 +27,9 @@ namespace systems
   {
     if(mCamera != nullptr)
     {
-      mCamera->update();
       mProgram.use();
+
+      mCamera->update();
 
       GLint cameraIndex = mProgram.uniform("camera");
       glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(mCamera->mwv()));
@@ -47,16 +50,27 @@ namespace systems
 
     // flyweight of models
     auto model = entity.getComponent<Model>(MODEL);
-    auto modelsCheck = mModels.find(model->getName());
-    if(modelsCheck == mModels.end())
-    {
-      mModels.insert(model->getName());
+    auto asset = engine.getAsset<ModelAsset>(model->getName());
 
-      model->generate();
-      model->bind();
-      model->loadBuffer();
-      model->prepareVAO(mProgram, "vert", "vertTexCoord");
-      model->unbind();
+    if(asset == nullptr)
+    {
+      auto modelAsset = engine.createAsset<ModelAsset>(model->getName(), "");
+
+      mProgram.use();
+
+      modelAsset->generate();
+      modelAsset->bind();
+      modelAsset->loadBuffer(model->getVertices(), model->getUvs());
+      modelAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
+      modelAsset->unbind();
+
+      mProgram.unuse();
+
+      model->setAsset(modelAsset);
+    }
+    else
+    {
+      model->setAsset(asset);
     }
 
     // flyweight of textures

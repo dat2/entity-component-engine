@@ -7,7 +7,7 @@
 // my own
 // utils
 #include <engine/engine.hpp>
-#include <utils/rendering/program.hpp>
+#include <assets/rendering/program.hpp>
 
 // components
 #include <components/camera.hpp>
@@ -18,7 +18,7 @@
 // systems
 #include <systems/system.hpp>
 
-using namespace utils;
+using namespace assets;
 using namespace components;
 using namespace engine;
 
@@ -39,8 +39,6 @@ namespace systems
   private:
     Program& mProgram;
     std::shared_ptr<Camera> mCamera;
-
-    std::unordered_set< std::string > mModels;
     std::unordered_map< std::string, Magick::Image > mTextures;
   };
 }

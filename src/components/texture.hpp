@@ -15,9 +15,9 @@
 
 // my own
 #include <components/component.hpp>
-#include <utils/rendering/program.hpp>
+#include <assets/rendering/program.hpp>
 
-using namespace utils;
+using namespace assets;
 
 namespace components
 {

@@ -5,16 +5,16 @@
 #include <streambuf>
 
 // my own
-#include <utils/rendering/shader.hpp>
+#include <assets/rendering/shader.hpp>
 
-namespace utils
+namespace assets
 {
-  Shader *Shader::fromFile(std::string fileName, GLenum shaderType)
+  ShaderPtr Shader::fromFile(std::string fileName, GLenum shaderType)
   {
     std::ifstream shaderFile(fileName);
     std::string shaderContents((std::istreambuf_iterator<char>(shaderFile)),
                    std::istreambuf_iterator<char>());
-    return new Shader(fileName, shaderContents, shaderType);
+    return std::make_shared<Shader>(fileName, shaderContents, shaderType);
   }
 
   Shader::Shader(std::string fileName, std::string source, GLenum shaderType)

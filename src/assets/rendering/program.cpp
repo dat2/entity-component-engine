@@ -3,12 +3,12 @@
 
 // my own
 #include <utils/utils.hpp>
-#include <utils/rendering/program.hpp>
-#include <utils/rendering/shader.hpp>
+#include <assets/rendering/program.hpp>
+#include <assets/rendering/shader.hpp>
 
-namespace utils
+namespace assets
 {
-  Program::Program(std::vector<Shader*> &shaders)
+  Program::Program(std::vector<ShaderPtr> shaders)
   {
     mProgram = glCreateProgram();
     mShaders = std::move(shaders);
@@ -57,7 +57,6 @@ namespace utils
   void Program::defineAttributeArray(const GLchar* attributeString, GLint vertices, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* pointer)
   {
     glVertexAttribPointer(attribute(attributeString), vertices, type, normalized, stride, pointer);
-    printGlError();
   }
 
   GLint Program::attribute(const GLchar* attribute) const

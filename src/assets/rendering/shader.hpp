@@ -7,12 +7,15 @@
 // opengl
 #include <GL/glew.h>
 
-namespace utils
+namespace assets
 {
+  class Shader;
+  typedef std::shared_ptr<Shader> ShaderPtr;
+
   class Shader
   {
   public:
-    static Shader *fromFile(std::string, GLenum);
+    static ShaderPtr fromFile(std::string, GLenum);
 
     Shader(std::string, std::string, GLenum);
 

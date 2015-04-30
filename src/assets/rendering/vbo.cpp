@@ -1,7 +1,7 @@
 // my own
-#include <utils/rendering/vbo.hpp>
+#include <assets/rendering/vbo.hpp>
 
-namespace utils
+namespace assets
 {
   VertexBufferObject::VertexBufferObject(const GLenum target)
     : mTarget(target), mNBuffers(0), mVbo(NULL)

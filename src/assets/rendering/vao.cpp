@@ -1,7 +1,7 @@
 // my own
-#include <utils/rendering/vao.hpp>
+#include <assets/rendering/vao.hpp>
 
-namespace utils
+namespace assets
 {
   VertexArrayObject::VertexArrayObject()
     : mNArrays(0), mVao(NULL)

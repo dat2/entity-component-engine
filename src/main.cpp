@@ -32,6 +32,9 @@
 #include <systems/render.hpp>
 #include <systems/input.hpp>
 
+#include <assets/rendering/program.hpp>
+#include <assets/rendering/shader.hpp>
+
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
 #define WINDOW_WIDTH WINDOW_HEIGHT * ASPECT_RATIO
@@ -40,21 +43,20 @@ using namespace components;
 using namespace systems;
 using namespace entities;
 using namespace engine;
+using namespace utils;
+using namespace assets;
 
-static Program *CompileProgram()
+static std::shared_ptr<Program> CompileProgram()
 {
   // shaders!
-  Shader *vertex = Shader::fromFile("resources/shaders/vertex.shader", GL_VERTEX_SHADER);
-  Shader *fragment = Shader::fromFile("resources/shaders/fragment.shader", GL_FRAGMENT_SHADER);
+  auto vertex = Shader::fromFile("resources/shaders/vertex.shader", GL_VERTEX_SHADER);
+  auto fragment = Shader::fromFile("resources/shaders/fragment.shader", GL_FRAGMENT_SHADER);
 
   vertex->compile();
   fragment->compile();
 
-  std::vector<Shader*> shaders;
-  shaders.push_back(vertex);
-  shaders.push_back(fragment);
-
-  Program *program = new Program(shaders);
+  auto shaders { vertex, fragment };
+  auto program = std::make_shared<Program>(shaders);
   program->link();
 
   return program;
@@ -200,6 +202,7 @@ static void CreateEntities(Engine& engine, Program& program)
 {
   // shared variables
   auto model = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
+  auto model2 = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
   auto texture = std::make_shared<Texture>(GL_TEXTURE_2D, "resources/images/wooden-crate.jpg");
 
   // box testing
@@ -214,7 +217,7 @@ static void CreateEntities(Engine& engine, Program& program)
 
   auto& box2 = engine.createEntity("box2");
   box2.addComponent(transform2);
-  box2.addComponent(model);
+  box2.addComponent(model2);
   box2.addComponent(texture);
   std::cout << box2 << std::endl;
 }
@@ -229,7 +232,7 @@ int main()
   // program
   Program program = *CompileProgram();
 
-  Engine engine;
+  Engine engine("resources");
 
   CreateSystems(engine, program, window);
   CreatePlayer(engine);
