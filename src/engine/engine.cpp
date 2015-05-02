@@ -1,8 +1,13 @@
 #include <unordered_map>
 #include <iostream>
 
+#include <json/json.h>
+#include <jsoncpp.cpp>
+#include <fstream>
+
 #include <engine/engine.hpp>
-#include <assets/assetmanager.hpp>
+#include <assets/modelasset.hpp>
+#include <assets/textureasset.hpp>
 
 namespace engine
 {
@@ -74,6 +79,39 @@ namespace engine
     for( auto& system : mSystems )
     {
       system->run();
+    }
+  }
+
+  void Engine::loadJson(std::string filename)
+  {
+    Json::Value root;
+    std::ifstream assets(mAssetManager.getBaseDirectory() + "/" + filename);
+    try
+    {
+      assets >> root;
+
+      // load all model assets
+      auto models = root["models"];
+      auto modelsBasepath = models["basepath"].asString();
+      for( auto& model : models["assets"])
+      {
+        auto name = model["name"].asString();
+        auto filepath = modelsBasepath + model["filepath"].asString();
+        loadAsset<ModelAsset>(name, filepath);
+      }
+
+      // load all texture assets
+      auto textures = root["textures"];
+      auto texturesBasepath = textures["basepath"].asString();
+      for( auto& texture : textures["assets"])
+      {
+        auto name = texture["name"].asString();
+        auto filepath = texturesBasepath + texture["filepath"].asString();
+        loadAsset<TextureAsset>(name, filepath);
+      }
+    }
+    catch(Json::RuntimeError e)
+    {
     }
   }
 

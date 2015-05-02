@@ -20,6 +20,8 @@ namespace assets
   public:
     AssetManager(std::string baseDirectory);
 
+    const std::string getBaseDirectory() const;
+
     template <class T>
     std::shared_ptr<T> getAsset(const std::string assetName)
     {

@@ -6,9 +6,11 @@
 
 #include <assets/asset.hpp>
 
-#include <assets/rendering/vbo.hpp>
-#include <assets/rendering/vao.hpp>
-#include <assets/rendering/program.hpp>
+#include <systems/render/vbo.hpp>
+#include <systems/render/vao.hpp>
+#include <systems/render/program.hpp>
+
+using namespace systems;
 
 #include <tiny_obj_loader.h>
 

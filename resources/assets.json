@@ -1,0 +1,28 @@
+{
+  "models": {
+    "basepath": "models/",
+    "assets": [
+      {
+        "name": "cube",
+        "filepath": "basic/cube.obj"
+      },
+      {
+        "name": "tree",
+        "filepath": "nature/Tree_01.obj"
+      }
+    ]
+  },
+  "textures": {
+    "basepath": "images/",
+    "assets" : [
+      {
+        "name": "woodenCrate",
+        "filepath": "basic/wooden-crate.png"
+      },
+      {
+        "name": "greenTree",
+        "filepath": "nature/Tree_01.png"
+      }
+    ]
+  }
+}

@@ -6,4 +6,9 @@ namespace assets
     : mBaseDirectory(baseDirectory)
   {
   }
+
+  const std::string AssetManager::getBaseDirectory() const
+  {
+    return mBaseDirectory;
+  }
 }

@@ -29,13 +29,15 @@
 #include <components/controller.hpp>
 
 // systems
-#include <systems/render.hpp>
+#include <systems/render/program.hpp>
+#include <systems/render/shader.hpp>
+#include <systems/render/render.hpp>
+
 #include <systems/input.hpp>
 
-#include <assets/rendering/program.hpp>
-#include <assets/rendering/shader.hpp>
 #include <assets/textureasset.hpp>
 #include <assets/modelasset.hpp>
+
 
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
@@ -47,22 +49,6 @@ using namespace entities;
 using namespace engine;
 using namespace utils;
 using namespace assets;
-
-static std::shared_ptr<Program> CompileProgram()
-{
-  // shaders!
-  auto vertex = Shader::fromFile("resources/shaders/vertex.shader", GL_VERTEX_SHADER);
-  auto fragment = Shader::fromFile("resources/shaders/fragment.shader", GL_FRAGMENT_SHADER);
-
-  vertex->compile();
-  fragment->compile();
-
-  auto shaders { vertex, fragment };
-  auto program = std::make_shared<Program>(shaders);
-  program->link();
-
-  return program;
-}
 
 static void PrintGLInfo()
 {
@@ -174,16 +160,13 @@ static ComponentPtr CreateController()
 
 static void LoadAssets(Engine& engine)
 {
-  engine.loadAsset<ModelAsset>("cube", "models/cube.obj");
-  engine.loadAsset<TextureAsset>("woodenCrate", "images/cube.png");
-  engine.loadAsset<ModelAsset>("tree", "models/nature/Tree_01.obj");
-  engine.loadAsset<TextureAsset>("treeTexture", "models/nature/Tree_01.png");
+  engine.loadJson("assets.json");
 }
 
-static void CreateSystems(Engine& engine, Program& program, sf::Window& window)
+static void CreateSystems(Engine& engine, sf::Window& window)
 {
   auto inputSystem = std::make_shared<InputSystem>(window);
-  auto renderSystem = std::make_shared<RenderSystem>(program);
+  auto renderSystem = std::make_shared<RenderSystem>();
 
   std::cout << *inputSystem << std::endl;
   std::cout << *renderSystem << std::endl;
@@ -208,7 +191,7 @@ static void CreatePlayer(Engine& engine)
   std::cout << player << std::endl;
 }
 
-static void CreateEntities(Engine& engine, Program& program)
+static void CreateEntities(Engine& engine)
 {
   // shared variables
   auto boxModel = std::make_shared<Model>("cube");
@@ -221,8 +204,15 @@ static void CreateEntities(Engine& engine, Program& program)
   box.addComponent(boxModel);
   std::cout << box << std::endl;
 
+  auto box2Transform = std::make_shared<Transform>(sf::Vector3f(2,0,0), sf::Vector3f(0,0,0), sf::Vector3f(0.5,2,1));
+  auto& box2 = engine.createEntity("box2");
+  box2.addComponent(box2Transform);
+  box2.addComponent(boxTexture);
+  box2.addComponent(boxModel);
+  std::cout << box2 << std::endl;
+
   auto treeModel = std::make_shared<Model>("tree");
-  auto treeTexture = std::make_shared<Texture>("treeTexture");
+  auto treeTexture = std::make_shared<Texture>("greenTree");
   auto treeTransform = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
   auto& tree = engine.createEntity("tree");
   tree.addComponent(treeTransform);
@@ -238,18 +228,14 @@ int main()
   InitGLEW();
   InitOpenGL();
 
-  // program
-  Program program = *CompileProgram();
-
   Engine engine("resources");
 
   LoadAssets(engine);
-  CreateSystems(engine, program, window);
+  CreateSystems(engine, window);
   CreatePlayer(engine);
-  CreateEntities(engine, program);
+  CreateEntities(engine);
 
-  // std::cout << player << std::endl;
-
+  // TODO: move to window system?
   while (window.isOpen())
   {
     // TODO move to input system

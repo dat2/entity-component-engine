@@ -29,6 +29,7 @@ namespace engine
     const std::vector< ComponentPtr >& getComponents(const Entity& entity) const;
 
     void run();
+    void loadJson(std::string filename);
 
     template <class T, typename ...Args>
     std::shared_ptr<T> getAsset(Args && ...args)

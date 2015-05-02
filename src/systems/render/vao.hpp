@@ -4,7 +4,7 @@
 // opengl
 #include <GL/glew.h>
 
-namespace assets
+namespace systems
 {
   /**
    * A simple wrapper class around VAO methods in OpenGL.

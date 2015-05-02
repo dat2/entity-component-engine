@@ -7,7 +7,7 @@
 // my own
 // utils
 #include <engine/engine.hpp>
-#include <assets/rendering/program.hpp>
+#include <systems/render/program.hpp>
 
 // components
 #include <components/camera.hpp>
@@ -18,7 +18,6 @@
 // systems
 #include <systems/system.hpp>
 
-using namespace assets;
 using namespace components;
 using namespace engine;
 
@@ -27,7 +26,7 @@ namespace systems
   class RenderSystem : public System
   {
   public:
-    RenderSystem(Program& program);
+    RenderSystem();
 
     void updateCamera();
     void activateTexture(GLenum activeTexture, GLint texture, const std::string uniform);
@@ -37,7 +36,7 @@ namespace systems
     void run();
 
   private:
-    Program& mProgram;
+    Program mProgram;
     std::shared_ptr<Camera> mCamera;
   };
 }

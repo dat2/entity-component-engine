@@ -5,9 +5,9 @@
 #include <streambuf>
 
 // my own
-#include <assets/rendering/shader.hpp>
+#include <systems/render/shader.hpp>
 
-namespace assets
+namespace systems
 {
   ShaderPtr Shader::fromFile(std::string fileName, GLenum shaderType)
   {

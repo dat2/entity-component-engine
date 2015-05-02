@@ -4,8 +4,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // my own
-#include <systems/render.hpp>
 #include <utils/utils.hpp>
+#include <systems/render/render.hpp>
+
 #include <assets/modelasset.hpp>
 #include <assets/textureasset.hpp>
 
@@ -19,9 +20,19 @@ using namespace components;
 
 namespace systems
 {
-  RenderSystem::RenderSystem(Program& program)
-    : System("render", TRANSFORM | MODEL), mProgram(program), mCamera(nullptr)
+  RenderSystem::RenderSystem()
+    : System("render", TRANSFORM | MODEL | TEXTURE), mCamera(nullptr)
   {
+    // shaders!
+    auto vertex = Shader::fromFile("src/systems/render/shaders/vertex.shader", GL_VERTEX_SHADER);
+    auto fragment = Shader::fromFile("src/systems/render/shaders/fragment.shader", GL_FRAGMENT_SHADER);
+
+    vertex->compile();
+    fragment->compile();
+
+    auto shaders { vertex, fragment };
+    mProgram.attachShaders(shaders);
+    mProgram.link();
   }
 
   void RenderSystem::updateCamera()
@@ -70,7 +81,7 @@ namespace systems
     }
     else
     {
-      std::cerr << "Model " << model->getName() << " could not be loaded!" << std::endl;
+      std::cerr << "Model " << model->getName() << " was not loaded yet!" << std::endl;
     }
 
     // flyweight of textures
@@ -85,7 +96,7 @@ namespace systems
       }
       else
       {
-        std::cerr << "Texture " << texture->getName() << " could not be loaded!" << std::endl;
+        std::cerr << "Texture " << texture->getName() << " was not loaded yet!" << std::endl;
       }
     }
   }
@@ -143,18 +154,12 @@ namespace systems
       glUniformMatrix3fv(normalIndex, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
       // set the texture
-      if(texture)
-      {
-        texture->bind(0);
-        activateTexture(GL_TEXTURE0, 0, "uTexture");
-      }
+      texture->bind(0);
+      activateTexture(GL_TEXTURE0, 0, "materialTexture");
 
       model->draw();
 
-      if(texture)
-      {
-        texture->unbind();
-      }
+      texture->unbind();
     }
 
     mProgram.unuse();

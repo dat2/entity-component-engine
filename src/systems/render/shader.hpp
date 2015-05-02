@@ -7,7 +7,7 @@
 // opengl
 #include <GL/glew.h>
 
-namespace assets
+namespace systems
 {
   class Shader;
   typedef std::shared_ptr<Shader> ShaderPtr;

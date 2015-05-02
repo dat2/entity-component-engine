@@ -5,15 +5,16 @@
 #include <vector>
 
 // my own
-#include <assets/rendering/shader.hpp>
+#include <systems/render/shader.hpp>
 
-namespace assets
+namespace systems
 {
   class Program
   {
   public:
-    Program(std::vector<ShaderPtr> shaders);
+    Program();
 
+    void attachShaders(std::vector<ShaderPtr> shaders);
     bool link(void);
     void use(void);
     void unuse(void);

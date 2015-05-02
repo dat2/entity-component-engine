@@ -3,14 +3,18 @@
 
 // my own
 #include <utils/utils.hpp>
-#include <assets/rendering/program.hpp>
-#include <assets/rendering/shader.hpp>
+#include <systems/render/program.hpp>
+#include <systems/render/shader.hpp>
 
-namespace assets
+namespace systems
 {
-  Program::Program(std::vector<ShaderPtr> shaders)
+  Program::Program()
   {
     mProgram = glCreateProgram();
+  }
+
+  void Program::attachShaders(std::vector<ShaderPtr> shaders)
+  {
     mShaders = std::move(shaders);
     for(auto &shader : mShaders)
     {
