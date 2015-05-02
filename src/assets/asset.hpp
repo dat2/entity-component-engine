@@ -17,8 +17,12 @@ namespace assets
 
     const std::string& getFilepath() const;
 
+    virtual void load();
+    const bool isLoaded() const;
+
   private:
     std::string mFilepath;
+    bool mLoaded;
   };
 
   typedef std::shared_ptr<Asset> AssetPtr;

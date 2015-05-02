@@ -53,56 +53,32 @@ namespace systems
     auto model = entity.getComponent<Model>(MODEL);
     auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
 
-    if(!modelAsset)
+    if(modelAsset)
     {
-      auto newAsset = engine.createAsset<ModelAsset>(model->getName(), model->getFilepath());
-
       mProgram.use();
-
-      newAsset->generate();
-      newAsset->bind();
-
-      if(newAsset->isLoaded())
-      {
-        newAsset->loadBuffer();
-      }
-      else
-      {
-        newAsset->loadBuffer(model->getVertices(), model->getUvs());
-      }
-
-      newAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
-      newAsset->unbind();
-
+      modelAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
       mProgram.unuse();
 
-      model->setAsset(newAsset);
+      model->setAsset(modelAsset);
     }
     else
     {
-      model->setAsset(modelAsset);
+      std::cerr << "Model " << model->getName() << " could not be loaded!" << std::endl;
     }
 
     // flyweight of textures
     auto texture = entity.getComponent<Texture>(TEXTURE);
     if(texture)
     {
-      auto textureAsset = engine.getAsset<TextureAsset>(model->getName());
+      auto textureAsset = engine.getAsset<TextureAsset>(texture->getName());
 
-      if(!textureAsset)
+      if(textureAsset)
       {
-        auto newAsset = engine.createAsset<TextureAsset>(texture->getName(), texture->getFilepath());
-
-        newAsset->generate(1);
-        newAsset->bind(0);
-        newAsset->set();
-        newAsset->unbind();
-
-        texture->setAsset(newAsset);
+        texture->setAsset(textureAsset);
       }
       else
       {
-        texture->setAsset(textureAsset);
+        std::cerr << "Texture " << texture->getName() << " could not be loaded!" << std::endl;
       }
     }
   }
@@ -159,23 +135,19 @@ namespace systems
       {
         texture->bind(0);
         activateTexture(GL_TEXTURE0, 0, "tex");
-      }
-      else
-      {
-        GLint matColorIndex = mProgram.uniform("matColor");
-        glUniform4f(matColorIndex, 1.0, 1.0, 1.0, 1.0);
-      }
 
-      model->draw();
+        model->draw();
 
-      // unbind
-      if(texture)
-      {
         texture->unbind();
       }
       else
       {
+        // simple default colours
         GLint matColorIndex = mProgram.uniform("matColor");
+        glUniform4f(matColorIndex, 1.0, 1.0, 1.0, 1.0);
+
+        model->draw();
+
         glUniform4f(matColorIndex, 0, 0, 0, 0);
       }
     }

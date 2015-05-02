@@ -15,17 +15,14 @@ namespace components
   class Texture : public Component, public Named
   {
   public:
-    Texture(const std::string name, const std::string filepath);
+    Texture(const std::string name);
 
     void bind(int n);
     void unbind();
+
     void setAsset(std::shared_ptr<TextureAsset> asset);
     void print(std::ostream& where) const;
-
-
-    const std::string& getFilepath() const;
   private:
-    std::string mFilepath;
     std::shared_ptr<TextureAsset> mAsset;
   };
 }

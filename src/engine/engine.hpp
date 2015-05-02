@@ -37,9 +37,9 @@ namespace engine
     }
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> createAsset(Args && ...args)
+    std::shared_ptr<T> loadAsset(Args && ...args)
     {
-      return mAssetManager.createAsset<T>(std::forward<Args>(args)...);
+      return mAssetManager.loadAsset<T>(std::forward<Args>(args)...);
     }
 
     Entity& createEntity(const std::string& name);

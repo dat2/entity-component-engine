@@ -3,13 +3,13 @@
 uniform mat4 camera; //mwc
 uniform mat4 model;
 
-in vec3 vert; // (x,y,z)
+layout(location=0) in vec3 vert; // (x,y,z)
+layout(location=1) in vec2 vertTexCoord; // (u,v)
 
-in vec2 vertTexCoord; // (u,v)
-out vec2 TexCoord; // (u,v)
+out vec2 fragTexCoord; // (u,v)
 
 void main()
 {
-  TexCoord = vertTexCoord; // pass uv through unchanged
+  fragTexCoord = vertTexCoord; // pass uv through unchanged
   gl_Position = camera * model * vec4(vert, 1);
 }

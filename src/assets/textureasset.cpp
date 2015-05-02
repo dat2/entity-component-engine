@@ -53,6 +53,15 @@ namespace assets
   {
     glBindTexture(mTarget, 0);
   }
+  void TextureAsset::load()
+  {
+    generate(1);
+    bind(0);
+    set();
+    unbind();
+
+    Asset::load();
+  }
 
   const Magick::Image& TextureAsset::getImage() const
   {

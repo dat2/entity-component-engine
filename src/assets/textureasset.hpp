@@ -23,6 +23,7 @@ namespace assets
 
     void bind(int n);
     void unbind();
+    void load();
 
     const Magick::Image& getImage() const;
     void print(std::ostream& where) const;

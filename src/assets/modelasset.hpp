@@ -24,14 +24,13 @@ namespace assets
     void bind();
     void unbind();
 
-    void loadBuffer(const std::vector< sf::Vector3f > vertices, const std::vector< sf::Vector2f > uvs);
     void loadBuffer();
     void prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute);
 
     void draw();
+    void load();
 
     const int getNumVertices() const;
-    const bool isLoaded() const;
     void print(std::ostream& where) const;
   private:
     VertexBufferObject mVertexBuffer;
@@ -41,7 +40,6 @@ namespace assets
     std::vector<tinyobj::material_t> mMaterials;
 
     int mNumVertices;
-    bool mLoaded;
   };
 
 }

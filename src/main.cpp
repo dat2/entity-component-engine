@@ -34,6 +34,8 @@
 
 #include <assets/rendering/program.hpp>
 #include <assets/rendering/shader.hpp>
+#include <assets/textureasset.hpp>
+#include <assets/modelasset.hpp>
 
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
@@ -170,6 +172,13 @@ static ComponentPtr CreateController()
   return controller;
 }
 
+static void LoadAssets(Engine& engine)
+{
+  engine.loadAsset<ModelAsset>("woodCube", "models/cube.obj");
+  engine.loadAsset<TextureAsset>("woodenCrate", "images/cube.png");
+  engine.loadAsset<ModelAsset>("tree", "models/nature/Tree_01.obj");
+}
+
 static void CreateSystems(Engine& engine, Program& program, sf::Window& window)
 {
   auto inputSystem = std::make_shared<InputSystem>(window);
@@ -201,9 +210,9 @@ static void CreatePlayer(Engine& engine)
 static void CreateEntities(Engine& engine, Program& program)
 {
   // shared variables
-  auto boxModel = std::make_shared<Model>("woodCube", cubeVertices(), cubeUVs());
+  auto boxModel = std::make_shared<Model>("woodCube");
+  auto boxTexture = std::make_shared<Texture>("woodenCrate");
   auto boxTransform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
-  auto boxTexture = std::make_shared<Texture>("woodenCrate", "images/wooden-crate.jpg");
 
   auto& box = engine.createEntity("box");
   box.addComponent(boxTransform);
@@ -211,7 +220,7 @@ static void CreateEntities(Engine& engine, Program& program)
   box.addComponent(boxModel);
   std::cout << box << std::endl;
 
-  auto treeModel = std::make_shared<Model>("tree", "models/Tree_01.obj");
+  auto treeModel = std::make_shared<Model>("tree");
   auto treeTransform = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
   auto& tree = engine.createEntity("tree");
   tree.addComponent(treeTransform);
@@ -231,6 +240,7 @@ int main()
 
   Engine engine("resources");
 
+  LoadAssets(engine);
   CreateSystems(engine, program, window);
   CreatePlayer(engine);
   CreateEntities(engine, program);

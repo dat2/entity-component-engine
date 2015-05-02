@@ -34,9 +34,10 @@ namespace assets
     }
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> createAsset(const std::string name, const std::string filepath, Args && ...args)
+    std::shared_ptr<T> loadAsset(const std::string name, const std::string filepath, Args && ...args)
     {
       std::shared_ptr<T> ptr = std::make_shared<T>(name, mBaseDirectory + "/" + filepath, std::forward<Args>(args)...);
+      ptr->load();
       mAssets.insert(std::make_pair(name, ptr));
       return ptr;
     }

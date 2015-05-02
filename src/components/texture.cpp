@@ -6,14 +6,9 @@
 
 namespace components
 {
-  Texture::Texture(const std::string name, const std::string filepath)
-    : Component(TEXTURE), Named(name), mFilepath(filepath), mAsset(nullptr)
+  Texture::Texture(const std::string name)
+    : Component(TEXTURE), Named(name), mAsset(nullptr)
   {
-  }
-
-  const std::string& Texture::getFilepath() const
-  {
-    return mFilepath;
   }
 
   void Texture::bind(int n)

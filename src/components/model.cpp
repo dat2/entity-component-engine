@@ -1,26 +1,13 @@
 // standard libraries
-#include <vector>
 #include <iostream>
-
-// glm
-#include <glm/gtx/string_cast.hpp>
-
-// sfml
-#include <SFML/System/Vector3.hpp>
 
 // my own
 #include <components/model.hpp>
-#include <utils/utils.hpp>
 
 namespace components
 {
-  Model::Model(const std::string name, std::vector< sf::Vector3f > vertices, std::vector< sf::Vector2f > uvs)
-    : Component(MODEL), Named(name), mFilepath(""), mAsset(nullptr), mVertices(std::move(vertices)), mUvs(std::move(uvs))
-  {
-  }
-
-  Model::Model(const std::string name, const std::string filepath)
-    : Component(MODEL), Named(name), mFilepath(filepath), mAsset(nullptr)
+  Model::Model(const std::string name)
+    : Component(MODEL), Named(name), mAsset(nullptr)
   {
   }
 
@@ -37,16 +24,6 @@ namespace components
     mAsset = asset;
   }
 
-  const std::vector< sf::Vector3f > Model::getVertices() const
-  {
-    return mVertices;
-  }
-
-  const std::vector< sf::Vector2f > Model::getUvs() const
-  {
-    return mUvs;
-  }
-
   void Model::print(std::ostream& where) const
   {
     where << "asset=(";
@@ -55,10 +32,5 @@ namespace components
       mAsset->print(where);
     }
     where << ")";
-  }
-
-  const std::string& Model::getFilepath() const
-  {
-    return mFilepath;
   }
 }

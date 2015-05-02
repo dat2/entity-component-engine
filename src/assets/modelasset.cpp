@@ -4,24 +4,8 @@
 namespace assets
 {
   ModelAsset::ModelAsset(const std::string name, const std::string filepath)
-    : Asset(name, filepath), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0), mLoaded(false)
+    : Asset(name, filepath), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)
   {
-    auto path = Asset::getFilepath().c_str();
-
-    std::string err = tinyobj::LoadObj(mShapes, mMaterials, path);
-
-    if (!err.empty()) {
-      std::cerr << "Warning: Couldn't load " << getName() << "(" << path << "): " << err << std::endl;
-    }
-
-    if(mShapes.size())
-    {
-      for(auto& s : mShapes)
-      {
-        mNumVertices += s.mesh.positions.size() / 3;
-      }
-      mLoaded = true;
-    }
   }
 
   void ModelAsset::generate()
@@ -39,35 +23,19 @@ namespace assets
     mVertexBuffer.unbind();
     mVertexArray.unbind();
   }
-
-  void ModelAsset::loadBuffer(const std::vector< sf::Vector3f > vertices, const std::vector< sf::Vector2f > uvs)
-  {
-    mNumVertices = vertices.size();
-    std::vector<GLfloat> data;
-    for( auto &vert : vertices )
-    {
-      data.push_back(vert.x);
-      data.push_back(vert.y);
-      data.push_back(vert.z);
-    }
-    for( auto &uv : uvs )
-    {
-      data.push_back(uv.x);
-      data.push_back(uv.y);
-    }
-    mVertexBuffer.buffer(data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
-  }
   void ModelAsset::loadBuffer()
   {
     // TODO combine shape vertices?
-    if(mLoaded)
+    if(isLoaded())
     {
       std::vector<GLfloat> data;
 
+      // (x,y,z)
       for( auto& shape : mShapes )
       {
         auto& vertices = shape.mesh.positions;
         auto& indices = shape.mesh.indices;
+        auto& uvs = shape.mesh.texcoords;
         for(auto &i : indices)
         {
           auto x = vertices[i*3];
@@ -76,6 +44,11 @@ namespace assets
           data.push_back(x);
           data.push_back(y);
           data.push_back(z);
+
+          auto u = uvs[i*2];
+          auto v = uvs[i*2+1];
+          data.push_back(u);
+          data.push_back(v);
         }
       }
 
@@ -84,17 +57,20 @@ namespace assets
   }
   void ModelAsset::prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute)
   {
+    bind();
+
     // enable the "vert" attribute of the shader
     const GLchar* vert = vertAttribute.c_str();
     program.enableAttribute(vert);
-    program.defineAttributeArray(vert, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    program.defineAttributeArray(vert, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), NULL);
 
     // enable the "vertTexCoord"
     const GLchar* uv = uvAttribute.c_str();
     program.enableAttribute(uv);
-    program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, 0, (const GLvoid*)(mNumVertices*3*sizeof(GLfloat)));
+    program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, 5 * sizeof(GLfloat), (const GLvoid*)(3*sizeof(GLfloat)));
 
     // TODO normals
+    unbind();
   }
 
   void ModelAsset::draw()
@@ -106,13 +82,36 @@ namespace assets
     mVertexArray.unbind();
   }
 
+  void ModelAsset::load()
+  {
+    auto path = Asset::getFilepath().c_str();
+
+    std::string err = tinyobj::LoadObj(mShapes, mMaterials, path);
+
+    if (!err.empty()) {
+      std::cerr << "Warning: Couldn't load " << getName() << "(" << path << "): " << err << std::endl;
+    }
+
+    if(mShapes.size())
+    {
+      for(auto& s : mShapes)
+      {
+        mNumVertices += s.mesh.positions.size();
+      }
+      mNumVertices /= 3;
+    }
+
+    Asset::load();
+
+    generate();
+    bind();
+    loadBuffer();
+    unbind();
+  }
+
   const int ModelAsset::getNumVertices() const
   {
     return mNumVertices;
-  }
-  const bool ModelAsset::isLoaded() const
-  {
-    return mLoaded;
   }
 
   void ModelAsset::print(std::ostream& where) const
