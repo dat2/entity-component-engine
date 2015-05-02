@@ -40,6 +40,8 @@ namespace components
     const glm::vec3 up() const;
     const glm::vec3 left() const;
 
+    const glm::vec3 position() const;
+
     void print(std::ostream& where) const;
 
   private:

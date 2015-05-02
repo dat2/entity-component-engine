@@ -25,7 +25,7 @@ namespace assets
     void unbind();
 
     void loadBuffer();
-    void prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute);
+    void prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute, const std::string normalAttribute);
 
     void draw();
     void load();

@@ -32,8 +32,17 @@ namespace systems
 
       mCamera->update();
 
+      // set the camera matrix
       GLint cameraIndex = mProgram.uniform("camera");
       glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(mCamera->mwv()));
+
+      // set the light to be the position of the camera
+      GLint positionIndex = mProgram.uniform("light.position");
+      glUniform3fv(positionIndex, 1, glm::value_ptr(mCamera->position()));
+
+      // set the light colour
+      GLint intensityIndex = mProgram.uniform("light.intensities");
+      glUniform3fv(intensityIndex, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
 
       mProgram.unuse();
     }
@@ -55,9 +64,7 @@ namespace systems
 
     if(modelAsset)
     {
-      mProgram.use();
-      modelAsset->prepareVAO(mProgram, "vert", "vertTexCoord");
-      mProgram.unuse();
+      modelAsset->prepareVAO(mProgram, "vert", "vertTexCoord", "vertNormal");
 
       model->setAsset(modelAsset);
     }
@@ -130,25 +137,23 @@ namespace systems
       modelMatrix = glm::translate(modelMatrix, sfmlToGlm(transform->getPosition()));
       glUniformMatrix4fv(modelIndex, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
+      // set lighting variables
+      GLint normalIndex = mProgram.uniform("normalMatrix");
+      glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
+      glUniformMatrix3fv(normalIndex, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+
       // set the texture
       if(texture)
       {
         texture->bind(0);
-        activateTexture(GL_TEXTURE0, 0, "tex");
-
-        model->draw();
-
-        texture->unbind();
+        activateTexture(GL_TEXTURE0, 0, "uTexture");
       }
-      else
+
+      model->draw();
+
+      if(texture)
       {
-        // simple default colours
-        GLint matColorIndex = mProgram.uniform("matColor");
-        glUniform4f(matColorIndex, 1.0, 1.0, 1.0, 1.0);
-
-        model->draw();
-
-        glUniform4f(matColorIndex, 0, 0, 0, 0);
+        texture->unbind();
       }
     }
 

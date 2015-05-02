@@ -33,9 +33,11 @@ namespace assets
       // (x,y,z)
       for( auto& shape : mShapes )
       {
-        auto& vertices = shape.mesh.positions;
         auto& indices = shape.mesh.indices;
+        auto& vertices = shape.mesh.positions;
         auto& uvs = shape.mesh.texcoords;
+        auto& normals = shape.mesh.normals;
+
         for(auto &i : indices)
         {
           auto x = vertices[i*3];
@@ -49,28 +51,42 @@ namespace assets
           auto v = uvs[i*2+1];
           data.push_back(u);
           data.push_back(v);
+
+          auto nx = normals[i*3];
+          auto ny = normals[i*3+1];
+          auto nz = normals[i*3+2];
+          data.push_back(nx);
+          data.push_back(ny);
+          data.push_back(nz);
         }
       }
 
       mVertexBuffer.buffer(data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
     }
   }
-  void ModelAsset::prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute)
+  void ModelAsset::prepareVAO(Program &program, const std::string vertAttribute, const std::string uvAttribute, const std::string normalAttribute)
   {
+    program.use();
     bind();
 
     // enable the "vert" attribute of the shader
     const GLchar* vert = vertAttribute.c_str();
     program.enableAttribute(vert);
-    program.defineAttributeArray(vert, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), NULL);
+    program.defineAttributeArray(vert, 3, GL_FLOAT, GL_FALSE, (3+2+3) * sizeof(GLfloat), NULL);
 
     // enable the "vertTexCoord"
     const GLchar* uv = uvAttribute.c_str();
     program.enableAttribute(uv);
-    program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, 5 * sizeof(GLfloat), (const GLvoid*)(3*sizeof(GLfloat)));
+    program.defineAttributeArray(uv, 2, GL_FLOAT, GL_TRUE, (3+2+3) * sizeof(GLfloat), (const GLvoid*)(3*sizeof(GLfloat)));
+
+    // enable the "vertNormal"
+    const GLchar* normal = normalAttribute.c_str();
+    program.enableAttribute(normal);
+    program.defineAttributeArray(normal, 3, GL_FLOAT, GL_FALSE, (3+2+3) * sizeof(GLfloat), (const GLvoid*)((3+2)*sizeof(GLfloat)));
 
     // TODO normals
     unbind();
+    program.unuse();
   }
 
   void ModelAsset::draw()

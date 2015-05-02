@@ -174,9 +174,10 @@ static ComponentPtr CreateController()
 
 static void LoadAssets(Engine& engine)
 {
-  engine.loadAsset<ModelAsset>("woodCube", "models/cube.obj");
+  engine.loadAsset<ModelAsset>("cube", "models/cube.obj");
   engine.loadAsset<TextureAsset>("woodenCrate", "images/cube.png");
   engine.loadAsset<ModelAsset>("tree", "models/nature/Tree_01.obj");
+  engine.loadAsset<TextureAsset>("treeTexture", "models/nature/Tree_01.png");
 }
 
 static void CreateSystems(Engine& engine, Program& program, sf::Window& window)
@@ -210,7 +211,7 @@ static void CreatePlayer(Engine& engine)
 static void CreateEntities(Engine& engine, Program& program)
 {
   // shared variables
-  auto boxModel = std::make_shared<Model>("woodCube");
+  auto boxModel = std::make_shared<Model>("cube");
   auto boxTexture = std::make_shared<Texture>("woodenCrate");
   auto boxTransform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
 
@@ -221,9 +222,11 @@ static void CreateEntities(Engine& engine, Program& program)
   std::cout << box << std::endl;
 
   auto treeModel = std::make_shared<Model>("tree");
+  auto treeTexture = std::make_shared<Texture>("treeTexture");
   auto treeTransform = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
   auto& tree = engine.createEntity("tree");
   tree.addComponent(treeTransform);
+  tree.addComponent(treeTexture);
   tree.addComponent(treeModel);
   std::cout << tree << std::endl;
 }

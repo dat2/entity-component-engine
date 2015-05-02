@@ -96,6 +96,11 @@ namespace components
     return glm::vec3(glm::inverse(orientation()) * glm::vec4(CAMERA_H, 1.0));
   }
 
+  const glm::vec3 Camera::position() const
+  {
+    return mPosition;
+  }
+
   void Camera::print(std::ostream& where) const
   {
     printField(where, "position", toString(mPosition));
