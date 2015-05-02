@@ -17,6 +17,19 @@ namespace components
   {
   }
 
+  Transform::Transform(Json::Value value)
+    : Component(TRANSFORM)
+  {
+    auto name = value["name"];
+    auto pos = value["position"];
+    auto rot = value["rotation"];
+    auto scale = value["scale"];
+
+    mPosition = sf::Vector3f(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
+    mRotation = sf::Vector3f(rot["x"].asFloat(), rot["y"].asFloat(), rot["z"].asFloat());
+    mScale = sf::Vector3f(scale["x"].asFloat(), scale["y"].asFloat(), scale["z"].asFloat());
+  }
+
   void Transform::move(const sf::Vector3f position)
   {
     mPosition += position;

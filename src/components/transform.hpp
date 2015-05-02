@@ -6,12 +6,15 @@
 
 #include <components/component.hpp>
 
+#include <json/json.h>
+
 namespace components
 {
   class Transform : public Component
   {
   public:
     Transform(const sf::Vector3f position, const sf::Vector3f rotation, const sf::Vector3f scale);
+    Transform(Json::Value value);
 
     void move(const sf::Vector3f position);
     // void rotate();

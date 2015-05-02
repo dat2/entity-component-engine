@@ -1,0 +1,28 @@
+{
+  "entities": [
+    {
+      "name": "box",
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 0, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 1, "z": 1} }
+      ]
+    },
+    {
+      "name": "box2",
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 2, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 1} }
+      ]
+    },
+    {
+      "name": "tree",
+      "components": [
+        { "type": "model", "name": "Tree_01" },
+        { "type": "texture", "name": "Tree_01_texture" },
+        { "type": "transform", "position": { "x": -2, "y": -1, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 1, "z": 1} }
+      ]
+    }
+  ]
+}

@@ -3,11 +3,11 @@
     "basepath": "models/",
     "assets": [
       {
-        "name": "cube",
+        "name": "BasicCube",
         "filepath": "basic/cube.obj"
       },
       {
-        "name": "tree",
+        "name": "Tree_01",
         "filepath": "nature/Tree_01.obj"
       }
     ]
@@ -16,11 +16,11 @@
     "basepath": "images/",
     "assets" : [
       {
-        "name": "woodenCrate",
+        "name": "WoodenCrate",
         "filepath": "basic/wooden-crate.png"
       },
       {
-        "name": "greenTree",
+        "name": "Tree_01_texture",
         "filepath": "nature/Tree_01.png"
       }
     ]

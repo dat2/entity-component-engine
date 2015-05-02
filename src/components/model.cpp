@@ -11,6 +11,11 @@ namespace components
   {
   }
 
+  Model::Model(Json::Value value)
+    : Component(MODEL), Named(value["name"].asString()), mAsset(nullptr)
+  {
+  }
+
   void Model::draw()
   {
     if(mAsset)

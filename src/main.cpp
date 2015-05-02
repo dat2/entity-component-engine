@@ -38,6 +38,9 @@
 #include <assets/textureasset.hpp>
 #include <assets/modelasset.hpp>
 
+#include <json/json.h>
+#include <fstream>
+
 
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
@@ -193,32 +196,45 @@ static void CreatePlayer(Engine& engine)
 
 static void CreateEntities(Engine& engine)
 {
-  // shared variables
-  auto boxModel = std::make_shared<Model>("cube");
-  auto boxTexture = std::make_shared<Texture>("woodenCrate");
-  auto boxTransform = std::make_shared<Transform>(sf::Vector3f(0,0,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
+  Json::Value root;
+  std::ifstream entitiesFile("resources/entities.json");
+  try
+  {
+    entitiesFile >> root;
 
-  auto& box = engine.createEntity("box");
-  box.addComponent(boxTransform);
-  box.addComponent(boxTexture);
-  box.addComponent(boxModel);
-  std::cout << box << std::endl;
+    auto entities = root["entities"];
+    for(auto& entityJson : entities)
+    {
+      auto name = entityJson["name"].asString();
+      auto components = entityJson["components"];
 
-  auto box2Transform = std::make_shared<Transform>(sf::Vector3f(2,0,0), sf::Vector3f(0,0,0), sf::Vector3f(0.5,2,1));
-  auto& box2 = engine.createEntity("box2");
-  box2.addComponent(box2Transform);
-  box2.addComponent(boxTexture);
-  box2.addComponent(boxModel);
-  std::cout << box2 << std::endl;
+      auto& entity = engine.createEntity(name);
 
-  auto treeModel = std::make_shared<Model>("tree");
-  auto treeTexture = std::make_shared<Texture>("greenTree");
-  auto treeTransform = std::make_shared<Transform>(sf::Vector3f(0,2,0), sf::Vector3f(0,0,0), sf::Vector3f(1,1,1));
-  auto& tree = engine.createEntity("tree");
-  tree.addComponent(treeTransform);
-  tree.addComponent(treeTexture);
-  tree.addComponent(treeModel);
-  std::cout << tree << std::endl;
+      for(auto& component : components)
+      {
+        auto type = component["type"].asString();
+
+        // TODO move to specific components
+        if(type == "model")
+        {
+          entity.addComponent(std::make_shared<Model>(component));
+        }
+        else if(type == "texture")
+        {
+          entity.addComponent(std::make_shared<Texture>(component));
+        }
+        else if(type == "transform")
+        {
+          entity.addComponent(std::make_shared<Transform>(component));
+        }
+      }
+
+      std::cout << entity << std::endl;
+    }
+  }
+  catch(...)
+  {
+  }
 }
 
 int main()

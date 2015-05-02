@@ -11,6 +11,12 @@ namespace components
   {
   }
 
+  Texture::Texture(Json::Value value)
+    : Component(TEXTURE), Named(value["name"].asString()), mAsset(nullptr)
+  {
+
+  }
+
   void Texture::bind(int n)
   {
     if(mAsset)

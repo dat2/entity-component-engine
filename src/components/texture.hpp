@@ -8,6 +8,8 @@
 #include <components/component.hpp>
 #include <assets/textureasset.hpp>
 
+#include <json/json.h>
+
 using namespace assets;
 
 namespace components
@@ -16,6 +18,7 @@ namespace components
   {
   public:
     Texture(const std::string name);
+    Texture(Json::Value value);
 
     void bind(int n);
     void unbind();

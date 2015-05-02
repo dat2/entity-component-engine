@@ -8,6 +8,8 @@
 #include <components/component.hpp>
 #include <assets/modelasset.hpp>
 
+#include <json/json.h>
+
 using namespace assets;
 
 namespace components
@@ -16,6 +18,7 @@ namespace components
   {
   public:
     Model(const std::string name);
+    Model(Json::Value value);
 
     void draw();
     void setAsset(std::shared_ptr<ModelAsset> asset);

@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include <json/json.h>
-#include <jsoncpp.cpp>
 #include <fstream>
 
 #include <engine/engine.hpp>
@@ -110,7 +109,7 @@ namespace engine
         loadAsset<TextureAsset>(name, filepath);
       }
     }
-    catch(Json::RuntimeError e)
+    catch(...)
     {
     }
   }
