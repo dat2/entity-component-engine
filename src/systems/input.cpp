@@ -24,7 +24,10 @@ namespace systems
       auto entity = e.get();
       auto controller = entity.getComponent<Controller>(CONTROLLER);
 
-      controller->updateKeyActionStates();
+      if(mWindow.hasFocus())
+      {
+        controller->updateKeyActionStates();
+      }
 
       auto callbacks = controller->getUpdateCallbacks();
       for(auto &callback : callbacks)

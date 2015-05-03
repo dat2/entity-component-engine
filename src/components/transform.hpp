@@ -4,6 +4,8 @@
 #include <iostream>
 #include <SFML/System/Vector3.hpp>
 
+#include <glm/glm.hpp>
+
 #include <components/component.hpp>
 
 #include <json/json.h>
@@ -20,9 +22,13 @@ namespace components
     // void rotate();
     // void scale();
 
-    const sf::Vector3f& getPosition() const;
-    const sf::Vector3f& getRotation() const;
-    const sf::Vector3f& getScale() const;
+    void updateMatrix();
+
+    const sf::Vector3f& position() const;
+    const sf::Vector3f& rotation() const;
+    const sf::Vector3f& scale() const;
+
+    const glm::mat4& matrix() const;
 
   protected:
     virtual void print(std::ostream& where) const;
@@ -31,6 +37,8 @@ namespace components
     sf::Vector3f mPosition;
     sf::Vector3f mRotation;
     sf::Vector3f mScale;
+
+    glm::mat4 mMatrix;
   };
 }
 

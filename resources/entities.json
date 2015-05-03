@@ -1,21 +1,48 @@
 {
   "entities": [
     {
-      "name": "box",
+      "name": "H_m",
       "tags": ["level"],
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 0, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 1, "z": 1} }
+        { "type": "transform", "position": { "x": 0, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 0.3, "z": 0.5} }
       ]
     },
     {
-      "name": "box2",
+      "name": "H_r",
       "tags": ["level"],
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 2, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 1} }
+        { "type": "transform", "position": { "x": 1.5, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 0.5} }
+      ]
+    },
+    {
+      "name": "H_l",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": -1.5, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 0.5} }
+      ]
+    },
+    {
+      "name": "i_l",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 3, "y": -0.5, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 1, "z": 0.5} }
+      ]
+    },
+    {
+      "name": "i_dot",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 3, "y": 0.75, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 0.3, "z": 0.5} }
       ]
     },
     {

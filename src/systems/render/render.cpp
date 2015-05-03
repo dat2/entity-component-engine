@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 // my own
 #include <utils/utils.hpp>
@@ -140,25 +141,13 @@ namespace systems
       auto model = entity.getComponent<Model>(MODEL);
       auto texture = entity.getComponent<Texture>(TEXTURE);
 
-      GLint modelIndex = mProgram.uniform("model");
-      glm::mat4 modelMatrix = glm::mat4();
+      auto modelIndex = mProgram.uniform("model");
+      auto normalIndex = mProgram.uniform("normalMatrix");
 
-      // rotate
-      const sf::Vector3f& rotation = transform->getRotation();
-      modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.x), X_AXIS);
-      modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.y), Y_AXIS);
-      modelMatrix = glm::rotate(modelMatrix, glm::radians(rotation.z), Z_AXIS);
-
-      // scale
-      modelMatrix = glm::scale(modelMatrix, sfmlToGlm(transform->getScale()));
-
-      // translate
-      modelMatrix = glm::translate(modelMatrix, sfmlToGlm(transform->getPosition()));
+      auto modelMatrix = transform->matrix();
       glUniformMatrix4fv(modelIndex, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 
-      // set lighting variables
-      GLint normalIndex = mProgram.uniform("normalMatrix");
-      glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
+      auto normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
       glUniformMatrix3fv(normalIndex, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 
       // set the texture
