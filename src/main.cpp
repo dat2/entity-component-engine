@@ -22,10 +22,7 @@
 #include <entities/entity.hpp>
 
 // components
-#include <components/transform.hpp>
 #include <components/camera.hpp>
-#include <components/model.hpp>
-#include <components/texture.hpp>
 #include <components/controller.hpp>
 
 // systems
@@ -90,23 +87,26 @@ static ComponentPtr CreateController()
 {
   auto controller = std::make_shared<Controller>();
 
-  controller->createKeyboardAction("moveLeft", { sf::Keyboard::Left, sf::Keyboard::A });
-  controller->createKeyboardAction("moveRight", { sf::Keyboard::Right, sf::Keyboard::D });
-  controller->createKeyboardAction("moveForward", { sf::Keyboard::Up, sf::Keyboard::W });
-  controller->createKeyboardAction("moveBackward", { sf::Keyboard::Down, sf::Keyboard::S });
-  controller->createKeyboardAction("moveUp", { sf::Keyboard::Q });
-  controller->createKeyboardAction("moveDown", { sf::Keyboard::E });
+  controller->createKeyAction("moveLeft", { sf::Keyboard::Left, sf::Keyboard::A });
+  controller->createKeyAction("moveRight", { sf::Keyboard::Right, sf::Keyboard::D });
+  controller->createKeyAction("moveForward", { sf::Keyboard::Up, sf::Keyboard::W });
+  controller->createKeyAction("moveBackward", { sf::Keyboard::Down, sf::Keyboard::S });
+  controller->createKeyAction("moveUp", { sf::Keyboard::Q });
+  controller->createKeyAction("moveDown", { sf::Keyboard::E });
 
-  controller->createKeyboardAction("rotateLeft", { sf::Keyboard::J });
-  controller->createKeyboardAction("rotateRight", { sf::Keyboard::L });
-  controller->createKeyboardAction("rotateUp", { sf::Keyboard::I });
-  controller->createKeyboardAction("rotateDown", { sf::Keyboard::K });
+  controller->createKeyAction("rotateLeft", { sf::Keyboard::J });
+  controller->createKeyAction("rotateRight", { sf::Keyboard::L });
+  controller->createKeyAction("rotateUp", { sf::Keyboard::I });
+  controller->createKeyAction("rotateDown", { sf::Keyboard::K });
 
-  controller->createKeyboardAction("quit", { sf::Keyboard::Escape });
+  controller->createKeyAction("quit", { sf::Keyboard::Escape });
+  controller->createKeyAction("refresh", { sf::Keyboard::R });
+
+  controller->createState("refreshTime");
 
   // TODO tie in physics somehow
   controller->addUpdateCallback(
-    [](Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
     {
       auto cam = entity.getComponent<Camera>(CAMERA);
       if(cam == nullptr)
@@ -120,13 +120,13 @@ static ComponentPtr CreateController()
       float moveSpeed = 3.0; // units/s
       float moveDist = moveSpeed * elapsed; // m/s * s == m
 
-      int x = controller.getActionState("moveRight") - controller.getActionState("moveLeft");
+      int x = controller.getKeyActionState("moveRight") - controller.getKeyActionState("moveLeft");
       glm::vec3 xDiff = x * moveDist * cam->left();
 
-      int y = controller.getActionState("moveUp") - controller.getActionState("moveDown");
+      int y = controller.getKeyActionState("moveUp") - controller.getKeyActionState("moveDown");
       glm::vec3 yDiff = y * moveDist * cam->up();
 
-      int z = controller.getActionState("moveForward") - controller.getActionState("moveBackward");
+      int z = controller.getKeyActionState("moveForward") - controller.getKeyActionState("moveBackward");
       glm::vec3 zDiff = z * moveDist * cam->forward();
 
       if(x || y || z)
@@ -138,8 +138,8 @@ static ComponentPtr CreateController()
       float rotateSpeed = 120.0f; // 360degrees / 3seconds;
       float rotateDist = rotateSpeed * elapsed;
 
-      int horizontal = controller.getActionState("rotateRight") - controller.getActionState("rotateLeft");
-      int vertical = controller.getActionState("rotateUp") - controller.getActionState("rotateDown");
+      int horizontal = controller.getKeyActionState("rotateRight") - controller.getKeyActionState("rotateLeft");
+      int vertical = controller.getKeyActionState("rotateUp") - controller.getKeyActionState("rotateDown");
 
       if(horizontal || vertical)
       {
@@ -149,21 +149,31 @@ static ComponentPtr CreateController()
   );
 
   controller->addUpdateCallback(
-    [](Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
     {
-      if(controller.getActionState("quit"))
+      if(controller.getKeyActionState("quit"))
       {
         window.close();
+      }
+
+      // introduce some delay into refreshing
+      auto newVal = controller.getState("refreshTime") + time.asMilliseconds();
+      controller.updateState("refreshTime", newVal);
+
+      if(controller.getState("refreshTime") > 200 && controller.getKeyActionState("refresh"))
+      {
+        engine.unloadAssets();
+        engine.clearEntities("level");
+
+        engine.loadAssetsJson("assets.json");
+        engine.loadEntitiesJson("entities.json");
+
+        controller.updateState("refreshTime" , 0);
       }
     }
   );
 
   return controller;
-}
-
-static void LoadAssets(Engine& engine)
-{
-  engine.loadJson("assets.json");
 }
 
 static void CreateSystems(Engine& engine, sf::Window& window)
@@ -186,55 +196,13 @@ static void CreatePlayer(Engine& engine)
 
   auto controller = CreateController();
 
-  Entity& player = engine.createEntity("player");
+  std::set<std::string> tags { "player" };
+  Entity& player = engine.createEntity("player", tags);
 
   player.addComponent(camera);
   player.addComponent(controller);
 
   std::cout << player << std::endl;
-}
-
-static void CreateEntities(Engine& engine)
-{
-  Json::Value root;
-  std::ifstream entitiesFile("resources/entities.json");
-  try
-  {
-    entitiesFile >> root;
-
-    auto entities = root["entities"];
-    for(auto& entityJson : entities)
-    {
-      auto name = entityJson["name"].asString();
-      auto components = entityJson["components"];
-
-      auto& entity = engine.createEntity(name);
-
-      for(auto& component : components)
-      {
-        auto type = component["type"].asString();
-
-        // TODO move to specific components
-        if(type == "model")
-        {
-          entity.addComponent(std::make_shared<Model>(component));
-        }
-        else if(type == "texture")
-        {
-          entity.addComponent(std::make_shared<Texture>(component));
-        }
-        else if(type == "transform")
-        {
-          entity.addComponent(std::make_shared<Transform>(component));
-        }
-      }
-
-      std::cout << entity << std::endl;
-    }
-  }
-  catch(...)
-  {
-  }
 }
 
 int main()
@@ -246,10 +214,11 @@ int main()
 
   Engine engine("resources");
 
-  LoadAssets(engine);
   CreateSystems(engine, window);
   CreatePlayer(engine);
-  CreateEntities(engine);
+
+  engine.loadAssetsJson("assets.json");
+  engine.loadEntitiesJson("entities.json");
 
   // TODO: move to window system?
   while (window.isOpen())

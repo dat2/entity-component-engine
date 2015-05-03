@@ -15,7 +15,7 @@ namespace systems
   public:
     InputSystem(sf::Window& window);
 
-    void run();
+    void run(engine::Engine& engine);
 
   private:
     sf::Clock clock;

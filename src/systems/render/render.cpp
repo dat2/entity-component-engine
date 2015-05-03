@@ -110,7 +110,15 @@ namespace systems
     }
   }
 
-  void RenderSystem::run()
+  void RenderSystem::entityRemoved(Engine& engine, Entity& entity)
+  {
+    if( entity.getComponent<Camera>(CAMERA) == mCamera)
+    {
+      mCamera = nullptr;
+    }
+  }
+
+  void RenderSystem::run(Engine& engine)
   {
     if(!mCamera)
     {

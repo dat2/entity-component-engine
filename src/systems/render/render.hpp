@@ -33,7 +33,9 @@ namespace systems
 
     void entityAdded(Engine& engine, Entity& entity);
     void entityChanged(Engine& engine, Entity& entity, ComponentType newComponent);
-    void run();
+    void entityRemoved(Engine& engine, Entity& entity);
+
+    void run(Engine& engine);
 
   private:
     Program mProgram;

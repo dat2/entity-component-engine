@@ -16,6 +16,7 @@ using namespace assets;
 
 namespace engine
 {
+  typedef std::shared_ptr< std::vector< ComponentPtr > > EntityComponentsPtr;
 
   class Engine
   {
@@ -26,10 +27,14 @@ namespace engine
 
     void addComponentToEntity(Entity &entity, ComponentPtr component);
     void removeComponentFromEntity(Entity& entity, ComponentType t);
-    const std::vector< ComponentPtr >& getComponents(const Entity& entity) const;
+    const EntityComponentsPtr getComponents(const Entity& entity) const;
 
     void run();
-    void loadJson(std::string filename);
+    void loadAssetsJson(const std::string filename);
+    void loadEntitiesJson(const std::string filename);
+
+    void clearEntities(const std::string tag);
+    void unloadAssets();
 
     template <class T, typename ...Args>
     std::shared_ptr<T> getAsset(Args && ...args)
@@ -43,12 +48,24 @@ namespace engine
       return mAssetManager.loadAsset<T>(std::forward<Args>(args)...);
     }
 
-    Entity& createEntity(const std::string& name);
+    template <typename ...Args>
+    Entity& createEntity(Args && ...args)
+    {
+      auto result = mEntities.emplace(
+        std::piecewise_construct,
+        std::forward_as_tuple(*this, std::forward<Args>(args)...),
+        std::forward_as_tuple(std::make_shared< std::vector<ComponentPtr> >())
+      );
+
+      // get rid of the const of first
+      return const_cast<Entity&>(result.first->first);
+    }
+
   private:
 
     AssetManager mAssetManager;
     std::vector< SystemPtr > mSystems;
-    std::unordered_map< Entity, std::vector<ComponentPtr> > mEntities;
+    std::unordered_map< Entity, EntityComponentsPtr > mEntities;
   };
 
 }

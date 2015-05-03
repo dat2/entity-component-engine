@@ -20,6 +20,8 @@ namespace assets
   public:
     AssetManager(std::string baseDirectory);
 
+    void unloadAssets();
+
     const std::string getBaseDirectory() const;
 
     template <class T>

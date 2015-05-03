@@ -34,7 +34,7 @@ namespace systems
     virtual void entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent);
     virtual void entityRemoved(engine::Engine& engine, Entity& entity);
 
-    virtual void run();
+    virtual void run(engine::Engine& engine);
 
     void print(std::ostream& where) const;
 

@@ -12,22 +12,30 @@ namespace components
   {
   }
 
-  void Controller::createKeyboardAction(const std::string action, Keys keys)
+  void Controller::createKeyAction(const std::string action, Keys keys)
   {
-    mActionStates.emplace(action, std::make_pair(0, keys));
+    mKeyActionStates.emplace(action, std::make_pair(0, keys));
   }
-  const int Controller::getActionState(const std::string action) const
+  void Controller::createState(const std::string state)
   {
-    auto search = mActionStates.find(action);
-    if(search != mActionStates.end())
+    mStates[state] = 0;
+  }
+  const int Controller::getKeyActionState(const std::string action) const
+  {
+    auto search = mKeyActionStates.find(action);
+    if(search != mKeyActionStates.end())
     {
       return search->second.first;
     }
     return 0;
   }
-  void Controller::updateActionStates()
+  const int Controller::getState(const std::string state) const
   {
-    for( auto &iterator : mActionStates )
+    return mStates.at(state);
+  }
+  void Controller::updateKeyActionStates()
+  {
+    for( auto &iterator : mKeyActionStates )
     {
       auto& state = iterator.second.first;
 
@@ -40,6 +48,11 @@ namespace components
       state = keyState;
     }
   }
+  void Controller::updateState(const std::string state, int val)
+  {
+    mStates[state] = val;
+  }
+
   void Controller::addUpdateCallback(UpdateCallback callback)
   {
     mCallbacks.push_back(callback);
@@ -53,7 +66,7 @@ namespace components
   void Controller::print(std::ostream& where) const
   {
     std::vector<std::string> actions;
-    for( auto &i : mActionStates )
+    for( auto &i : mKeyActionStates )
     {
       actions.push_back(i.first);
     }

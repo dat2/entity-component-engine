@@ -9,8 +9,8 @@ using namespace engine;
 
 namespace entities
 {
-  Entity::Entity(Engine& engine, std::string name)
-    : Printable("Entity"), Named(name), mEngine(engine)
+  Entity::Entity(Engine& engine, std::string name, const std::set<std::string> tags)
+    : Printable("Entity"), Named(name), mEngine(engine), mTags(std::move(tags))
   {
   }
 
@@ -24,7 +24,12 @@ namespace entities
     mEngine.removeComponentFromEntity(*this, t);
   }
 
-  const std::vector< ComponentPtr >& Entity::getComponents() const
+  bool Entity::hasTag(const std::string tag) const
+  {
+    return std::find(mTags.begin(), mTags.end(), tag) != mTags.end();
+  }
+
+  const engine::EntityComponentsPtr Entity::getComponents() const
   {
     return mEngine.getComponents(*this);
   }
@@ -32,7 +37,18 @@ namespace entities
   void Entity::print(std::ostream& where) const
   {
     printField(where, "name", getName());
-    printVector(where, ", components", getComponents(), [](const ComponentPtr& c) { return ToString(c->getType()); });
+
+    auto csPtr = getComponents();
+    if(!csPtr)
+    {
+      std::vector<ComponentPtr> components { };
+      printVector(where, ", components", components);
+    }
+    else
+    {
+      auto components = *csPtr;
+      printVector(where, ", components", components, [](const ComponentPtr& c) { return ToString(c->getType()); });
+    }
   }
 
 }

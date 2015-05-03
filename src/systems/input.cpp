@@ -15,7 +15,7 @@ namespace systems
   {
   }
 
-  void InputSystem::run()
+  void InputSystem::run(engine::Engine& engine)
   {
     sf::Time elapsed = clock.restart();
 
@@ -24,12 +24,12 @@ namespace systems
       auto entity = e.get();
       auto controller = entity.getComponent<Controller>(CONTROLLER);
 
-      controller->updateActionStates();
+      controller->updateKeyActionStates();
 
       auto callbacks = controller->getUpdateCallbacks();
       for(auto &callback : callbacks)
       {
-        callback(e, *controller, mWindow, elapsed);
+        callback(engine, e, *controller, mWindow, elapsed);
       }
     }
   }

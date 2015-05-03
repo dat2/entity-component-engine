@@ -7,6 +7,11 @@ namespace assets
   {
   }
 
+  void AssetManager::unloadAssets()
+  {
+    mAssets.clear();
+  }
+
   const std::string AssetManager::getBaseDirectory() const
   {
     return mBaseDirectory;

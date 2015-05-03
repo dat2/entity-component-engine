@@ -3,13 +3,8 @@
 
 // standard library
 #include <vector>
+#include <set>
 #include <functional>
-
-// my own
-namespace engine
-{
-  class Engine;
-}
 
 #include <misc/printable.hpp>
 #include <misc/named.hpp>
@@ -17,6 +12,12 @@ namespace engine
 #include <components/component.hpp>
 
 using namespace components;
+
+namespace engine
+{
+  class Engine;
+  typedef std::shared_ptr< std::vector< ComponentPtr > > EntityComponentsPtr;
+}
 
 namespace entities
 {
@@ -26,19 +27,27 @@ namespace entities
   friend class engine::Engine;
 
   public:
-    Entity(engine::Engine& engine, std::string name);
+    Entity(engine::Engine& engine, std::string name, const std::set<std::string> tags);
 
     void addComponent(ComponentPtr c);
     void removeComponent(ComponentType t);
+    bool hasTag(const std::string tag) const;
 
-    const std::vector< ComponentPtr >& getComponents() const;
+    const engine::EntityComponentsPtr getComponents() const;
 
     void print(std::ostream& where) const;
 
     template <class T>
     std::shared_ptr<T> getComponent(ComponentType t)
     {
-      auto& components = getComponents();
+      auto csPtr = getComponents();
+      if(!csPtr)
+      {
+        return nullptr;
+      }
+
+      auto components = *csPtr;
+
       auto result = std::find_if(std::begin(components), std::end(components),
         [&t](const ComponentPtr& c) { return c->getType() == t; }
       );
@@ -50,6 +59,7 @@ namespace entities
     }
   private:
     engine::Engine& mEngine;
+    std::set< std::string > mTags;
   };
 
   typedef std::shared_ptr<Entity> EntityPtr;

@@ -13,7 +13,12 @@ namespace systems
 
   bool System::hasTypes(const Entity& entity) const
   {
-    auto& components = entity.getComponents();
+    auto csPtr = entity.getComponents();
+    if(!csPtr)
+    {
+      return true;
+    }
+    auto components = *csPtr;
 
     auto allComponentTypes = EMPTY;
     for( auto &c : components )
@@ -27,7 +32,7 @@ namespace systems
   void System::entityAdded(engine::Engine& engine, Entity& entity) { }
   void System::entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
   void System::entityRemoved(engine::Engine& engine, Entity& entity) { }
-  void System::run() { }
+  void System::run(engine::Engine& engine) { }
 
   void System::print(std::ostream& where) const
   {
