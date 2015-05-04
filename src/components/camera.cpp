@@ -1,14 +1,12 @@
-// standard libraries
+//libraries
 #include <iostream>
 
-// glm
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include <glm/gtx/compatibility.hpp>
 
-// my own
-#include <misc/printable.hpp>
+// engine
 #include <components/camera.hpp>
+#include <misc/printable.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
@@ -16,7 +14,6 @@ using namespace utils;
 #define CAMERA_V glm::vec3(0,1,0)
 #define CAMERA_H glm::vec3(1,0,0)
 #define CAMERA_N glm::vec3(0,0,-1)
-;
 
 namespace components
 {

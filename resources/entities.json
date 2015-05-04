@@ -1,12 +1,76 @@
 {
   "entities": [
+    // lighting
+    {
+      "name": "L_1",
+      "tags": ["level"],
+      "components": [
+        { "type": "light", "position": { "x": 0, "y": 4, "z": 0 }, "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.06 }
+      ]
+    },
+    // walls
+    {
+      "name": "W_bk",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 0, "y": 0, "z": -1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    {
+      "name": "W_ft",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 0, "y": 0, "z": 1 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    {
+      "name": "W_lt",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": -1, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    {
+      "name": "W_rt",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 1, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    {
+      "name": "W_tp",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 0, "y": 1, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    {
+      "name": "W_bt",
+      "tags": ["level"],
+      "components": [
+        { "type": "model", "name": "BasicCube" },
+        { "type": "texture", "name": "WoodenCrate" },
+        { "type": "transform", "position": { "x": 0, "y": -1, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+      ]
+    },
+    // hi
     {
       "name": "H_m",
       "tags": ["level"],
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 0, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 0.3, "z": 0.5} }
+        { "type": "transform", "position": { "x": 0, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 0.3, "z": 0.5 } }
       ]
     },
     {
@@ -15,7 +79,7 @@
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 1.5, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 0.5} }
+        { "type": "transform", "position": { "x": 1.5, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 0.5, "y": 2, "z": 0.5 } }
       ]
     },
     {
@@ -24,7 +88,7 @@
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": -1.5, "y": 0, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 2, "z": 0.5} }
+        { "type": "transform", "position": { "x": -1.5, "y": 0, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 0.5, "y": 2, "z": 0.5 } }
       ]
     },
     {
@@ -33,7 +97,7 @@
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 3, "y": -0.5, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 1, "z": 0.5} }
+        { "type": "transform", "position": { "x": 3, "y": -0.5, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 0.5, "y": 1, "z": 0.5 } }
       ]
     },
     {
@@ -42,16 +106,17 @@
       "components": [
         { "type": "model", "name": "BasicCube" },
         { "type": "texture", "name": "WoodenCrate" },
-        { "type": "transform", "position": { "x": 3, "y": 0.75, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 0.5, "y": 0.3, "z": 0.5} }
+        { "type": "transform", "position": { "x": 3, "y": 0.75, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 0.5, "y": 0.3, "z": 0.5 } }
       ]
     },
+    // tree
     {
       "name": "tree",
       "tags": ["level"],
       "components": [
         { "type": "model", "name": "Tree_01" },
         { "type": "texture", "name": "Tree_01_texture" },
-        { "type": "transform", "position": { "x": -2, "y": -1, "z": 0}, "rotation": { "x": 0, "y": 0, "z": 0}, "scale": { "x": 1, "y": 1, "z": 1} }
+        { "type": "transform", "position": { "x": -2, "y": -1, "z": 0 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1} }
       ]
     }
   ]

@@ -1,8 +1,10 @@
 #ifndef _COMPONENT_HPP
 #define _COMPONENT_HPP
 
+// libraries
 #include <iostream>
-#include <functional>
+
+// engine
 #include <misc/printable.hpp>
 
 namespace components
@@ -16,7 +18,8 @@ namespace components
     CAMERA      = 1 << 1,
     CONTROLLER  = 1 << 2,
     MODEL       = 1 << 3,
-    TEXTURE     = 1 << 4
+    TEXTURE     = 1 << 4,
+    LIGHT       = 1 << 5
   };
   inline ComponentType operator|(ComponentType a, ComponentType b)
   {
@@ -35,6 +38,7 @@ namespace components
       case CONTROLLER: return "Controller";
       case MODEL: return "Model";
       case TEXTURE: return "Texture";
+      case LIGHT: return "Light";
       default: return "";
     }
   }

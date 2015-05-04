@@ -1,7 +1,7 @@
 #ifndef _VAO_HPP
 #define _VAO_HPP
 
-// opengl
+// libraries
 #include <GL/glew.h>
 
 namespace systems

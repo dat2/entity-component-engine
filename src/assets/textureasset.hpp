@@ -1,20 +1,24 @@
 #ifndef _TEXTURE_ASSET_HPP
 #define _TEXTURE_ASSET_HPP
 
-// opengl
+// libraries
 #include <GL/GLEW.h>
-
-#include <assets/asset.hpp>
-
-// imagemagick
+#include <glm/vec3.hpp>
+#include <json/json.h>
 #include <Magick++.h>
+
+//engine
+#include <assets/asset.hpp>
+#include <systems/render/program.hpp>
+
+using namespace systems;
 
 namespace assets
 {
   class TextureAsset : public Asset
   {
   public:
-    TextureAsset(const std::string name, const std::string filepath);
+    TextureAsset(Json::Value value);
     ~TextureAsset();
 
     void generate(int n);
@@ -25,6 +29,8 @@ namespace assets
     void unbind();
     void load();
 
+    void setProgramVariables(Program& program, const GLchar* shininess, const GLchar* specular);
+
     const Magick::Image& getImage() const;
     void print(std::ostream& where) const;
 
@@ -34,6 +40,9 @@ namespace assets
     GLenum mTarget;
     int mNTextures;
     GLuint *mTextures;
+
+    float mShininess;
+    glm::vec3 mSpecular;
   };
 }
 #endif

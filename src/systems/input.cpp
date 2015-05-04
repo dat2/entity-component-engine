@@ -1,10 +1,9 @@
-// sfml
+// libraries
 #include <SFML/System/Time.hpp>
 
-// my own
-#include <systems/input.hpp>
-
+// engine
 #include <components/controller.hpp>
+#include <systems/input.hpp>
 
 using namespace components;
 

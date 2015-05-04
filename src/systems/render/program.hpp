@@ -1,10 +1,10 @@
 #ifndef _PROGRAM_HPP
 #define _PROGRAM_HPP
 
-// standard libraries
+// libraries
 #include <vector>
 
-// my own
+// engine
 #include <systems/render/shader.hpp>
 
 namespace systems

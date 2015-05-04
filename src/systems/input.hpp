@@ -1,11 +1,11 @@
 #ifndef _INPUT_HPP
 #define _INPUT_HPP
 
-// sfml
-#include <SFML/Window/Window.hpp>
+// libraries
 #include <SFML/System/Clock.hpp>
+#include <SFML/Window/Window.hpp>
 
-// my own
+// engine
 #include <systems/system.hpp>
 
 namespace systems

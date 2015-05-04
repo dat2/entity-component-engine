@@ -1,16 +1,16 @@
-#include <iostream>
-
-#include <json/json.h>
+// libraries
 #include <fstream>
+#include <iostream>
+#include <json/json.h>
 
-#include <engine/engine.hpp>
-
+// engine
 #include <assets/modelasset.hpp>
 #include <assets/textureasset.hpp>
-
+#include <components/light.hpp>
 #include <components/model.hpp>
 #include <components/texture.hpp>
 #include <components/transform.hpp>
+#include <engine/engine.hpp>
 
 namespace engine
 {
@@ -89,29 +89,27 @@ namespace engine
   void Engine::loadAssetsJson(const std::string filename)
   {
     Json::Value root;
-    std::ifstream assets(mAssetManager.getBaseDirectory() + "/" + filename);
+    std::ifstream assets(mAssetManager.getBaseDirectory() + filename);
     try
     {
       assets >> root;
 
       // load all model assets
       auto models = root["models"];
-      auto modelsBasepath = models["basepath"].asString();
-      for( auto& model : models["assets"])
+      auto modelsBasepath = mAssetManager.getBaseDirectory() + models["basepath"].asString();
+      for( auto& modelJson : models["assets"])
       {
-        auto name = model["name"].asString();
-        auto filepath = modelsBasepath + model["filepath"].asString();
-        loadAsset<ModelAsset>(name, filepath);
+        modelJson["filepath"] = Json::Value(modelsBasepath + modelJson["filepath"].asString());
+        loadAsset<ModelAsset>(modelJson);
       }
 
       // load all texture assets
       auto textures = root["textures"];
-      auto texturesBasepath = textures["basepath"].asString();
-      for( auto& texture : textures["assets"])
+      auto texturesBasepath = mAssetManager.getBaseDirectory() + textures["basepath"].asString();
+      for( auto& textureJson : textures["assets"])
       {
-        auto name = texture["name"].asString();
-        auto filepath = texturesBasepath + texture["filepath"].asString();
-        loadAsset<TextureAsset>(name, filepath);
+        textureJson["filepath"] = Json::Value(texturesBasepath + textureJson["filepath"].asString());
+        loadAsset<TextureAsset>(textureJson);
       }
     }
     catch(...)
@@ -122,7 +120,7 @@ namespace engine
   void Engine::loadEntitiesJson(const std::string filename)
   {
     Json::Value root;
-    std::ifstream entitiesFile(mAssetManager.getBaseDirectory() + "/" + filename);
+    std::ifstream entitiesFile(mAssetManager.getBaseDirectory() + filename);
     try
     {
       entitiesFile >> root;
@@ -155,6 +153,10 @@ namespace engine
           else if(type == "transform")
           {
             entity.addComponent(std::make_shared<Transform>(component));
+          }
+          else if(type == "light")
+          {
+            entity.addComponent(std::make_shared<Light>(component));
           }
         }
       }

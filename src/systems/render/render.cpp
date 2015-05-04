@@ -1,23 +1,23 @@
-// opengl
+// libraries
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-// my own
-#include <utils/utils.hpp>
-#include <systems/render/render.hpp>
-
+// engine
 #include <assets/modelasset.hpp>
 #include <assets/textureasset.hpp>
-
-#define X_AXIS glm::vec3(1, 0, 0)
-#define Y_AXIS glm::vec3(0, 1, 0)
-#define Z_AXIS glm::vec3(0, 0, 1)
+#include <components/light.hpp>
+#include <systems/render/render.hpp>
+#include <utils/utils.hpp>
 
 using namespace assets;
 using namespace utils;
 using namespace components;
+
+#define X_AXIS glm::vec3(1, 0, 0)
+#define Y_AXIS glm::vec3(0, 1, 0)
+#define Z_AXIS glm::vec3(0, 0, 1)
 
 namespace systems
 {
@@ -34,6 +34,12 @@ namespace systems
     auto shaders { vertex, fragment };
     mProgram.attachShaders(shaders);
     mProgram.link();
+
+    // set gamma
+    mProgram.use();
+    GLint gammaIndex = mProgram.uniform("gamma");
+    glUniform1f(gammaIndex, 2.2f);
+    mProgram.unuse();
   }
 
   void RenderSystem::updateCamera()
@@ -48,13 +54,9 @@ namespace systems
       GLint cameraIndex = mProgram.uniform("camera");
       glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(mCamera->mwv()));
 
-      // set the light to be the position of the camera
-      GLint positionIndex = mProgram.uniform("light.position");
-      glUniform3fv(positionIndex, 1, glm::value_ptr(mCamera->position()));
-
-      // set the light colour
-      GLint intensityIndex = mProgram.uniform("light.intensities");
-      glUniform3fv(intensityIndex, 1, glm::value_ptr(glm::vec3(1, 1, 1)));
+      // set the position of the camera
+      GLint cameraPositionIndex = mProgram.uniform("cameraPosition");
+      glUniform3fv(cameraPositionIndex, 1, glm::value_ptr(mCamera->position()));
 
       mProgram.unuse();
     }
@@ -70,7 +72,7 @@ namespace systems
   {
     System::entityAdded(engine, entity);
 
-    // flyweight of models
+    // model asset association
     auto model = entity.getComponent<Model>(MODEL);
     auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
 
@@ -85,7 +87,7 @@ namespace systems
       std::cerr << "Model " << model->getName() << " was not loaded yet!" << std::endl;
     }
 
-    // flyweight of textures
+    // texture asset association
     auto texture = entity.getComponent<Texture>(TEXTURE);
     if(texture)
     {
@@ -108,6 +110,14 @@ namespace systems
     {
       mCamera = entity.getComponent<Camera>(CAMERA);
       updateCamera();
+    }
+    if(newComponent == LIGHT)
+    {
+      auto light = entity.getComponent<Light>(LIGHT);
+
+      mProgram.use();
+      light->setProgramVariables(mProgram, "light.position", "light.intensities", "light.ambientCoefficient", "light.attenuationFactor");
+      mProgram.unuse();
     }
   }
 
@@ -141,6 +151,7 @@ namespace systems
       auto model = entity.getComponent<Model>(MODEL);
       auto texture = entity.getComponent<Texture>(TEXTURE);
 
+      // prepare matrices
       auto modelIndex = mProgram.uniform("model");
       auto normalIndex = mProgram.uniform("normalMatrix");
 
@@ -149,6 +160,8 @@ namespace systems
 
       auto normalMatrix = glm::transpose(glm::inverse(glm::mat3(modelMatrix)));
       glUniformMatrix3fv(normalIndex, 1, GL_FALSE, glm::value_ptr(normalMatrix));
+
+      texture->setProgramVariables(mProgram, "materialShininess", "materialSpecularColour");
 
       // set the texture
       texture->bind(0);

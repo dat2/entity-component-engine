@@ -1,7 +1,8 @@
-#include <numeric>
-#include <functional>
+// libraries
 #include <algorithm>
+#include <functional>
 
+// engine
 #include <systems/system.hpp>
 
 namespace systems

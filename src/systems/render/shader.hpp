@@ -1,10 +1,8 @@
 #ifndef _SHADER_HPP
 #define _SHADER_HPP
 
-// standard libraries
+// libraries
 #include <string>
-
-// opengl
 #include <GL/glew.h>
 
 namespace systems

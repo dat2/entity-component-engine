@@ -1,54 +1,36 @@
-// open gl needs to be included very first
+//libraries
+#include <fstream>
 #include <GL/GLEW.h>
-
-// glm
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
-
-// sfml
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
-
-// my own
-// utils
-#include <utils/cube.hpp>
-#include <utils/utils.hpp>
+#include <json/json.h>
 
 // engine
-#include <engine/engine.hpp>
-
-// entities
-#include <entities/entity.hpp>
-
-// components
+#include <assets/textureasset.hpp>
+#include <assets/modelasset.hpp>
 #include <components/camera.hpp>
 #include <components/controller.hpp>
-
-// systems
+#include <engine/engine.hpp>
+#include <entities/entity.hpp>
+#include <systems/input.hpp>
 #include <systems/render/program.hpp>
 #include <systems/render/shader.hpp>
 #include <systems/render/render.hpp>
+#include <utils/utils.hpp>
 
-#include <systems/input.hpp>
-
-#include <assets/textureasset.hpp>
-#include <assets/modelasset.hpp>
-
-#include <json/json.h>
-#include <fstream>
-
+using namespace assets;
+using namespace components;
+using namespace engine;
+using namespace entities;
+using namespace systems;
+using namespace utils;
 
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
 #define WINDOW_WIDTH WINDOW_HEIGHT * ASPECT_RATIO
-
-using namespace components;
-using namespace systems;
-using namespace entities;
-using namespace engine;
-using namespace utils;
-using namespace assets;
 
 static void PrintGLInfo()
 {
@@ -156,6 +138,8 @@ static ComponentPtr CreateController()
         window.close();
       }
 
+      // refresh entities so we can make changes to their position and not
+      // need to restart the program
       // introduce some delay into refreshing
       auto newVal = controller.getState("refreshTime") + time.asMilliseconds();
       controller.updateState("refreshTime", newVal);
@@ -191,7 +175,7 @@ static void CreateSystems(Engine& engine, sf::Window& window)
 static void CreatePlayer(Engine& engine)
 {
   // simple player entity
-  auto camera = std::make_shared<Camera>(sf::Vector3f(0, 3, 3), 45.0f, ASPECT_RATIO, 0.1f, 100.0f);
+  auto camera = std::make_shared<Camera>(sf::Vector3f(0, 0, 3), 45.0f, ASPECT_RATIO, 0.1f, 100.0f);
   camera->lookAt(sf::Vector3f(0, 0, 0));
 
   auto controller = CreateController();
@@ -209,10 +193,12 @@ int main()
 {
   sf::ContextSettings settings(24, 8, 4, 4, 1);
   sf::Window window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "OpenGL Entity Component System in 3D", sf::Style::Default, settings);
+  window.setFramerateLimit(60);
+
   InitGLEW();
   InitOpenGL();
 
-  Engine engine("resources");
+  Engine engine("resources/");
 
   CreateSystems(engine, window);
   CreatePlayer(engine);

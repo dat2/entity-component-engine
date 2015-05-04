@@ -1,17 +1,15 @@
 #ifndef _CONTROLLER_HPP
 #define _CONTROLLER_HPP
 
-// standard libraries
+// libraries
+#include <functional>
 #include <unordered_map>
 #include <vector>
-#include <functional>
-
-// sfml
-#include <SFML/Window/Window.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Time.hpp>
+#include <SFML/Window/Window.hpp>
 
-// my own
+// engine
 #include <entities/entity.hpp>
 
 using namespace entities;

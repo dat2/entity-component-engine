@@ -1,18 +1,19 @@
 #ifndef _MODEL_ASSET_HPP
 #define _MODEL_ASSET_HPP
 
-#include <SFML/System/Vector3.hpp>
+// libraries
+#include <json/json.h>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/System/Vector3.hpp>
+#include <tiny_obj_loader.h>
 
+// engine
 #include <assets/asset.hpp>
-
-#include <systems/render/vbo.hpp>
 #include <systems/render/vao.hpp>
+#include <systems/render/vbo.hpp>
 #include <systems/render/program.hpp>
 
 using namespace systems;
-
-#include <tiny_obj_loader.h>
 
 namespace assets
 {
@@ -20,7 +21,7 @@ namespace assets
   class ModelAsset : public Asset
   {
   public:
-    ModelAsset(const std::string name, const std::string filepath);
+    ModelAsset(Json::Value value);
 
     void generate();
     void bind();

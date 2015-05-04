@@ -1,22 +1,18 @@
 #ifndef _RENDER_HPP
 #define _RENDER_HPP
 
+// libraries
 #include <unordered_set>
 #include <unordered_map>
 
-// my own
-// utils
-#include <engine/engine.hpp>
-#include <systems/render/program.hpp>
-
-// components
+// engine
 #include <components/camera.hpp>
 #include <components/transform.hpp>
 #include <components/texture.hpp>
 #include <components/model.hpp>
-
-// systems
+#include <engine/engine.hpp>
 #include <systems/system.hpp>
+#include <systems/render/program.hpp>
 
 using namespace components;
 using namespace engine;

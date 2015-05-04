@@ -1,14 +1,11 @@
-// standard libraries
+// libraries
 #include <iostream>
-
-// opengl
+#include <sstream>
 #include <GL/GLEW.h>
-
 #include <glm/gtx/string_cast.hpp>
 
-// my own
+// engine
 #include <utils/utils.hpp>
-#include <sstream>
 
 // http://www.lighthouse3d.com/cg-topics/error-tracking-in-opengl/
 int printOglError(const char *file, int line)

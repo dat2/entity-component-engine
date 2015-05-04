@@ -1,13 +1,15 @@
 #ifndef _ENGINE_HPP
 #define _ENGINE_HPP
 
+// libraries
 #include <vector>
 #include <unordered_map>
 
+// engine
+#include <assets/assetmanager.hpp>
+#include <components/component.hpp>
 #include <entities/entity.hpp>
 #include <systems/system.hpp>
-#include <components/component.hpp>
-#include <assets/assetmanager.hpp>
 
 using namespace entities;
 using namespace components;

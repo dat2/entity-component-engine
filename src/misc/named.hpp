@@ -1,7 +1,10 @@
 #ifndef _NAMED_HPP
 #define _NAMED_HPP
 
+// libraries
 #include <string>
+
+// engine
 
 class Named
 {

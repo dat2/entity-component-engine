@@ -1,4 +1,6 @@
-// my own
+//libraries
+
+//engine
 #include <components/component.hpp>
 
 namespace components

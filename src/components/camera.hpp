@@ -1,20 +1,16 @@
 #ifndef _CAMERA_HPP
 #define _CAMERA_HPP
 
-//standard libs
+//libraries
 #include <iostream>
-
-// glm
 #include <glm/glm.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-
-// sfml
 #include <SFML/System/Vector3.hpp>
 
-// my own
-#include <misc/printable.hpp>
+// engine
 #include <components/component.hpp>
+#include <misc/printable.hpp>
 
 namespace components
 {

@@ -1,6 +1,8 @@
-#include <misc/printable.hpp>
+// libraries
 
+// engine
 #include <components/component.hpp>
+#include <misc/printable.hpp>
 
 Printable::Printable(const std::string printName)
   : mPrintName(printName)

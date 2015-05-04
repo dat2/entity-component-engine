@@ -1,4 +1,4 @@
-// my own
+// engine
 #include <systems/render/vbo.hpp>
 
 namespace systems

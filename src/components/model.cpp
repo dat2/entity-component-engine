@@ -1,16 +1,11 @@
-// standard libraries
+// libraries
 #include <iostream>
 
-// my own
+// engine
 #include <components/model.hpp>
 
 namespace components
 {
-  Model::Model(const std::string name)
-    : Component(MODEL), Named(name), mAsset(nullptr)
-  {
-  }
-
   Model::Model(Json::Value value)
     : Component(MODEL), Named(value["name"].asString()), mAsset(nullptr)
   {

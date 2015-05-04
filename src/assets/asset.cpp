@@ -1,9 +1,12 @@
+//libraries
+
+//engine
 #include <assets/asset.hpp>
 
 namespace assets
 {
-  Asset::Asset(const std::string name, const std::string filepath)
-    : Printable(name), Named(name), mFilepath(filepath), mLoaded(false)
+  Asset::Asset(Json::Value value)
+    : Printable(value["name"].asString()), Named(value["name"].asString()), mFilepath(value["filepath"].asString()), mLoaded(false)
   {
   }
   void Asset::load()

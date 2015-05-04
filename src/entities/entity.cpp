@@ -1,9 +1,11 @@
+// libraries
 #include <string>
 #include <functional>
 
-#include <misc/printable.hpp>
+// engine
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
+#include <misc/printable.hpp>
 
 using namespace engine;
 

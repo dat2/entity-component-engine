@@ -1,21 +1,20 @@
 #ifndef _TRANSFORM_HPP
 #define _TRANSFORM_HPP
 
+// libraries
 #include <iostream>
-#include <SFML/System/Vector3.hpp>
-
 #include <glm/glm.hpp>
-
-#include <components/component.hpp>
-
+#include <SFML/System/Vector3.hpp>
 #include <json/json.h>
+
+// engine
+#include <components/component.hpp>
 
 namespace components
 {
   class Transform : public Component
   {
   public:
-    Transform(const sf::Vector3f position, const sf::Vector3f rotation, const sf::Vector3f scale);
     Transform(Json::Value value);
 
     void move(const sf::Vector3f position);

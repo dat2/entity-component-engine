@@ -1,11 +1,14 @@
 #ifndef _ASSET_HPP
 #define _ASSET_HPP
 
-#include <string>
+// libraries
 #include <iostream>
+#include <string>
+#include <json/json.h>
 
-#include <misc/printable.hpp>
+//engine
 #include <misc/named.hpp>
+#include <misc/printable.hpp>
 
 namespace assets
 {
@@ -13,7 +16,7 @@ namespace assets
   class Asset : public Printable, public Named
   {
   public:
-    Asset(const std::string name, const std::string filepath);
+    Asset(Json::Value value);
 
     const std::string& getFilepath() const;
 

@@ -1,9 +1,11 @@
 #ifndef _ASSET_MANAGER_HPP
 #define _ASSET_MANAGER_HPP
 
+// libraries
 #include <string>
 #include <unordered_map>
 
+// engine
 #include <assets/asset.hpp>
 
 namespace engine
@@ -38,11 +40,14 @@ namespace assets
     }
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> loadAsset(const std::string name, const std::string filepath, Args && ...args)
+    std::shared_ptr<T> loadAsset(Args && ...args)
     {
-      std::shared_ptr<T> ptr = std::make_shared<T>(name, mBaseDirectory + "/" + filepath, std::forward<Args>(args)...);
+      std::shared_ptr<T> ptr = std::make_shared<T>(std::forward<Args>(args)...);
       ptr->load();
+
+      auto name = ptr->getName();
       mAssets.insert(std::make_pair(name, ptr));
+
       return ptr;
     }
 

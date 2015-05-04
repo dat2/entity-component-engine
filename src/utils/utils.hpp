@@ -1,14 +1,10 @@
 #ifndef _UTILS_HPP
 #define _UTILS_HPP
 
-// standard libraries
+// libraries
 #include <iostream>
 #include <memory>
-
-// opengl
 #include <glm/glm.hpp>
-
-// sfml
 #include <SFML/System/Vector3.hpp>
 
 #define printGlError() printOglError(__FILE__, __LINE__)

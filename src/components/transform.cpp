@@ -1,26 +1,19 @@
-// standard libraries
+// libraries
 #include <iostream>
-
 #include <glm/gtc/matrix_transform.hpp>
 
 // my own
 #include <components/transform.hpp>
 #include <utils/utils.hpp>
 
+using namespace utils;
+
 #define X_AXIS glm::vec3(1, 0, 0)
 #define Y_AXIS glm::vec3(0, 1, 0)
 #define Z_AXIS glm::vec3(0, 0, 1)
 
-using namespace utils;
-
 namespace components
 {
-  Transform::Transform(sf::Vector3f position, sf::Vector3f rotation, sf::Vector3f scale)
-    : Component(TRANSFORM), mPosition(position), mRotation(rotation), mScale(scale)
-  {
-    updateMatrix();
-  }
-
   Transform::Transform(Json::Value value)
     : Component(TRANSFORM)
   {

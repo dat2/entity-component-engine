@@ -1,15 +1,15 @@
 #ifndef _ENTITY_HPP
 #define _ENTITY_HPP
 
-// standard library
-#include <vector>
-#include <set>
+// libraries
 #include <functional>
+#include <set>
+#include <vector>
 
-#include <misc/printable.hpp>
-#include <misc/named.hpp>
-
+// engine
 #include <components/component.hpp>
+#include <misc/named.hpp>
+#include <misc/printable.hpp>
 
 using namespace components;
 

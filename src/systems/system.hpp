@@ -1,23 +1,23 @@
 #ifndef _SYSTEM_HPP
 #define _SYSTEM_HPP
 
-// standard library
-#include <vector>
+// libraries
 #include <functional>
+#include <vector>
 
-// my own
-namespace engine
-{
-  class Engine;
-}
-
-#include <entities/entity.hpp>
+// engine
 #include <components/component.hpp>
+#include <entities/entity.hpp>
 #include <misc/named.hpp>
 #include <misc/printable.hpp>
 
 using namespace components;
 using namespace entities;
+
+namespace engine
+{
+  class Engine;
+}
 
 namespace systems
 {

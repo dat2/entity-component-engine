@@ -1,10 +1,11 @@
 #ifndef _PRINTABLE_HPP
 #define _PRINTABLE_HPP
 
+// libraries
+#include <algorithm>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <algorithm>
 
 class Printable
 {

@@ -1,10 +1,13 @@
+//libraries
+
+//engine
 #include <assets/modelasset.hpp>
 #include <utils/utils.hpp>
 
 namespace assets
 {
-  ModelAsset::ModelAsset(const std::string name, const std::string filepath)
-    : Asset(name, filepath), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)
+  ModelAsset::ModelAsset(Json::Value value)
+    : Asset(value), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)
   {
   }
 

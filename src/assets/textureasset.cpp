@@ -1,10 +1,20 @@
+//libraries
+#include <glm/gtc/type_ptr.hpp>
+
+//engine
 #include <assets/textureasset.hpp>
+#include <utils/utils.hpp>
+
+using namespace utils;
 
 namespace assets
 {
-  TextureAsset::TextureAsset(const std::string name, const std::string filepath)
-    : Asset(name, filepath), mImage(filepath), mTarget(GL_TEXTURE_2D), mNTextures(0)
+  TextureAsset::TextureAsset(Json::Value value)
+    : Asset(value), mTarget(GL_TEXTURE_2D), mNTextures(0), mShininess(value["shininess"].asFloat())
   {
+    mImage = Magick::Image(getFilepath());
+    auto specular = value["specular"];
+    mSpecular = glm::vec3(specular["r"].asFloat(), specular["g"].asFloat(), specular["b"].asFloat());
   }
 
   TextureAsset::~TextureAsset()
@@ -63,6 +73,15 @@ namespace assets
     Asset::load();
   }
 
+  void TextureAsset::setProgramVariables(Program& program, const GLchar* shininess, const GLchar* specular)
+  {
+    auto shininessIndex = program.uniform(shininess);
+    auto specularColourIndex = program.uniform(specular);
+
+    glUniform1f(shininessIndex, mShininess);
+    glUniform3fv(specularColourIndex, 1, glm::value_ptr(mSpecular));
+  }
+
   const Magick::Image& TextureAsset::getImage() const
   {
     return mImage;
@@ -75,5 +94,7 @@ namespace assets
     printField(where, ", resourcePath", getFilepath());
     printField(where, ", width", mImage.columns());
     printField(where, ", height", mImage.rows());
+    printField(where, ", specular", toString(mSpecular));
+    printField(where, ", shininess", mShininess);
   }
 }

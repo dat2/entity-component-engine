@@ -1,10 +1,10 @@
-// standard libraries
-#include <string>
+// libraries
 #include <fstream>
 #include <iostream>
 #include <streambuf>
+#include <string>
 
-// my own
+// engine
 #include <systems/render/shader.hpp>
 
 namespace systems

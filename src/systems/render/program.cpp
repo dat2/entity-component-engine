@@ -1,10 +1,10 @@
-// standard libraries
+// libraries
 #include <iostream>
 
-// my own
-#include <utils/utils.hpp>
+// engine
 #include <systems/render/program.hpp>
 #include <systems/render/shader.hpp>
+#include <utils/utils.hpp>
 
 namespace systems
 {

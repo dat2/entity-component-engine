@@ -1,20 +1,17 @@
-// standard libraries
+// libraries
 #include <iostream>
 
-// my own
+// engine
 #include <components/texture.hpp>
+#include <utils/utils.hpp>
+
+using namespace utils;
 
 namespace components
 {
-  Texture::Texture(const std::string name)
-    : Component(TEXTURE), Named(name), mAsset(nullptr)
-  {
-  }
-
   Texture::Texture(Json::Value value)
     : Component(TEXTURE), Named(value["name"].asString()), mAsset(nullptr)
   {
-
   }
 
   void Texture::bind(int n)
@@ -32,6 +29,14 @@ namespace components
     }
   }
 
+  void Texture::setProgramVariables(Program& program, const GLchar* shininess, const GLchar* specular)
+  {
+    if(mAsset)
+    {
+      mAsset->setProgramVariables(program, shininess, specular);
+    }
+  }
+
   void Texture::setAsset(std::shared_ptr<TextureAsset> asset)
   {
     mAsset = asset;
@@ -39,7 +44,7 @@ namespace components
 
   void Texture::print(std::ostream& where) const
   {
-    where << "asset=(";
+    where << ", asset=(";
     if(mAsset)
     {
       mAsset->print(where);

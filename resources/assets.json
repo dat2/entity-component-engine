@@ -17,11 +17,15 @@
     "assets" : [
       {
         "name": "WoodenCrate",
-        "filepath": "basic/wooden-crate.png"
+        "filepath": "basic/wooden-crate.png",
+        "specular": { "r": 1, "g": 1, "b": 1 },
+        "shininess": 10
       },
       {
         "name": "Tree_01_texture",
-        "filepath": "nature/Tree_01.png"
+        "filepath": "nature/Tree_01.png",
+        "specular": { "r": 1, "g": 1, "b": 1 },
+        "shininess": 40
       }
     ]
   }

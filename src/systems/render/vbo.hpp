@@ -1,7 +1,7 @@
 #ifndef _VBO_HPP
 #define _VBO_HPP
 
-// opengl
+// libraries
 #include <GL/glew.h>
 
 namespace systems
