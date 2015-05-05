@@ -4,6 +4,7 @@
 // libraries
 #include <vector>
 #include <unordered_map>
+#include <SFML/System/Clock.hpp>
 #include <boost/optional.hpp>
 
 // engine
@@ -30,6 +31,9 @@ namespace engine
 
     boost::optional<Entity&> getEntity(const std::string name);
 
+    void updateTime();
+    const sf::Time& getElapsed() const;
+
     void addComponentToEntity(Entity &entity, ComponentPtr component);
     void removeComponentFromEntity(Entity& entity, ComponentType t);
     const Components getComponents(const Entity& entity) const;
@@ -51,6 +55,8 @@ namespace engine
     Entity& createEntity(Args && ...args);
 
   private:
+    sf::Clock mClock;
+    sf::Time mTime;
 
     AssetManager mAssetManager;
     std::vector< SystemPtr > mSystems;

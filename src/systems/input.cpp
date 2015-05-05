@@ -3,6 +3,7 @@
 
 // engine
 #include <components/controller.hpp>
+#include <engine/engine.hpp>
 #include <systems/input.hpp>
 
 using namespace components;
@@ -16,8 +17,7 @@ namespace systems
 
   void InputSystem::run(engine::Engine& engine)
   {
-    sf::Time elapsed = clock.restart();
-
+    auto elapsed = engine.getElapsed();
     for( auto &e : mEntities )
     {
       auto entity = e.get();

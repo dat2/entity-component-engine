@@ -2,7 +2,6 @@
 #define _INPUT_HPP
 
 // libraries
-#include <SFML/System/Clock.hpp>
 #include <SFML/Window/Window.hpp>
 
 // engine
@@ -18,7 +17,6 @@ namespace systems
     void run(engine::Engine& engine);
 
   private:
-    sf::Clock clock;
 
     sf::Window& mWindow;
   };

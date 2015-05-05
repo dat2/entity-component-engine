@@ -40,6 +40,15 @@ namespace engine
     return boost::none;
   }
 
+  void Engine::updateTime()
+  {
+    mTime = mClock.restart();
+  }
+  const sf::Time& Engine::getElapsed() const
+  {
+    return mTime;
+  }
+
   void Engine::addComponentToEntity(Entity &entity, ComponentPtr component)
   {
     auto cs = mEntities.find(entity);
@@ -99,6 +108,7 @@ namespace engine
 
   void Engine::run()
   {
+    updateTime();
     for( auto& system : mSystems )
     {
       system->run(*this);
