@@ -140,6 +140,9 @@ namespace engine
   {
     Json::Value root;
     std::ifstream entitiesFile(mAssetManager.getBaseDirectory() + filename);
+
+    auto constructors = makeComponentFactory();
+
     try
     {
       entitiesFile >> root;
@@ -160,31 +163,7 @@ namespace engine
         {
           auto type = component["type"].asString();
 
-          // todo if statements are disgusting
-          if(type == "model")
-          {
-            entity.addComponent(std::make_shared<Model>(component));
-          }
-          else if(type == "texture")
-          {
-            entity.addComponent(std::make_shared<Texture>(component));
-          }
-          else if(type == "transform")
-          {
-            entity.addComponent(std::make_shared<Transform>(component));
-          }
-          else if(type == "light")
-          {
-            entity.addComponent(std::make_shared<Light>(component));
-          }
-          else if(type == "camera")
-          {
-            entity.addComponent(std::make_shared<Camera>(component));
-          }
-          else if(type == "controller")
-          {
-            entity.addComponent(std::make_shared<Controller>(component));
-          }
+          entity.addComponent(constructors[type](component));
         }
       }
     }
@@ -234,4 +213,17 @@ namespace engine
     mAssetManager.unloadAssets();
   }
 
+  #define ADD_STRING(name, Name) constructors[#name] = constructComponent<Name,Json::Value>;
+  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > makeComponentFactory()
+  {
+    std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > constructors;
+    ADD_STRING(model,Model);
+    ADD_STRING(texture,Texture);
+    ADD_STRING(transform,Transform);
+    ADD_STRING(light,Light);
+    ADD_STRING(camera,Camera);
+    ADD_STRING(controller,Controller);
+
+    return constructors;
+  }
 }

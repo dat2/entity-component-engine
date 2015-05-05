@@ -56,6 +56,8 @@ namespace engine
     std::vector< SystemPtr > mSystems;
     std::unordered_map< Entity, std::vector< ComponentPtr > > mEntities;
   };
+
+  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > makeComponentFactory();
 }
 
 #include <engine/engine.inl>
