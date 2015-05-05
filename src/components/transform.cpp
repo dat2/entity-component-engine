@@ -28,9 +28,9 @@ namespace components
     updateMatrix();
   }
 
-  void Transform::move(const sf::Vector3f position)
+  void Transform::setPosition(const sf::Vector3f position)
   {
-    mPosition += position;
+    mPosition = position;
 
     updateMatrix();
   }

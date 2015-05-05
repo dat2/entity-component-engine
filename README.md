@@ -6,6 +6,7 @@
 5. [tinyobjloader](https://github.com/syoyo/tinyobjloader)
 6. [jsoncpp](https://github.com/open-source-parsers/jsoncpp)
 7. boost
+8. BulletPhysicsEngine
 
 GLEW, GLM, SFML, boost, and Magick++ are expected in the default system include folders.
 

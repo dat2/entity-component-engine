@@ -17,7 +17,7 @@ namespace components
   public:
     Transform(Json::Value value);
 
-    void move(const sf::Vector3f position);
+    void setPosition(const sf::Vector3f position);
     // void rotate();
     // void scale();
 
