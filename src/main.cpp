@@ -90,7 +90,7 @@ static ComponentPtr CreateController()
   controller->addUpdateCallback(
     [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
     {
-      auto cam = entity.getComponent<Camera>(CAMERA);
+      auto cam = entity.getComponent<Camera>();
       if(cam == nullptr)
       {
         return;
@@ -198,7 +198,7 @@ int main()
   InitGLEW();
   InitOpenGL();
 
-  Engine engine("resources/");
+  Engine engine("resources");
 
   CreateSystems(engine, window);
   CreatePlayer(engine);

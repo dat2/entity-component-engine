@@ -2,11 +2,14 @@
 
 //engine
 #include <assets/assetmanager.hpp>
+#include <utils/utils.hpp>
+
+using namespace utils;
 
 namespace assets
 {
   AssetManager::AssetManager(std::string baseDirectory)
-    : mBaseDirectory(baseDirectory)
+    : mBaseDirectory(ensureDirectory(baseDirectory))
   {
   }
 

@@ -15,8 +15,8 @@ find_library(TINYOBJLIB NAMES tinyobjloader
   # PATHS ${PROJECT_SOURCE_DIR}/libs/jsoncpp/src/lib_json NO_DEFAULT_PATH)
 
 file(GLOB_RECURSE openglgame_SRCS
-    "src/*.hpp"
-    "src/*.cpp"
+  "src/*.hpp"
+  "src/*.cpp"
 )
 
 add_executable(openglgame ${openglgame_SRCS})

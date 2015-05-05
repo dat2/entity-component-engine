@@ -73,7 +73,7 @@ namespace systems
     System::entityAdded(engine, entity);
 
     // model asset association
-    auto model = entity.getComponent<Model>(MODEL);
+    auto model = entity.getComponent<Model>();
     auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
 
     if(modelAsset)
@@ -88,7 +88,7 @@ namespace systems
     }
 
     // texture asset association
-    auto texture = entity.getComponent<Texture>(TEXTURE);
+    auto texture = entity.getComponent<Texture>();
     if(texture)
     {
       auto textureAsset = engine.getAsset<TextureAsset>(texture->getName());
@@ -108,12 +108,12 @@ namespace systems
   {
     if(!mCamera && newComponent == CAMERA)
     {
-      mCamera = entity.getComponent<Camera>(CAMERA);
+      mCamera = entity.getComponent<Camera>();
       updateCamera();
     }
     if(newComponent == LIGHT)
     {
-      auto light = entity.getComponent<Light>(LIGHT);
+      auto light = entity.getComponent<Light>();
 
       mProgram.use();
       light->setProgramVariables(mProgram, "light.position", "light.intensities", "light.ambientCoefficient", "light.attenuationFactor");
@@ -123,7 +123,7 @@ namespace systems
 
   void RenderSystem::entityRemoved(Engine& engine, Entity& entity)
   {
-    if( entity.getComponent<Camera>(CAMERA) == mCamera)
+    if( entity.getComponent<Camera>() == mCamera)
     {
       mCamera = nullptr;
     }
@@ -147,9 +147,9 @@ namespace systems
     {
       auto entity = e.get();
 
-      auto transform = entity.getComponent<Transform>(TRANSFORM);
-      auto model = entity.getComponent<Model>(MODEL);
-      auto texture = entity.getComponent<Texture>(TEXTURE);
+      auto transform = entity.getComponent<Transform>();
+      auto model = entity.getComponent<Model>();
+      auto texture = entity.getComponent<Texture>();
 
       // prepare matrices
       auto modelIndex = mProgram.uniform("model");

@@ -4,6 +4,7 @@
 // libraries
 #include <functional>
 #include <set>
+#include <typeinfo>
 #include <vector>
 
 // engine
@@ -38,7 +39,7 @@ namespace entities
     void print(std::ostream& where) const;
 
     template <class T>
-    std::shared_ptr<T> getComponent(ComponentType t)
+    std::shared_ptr<T> getComponent()
     {
       auto csPtr = getComponents();
       if(!csPtr)
@@ -49,7 +50,7 @@ namespace entities
       auto components = *csPtr;
 
       auto result = std::find_if(std::begin(components), std::end(components),
-        [&t](const ComponentPtr& c) { return c->getType() == t; }
+        [](const ComponentPtr& c) { return typeid(*c).name() == typeid(T).name(); }
       );
       if(result != std::end(components))
       {

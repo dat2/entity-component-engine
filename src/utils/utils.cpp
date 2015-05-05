@@ -50,4 +50,14 @@ namespace utils
   {
     return glm::to_string(v);
   }
+
+  std::string ensureDirectory(const std::string filepath)
+  {
+    std::string rtn = filepath;
+    if(filepath.compare(filepath.length() - 1, 1, "/"))
+    {
+      rtn += "/";
+    }
+    return rtn;
+  }
 }

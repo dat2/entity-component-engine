@@ -21,7 +21,7 @@ namespace systems
     for( auto &e : mEntities )
     {
       auto entity = e.get();
-      auto controller = entity.getComponent<Controller>(CONTROLLER);
+      auto controller = entity.getComponent<Controller>();
 
       if(mWindow.hasFocus())
       {

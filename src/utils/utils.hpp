@@ -29,6 +29,8 @@ namespace utils
 
   std::string toString(sf::Vector3f v);
   std::string toString(glm::vec3 v);
+
+  std::string ensureDirectory(const std::string filepath);
 }
 
 #endif

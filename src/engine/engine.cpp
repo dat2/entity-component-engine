@@ -11,6 +11,9 @@
 #include <components/texture.hpp>
 #include <components/transform.hpp>
 #include <engine/engine.hpp>
+#include <utils/utils.hpp>
+
+using namespace utils;
 
 namespace engine
 {
@@ -96,7 +99,7 @@ namespace engine
 
       // load all model assets
       auto models = root["models"];
-      auto modelsBasepath = mAssetManager.getBaseDirectory() + models["basepath"].asString();
+      auto modelsBasepath = ensureDirectory(mAssetManager.getBaseDirectory() + models["basepath"].asString());
       for( auto& modelJson : models["assets"])
       {
         modelJson["filepath"] = Json::Value(modelsBasepath + modelJson["filepath"].asString());
@@ -105,7 +108,7 @@ namespace engine
 
       // load all texture assets
       auto textures = root["textures"];
-      auto texturesBasepath = mAssetManager.getBaseDirectory() + textures["basepath"].asString();
+      auto texturesBasepath = ensureDirectory(mAssetManager.getBaseDirectory() + textures["basepath"].asString());
       for( auto& textureJson : textures["assets"])
       {
         textureJson["filepath"] = Json::Value(texturesBasepath + textureJson["filepath"].asString());
