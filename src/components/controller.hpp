@@ -8,6 +8,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Window/Window.hpp>
+#include <json/json.h>
 
 // engine
 #include <entities/entity.hpp>
@@ -29,7 +30,7 @@ namespace components
   class Controller : public Component
   {
   public:
-    Controller();
+    Controller(Json::Value value);
 
     void createKeyAction(const std::string action, Keys keys);
     void createState(const std::string state);

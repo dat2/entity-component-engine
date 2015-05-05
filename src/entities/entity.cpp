@@ -31,7 +31,7 @@ namespace entities
     return std::find(mTags.begin(), mTags.end(), tag) != mTags.end();
   }
 
-  const engine::EntityComponentsPtr Entity::getComponents() const
+  const engine::Components Entity::getComponents() const
   {
     return mEngine.getComponents(*this);
   }
@@ -51,6 +51,12 @@ namespace entities
       auto components = *csPtr;
       printVector(where, ", components", components, [](const ComponentPtr& c) { return ToString(c->getType()); });
     }
+  }
+
+  // simplify code in engine.cpp
+  Entity::Entity(engine::Engine& engine, std::string name)
+    : Printable("Entity"), Named(name), mEngine(engine)
+  {
   }
 
 }

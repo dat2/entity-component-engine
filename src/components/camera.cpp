@@ -17,11 +17,17 @@ using namespace utils;
 
 namespace components
 {
-  Camera::Camera(sf::Vector3f pos, float fov, float ratio, float near, float far)
+  Camera::Camera(Json::Value value)
     : Component(CAMERA),
-      mPosition(sfmlToGlm(pos)), mFieldOfView(fov), mAspectRatio(ratio), mNear(near), mFar(far),
+      mFieldOfView(value["fov"].asFloat()), mAspectRatio(value["aspect"].asFloat()),
+      mNear(value["near"].asFloat()), mFar(value["far"].asFloat()),
       mVerticalAngle(0.0f), mHorizontalAngle(0.0f), mNeedsUpdate(false)
   {
+    auto pos = value["position"];
+    mPosition = glm::vec3(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
+
+    auto lookAtPos = value["lookAt"];
+    lookAt(sf::Vector3f(lookAtPos["x"].asFloat(), lookAtPos["y"].asFloat(), lookAtPos["z"].asFloat()));
   }
 
   void Camera::move(glm::vec3 diff)

@@ -4,6 +4,7 @@
 // libraries
 #include <vector>
 #include <unordered_map>
+#include <boost/optional.hpp>
 
 // engine
 #include <assets/assetmanager.hpp>
@@ -18,7 +19,7 @@ using namespace assets;
 
 namespace engine
 {
-  typedef std::shared_ptr< std::vector< ComponentPtr > > EntityComponentsPtr;
+  typedef boost::optional< std::vector< ComponentPtr > > Components;
 
   class Engine
   {
@@ -27,9 +28,11 @@ namespace engine
 
     void addSystem(SystemPtr system);
 
+    boost::optional<Entity&> getEntity(const std::string name);
+
     void addComponentToEntity(Entity &entity, ComponentPtr component);
     void removeComponentFromEntity(Entity& entity, ComponentType t);
-    const EntityComponentsPtr getComponents(const Entity& entity) const;
+    const Components getComponents(const Entity& entity) const;
 
     void run();
     void loadAssetsJson(const std::string filename);
@@ -39,37 +42,22 @@ namespace engine
     void unloadAssets();
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> getAsset(Args && ...args)
-    {
-      return mAssetManager.getAsset<T>(std::forward<Args>(args)...);
-    }
+    std::shared_ptr<T> getAsset(Args && ...args);
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> loadAsset(Args && ...args)
-    {
-      return mAssetManager.loadAsset<T>(std::forward<Args>(args)...);
-    }
+    std::shared_ptr<T> loadAsset(Args && ...args);
 
     template <typename ...Args>
-    Entity& createEntity(Args && ...args)
-    {
-      auto result = mEntities.emplace(
-        std::piecewise_construct,
-        std::forward_as_tuple(*this, std::forward<Args>(args)...),
-        std::forward_as_tuple(std::make_shared< std::vector<ComponentPtr> >())
-      );
-
-      // get rid of the const of first
-      return const_cast<Entity&>(result.first->first);
-    }
+    Entity& createEntity(Args && ...args);
 
   private:
 
     AssetManager mAssetManager;
     std::vector< SystemPtr > mSystems;
-    std::unordered_map< Entity, EntityComponentsPtr > mEntities;
+    std::unordered_map< Entity, std::vector< ComponentPtr > > mEntities;
   };
-
 }
+
+#include <engine/engine.inl>
 
 #endif

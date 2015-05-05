@@ -7,7 +7,7 @@
 
 namespace components
 {
-  Controller::Controller()
+  Controller::Controller(Json::Value value)
     : Component(CONTROLLER)
   {
   }

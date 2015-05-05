@@ -7,6 +7,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <json/json.h>
 
 // engine
 #include <components/component.hpp>
@@ -17,7 +18,7 @@ namespace components
   class Camera : public Component
   {
   public:
-    Camera(sf::Vector3f pos, float fov, float ratio, float near, float far);
+    Camera(Json::Value value);
 
     void move(const glm::vec3 diff);
     void rotate(float vertical, float horizontal);

@@ -65,10 +65,8 @@ static void InitOpenGL()
   glDepthFunc(GL_LESS);
 }
 
-static ComponentPtr CreateController()
+static void FillController(const std::shared_ptr<Controller>& controller)
 {
-  auto controller = std::make_shared<Controller>();
-
   controller->createKeyAction("moveLeft", { sf::Keyboard::Left, sf::Keyboard::A });
   controller->createKeyAction("moveRight", { sf::Keyboard::Right, sf::Keyboard::D });
   controller->createKeyAction("moveForward", { sf::Keyboard::Up, sf::Keyboard::W });
@@ -156,8 +154,6 @@ static ComponentPtr CreateController()
       }
     }
   );
-
-  return controller;
 }
 
 static void CreateSystems(Engine& engine, sf::Window& window)
@@ -165,28 +161,20 @@ static void CreateSystems(Engine& engine, sf::Window& window)
   auto inputSystem = std::make_shared<InputSystem>(window);
   auto renderSystem = std::make_shared<RenderSystem>();
 
-  std::cout << *inputSystem << std::endl;
-  std::cout << *renderSystem << std::endl;
-
   engine.addSystem(renderSystem);
   engine.addSystem(inputSystem);
 }
 
-static void CreatePlayer(Engine& engine)
+static void AddControllerToPlayer(Engine& engine)
 {
-  // simple player entity
-  auto camera = std::make_shared<Camera>(sf::Vector3f(0, 0, 3), 45.0f, ASPECT_RATIO, 0.1f, 100.0f);
-  camera->lookAt(sf::Vector3f(0, 0, 0));
+  auto e = engine.getEntity("player");
+  if(e)
+  {
+    auto& player = *e;
 
-  auto controller = CreateController();
-
-  std::set<std::string> tags { "player" };
-  Entity& player = engine.createEntity("player", tags);
-
-  player.addComponent(camera);
-  player.addComponent(controller);
-
-  std::cout << player << std::endl;
+    auto controller = player.getComponent<Controller>();
+    FillController(controller);
+  }
 }
 
 int main()
@@ -201,10 +189,11 @@ int main()
   Engine engine("resources");
 
   CreateSystems(engine, window);
-  CreatePlayer(engine);
 
   engine.loadAssetsJson("assets.json");
   engine.loadEntitiesJson("entities.json");
+
+  AddControllerToPlayer(engine);
 
   // TODO: move to window system?
   while (window.isOpen())

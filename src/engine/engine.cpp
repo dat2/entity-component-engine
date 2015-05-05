@@ -6,6 +6,8 @@
 // engine
 #include <assets/modelasset.hpp>
 #include <assets/textureasset.hpp>
+#include <components/camera.hpp>
+#include <components/controller.hpp>
 #include <components/light.hpp>
 #include <components/model.hpp>
 #include <components/texture.hpp>
@@ -27,10 +29,26 @@ namespace engine
     mSystems.push_back(std::move(system));
   }
 
+  boost::optional<Entity&> Engine::getEntity(const std::string name)
+  {
+    auto r = mEntities.find(Entity(*this, name));
+    if(r != mEntities.end())
+    {
+      return const_cast<Entity&>(r->first);
+    }
+
+    return boost::none;
+  }
+
   void Engine::addComponentToEntity(Entity &entity, ComponentPtr component)
   {
-    auto csPtr = mEntities.at(entity);
-    auto& components = *csPtr;
+    auto cs = mEntities.find(entity);
+    if(cs == mEntities.end())
+    {
+      return;
+    }
+
+    auto& components = cs->second;
     components.push_back(component);
 
     for( auto& system : mSystems )
@@ -46,13 +64,13 @@ namespace engine
 
   void Engine::removeComponentFromEntity(Entity& entity, ComponentType t)
   {
-    auto& csPtr = mEntities.at(entity);
-    if(!csPtr)
+    auto cs = mEntities.find(entity);
+    if(cs == mEntities.end())
     {
       return;
     }
 
-    auto components = *csPtr;
+    auto& components = cs->second;
     auto predicate = [&t](const ComponentPtr& c) { return c->getType() == t; };
     components.erase(std::remove_if(std::begin(components), std::end(components), predicate), std::end(components));
 
@@ -69,16 +87,14 @@ namespace engine
     }
   }
 
-  const EntityComponentsPtr Engine::getComponents(const Entity& entity) const
+  const Components Engine::getComponents(const Entity& entity) const
   {
-    try
+    auto cs = mEntities.find(entity);
+    if(cs == mEntities.end())
     {
-      return mEntities.at(entity);
+      return boost::none;
     }
-    catch(...)
-    {
-      return nullptr;
-    }
+    return cs->second;
   }
 
   void Engine::run()
@@ -161,6 +177,14 @@ namespace engine
           {
             entity.addComponent(std::make_shared<Light>(component));
           }
+          else if(type == "camera")
+          {
+            entity.addComponent(std::make_shared<Camera>(component));
+          }
+          else if(type == "controller")
+          {
+            entity.addComponent(std::make_shared<Controller>(component));
+          }
         }
       }
     }
@@ -171,7 +195,6 @@ namespace engine
 
   void Engine::clearEntities(const std::string tag)
   {
-
     for( auto& system : mSystems )
     {
       for(auto& kvs : mEntities)
