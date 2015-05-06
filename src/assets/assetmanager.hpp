@@ -27,34 +27,17 @@ namespace assets
     const std::string getBaseDirectory() const;
 
     template <class T>
-    std::shared_ptr<T> getAsset(const std::string assetName)
-    {
-      auto search = mAssets.find(assetName);
-
-      if(search == mAssets.end())
-      {
-        return nullptr;
-      }
-
-      return std::dynamic_pointer_cast<T>(search->second);
-    }
+    std::shared_ptr<T> getAsset(const std::string assetName);
 
     template <class T, typename ...Args>
-    std::shared_ptr<T> loadAsset(Args && ...args)
-    {
-      std::shared_ptr<T> ptr = std::make_shared<T>(std::forward<Args>(args)...);
-      ptr->load();
-
-      auto name = ptr->getName();
-      mAssets.insert(std::make_pair(name, ptr));
-
-      return ptr;
-    }
+    std::shared_ptr<T> loadAsset(Args && ...args);
 
   private:
     std::string mBaseDirectory;
     std::unordered_map< std::string, AssetPtr > mAssets;
   };
 }
+
+#include <assets/assetmanager.inl>
 
 #endif

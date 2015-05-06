@@ -87,9 +87,9 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
   // TODO tie in physics somehow
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](auto& engine, auto& entity, auto& controller, auto& window, auto& time)
     {
-      auto cam = entity.getComponent<Camera>();
+      auto cam = entity.template getComponent<Camera>();
       if(cam == nullptr)
       {
         return;
@@ -130,7 +130,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   );
 
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](auto& engine, auto& entity, auto& controller, auto& window, auto& time)
     {
       if(controller.getKeyActionState("quit"))
       {

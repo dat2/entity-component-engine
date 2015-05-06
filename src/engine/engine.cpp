@@ -80,14 +80,14 @@ namespace engine
     }
 
     auto& components = cs->second;
-    auto predicate = [&t](const ComponentPtr& c) { return c->getType() == t; };
+    auto predicate = [&t](auto& c) { return c->getType() == t; };
     components.erase(std::remove_if(std::begin(components), std::end(components), predicate), std::end(components));
 
     for( auto& system : mSystems )
     {
       if(!system->hasTypes(entity))
       {
-        auto entityPredicate = [&entity](const EntityRef& e) { return e.get().getName() == entity.getName(); };
+        auto entityPredicate = [&entity](auto& e) { return e.get().getName() == entity.getName(); };
         system->mEntities.erase(
           std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
         system->entityRemoved(*this, entity);
@@ -190,10 +190,10 @@ namespace engine
       {
         auto& entity = const_cast<Entity&>(kvs.first);
 
-        auto entityPredicate = [&entity, &tag](const EntityRef& e)
+        auto entityPredicate = [&entity, &tag](const EntityRef eref)
         {
-          auto entity = e.get();
-          return entity.getName() == entity.getName() && entity.hasTag(tag);
+          auto& e = eref.get();
+          return e.getName() == entity.getName() && e.hasTag(tag);
         };
         system->mEntities.erase(
           std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));

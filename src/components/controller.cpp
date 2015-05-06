@@ -1,6 +1,7 @@
 // libraries
 #include <algorithm>
 #include <iostream>
+#include <numeric>
 
 // engine
 #include <components/controller.hpp>
@@ -38,14 +39,10 @@ namespace components
     for( auto &iterator : mKeyActionStates )
     {
       auto& state = iterator.second.first;
-
-      bool keyState = false;
       auto& keys = iterator.second.second;
-      for(auto& key : keys)
-      {
-        keyState = keyState || sf::Keyboard::isKeyPressed(key);
-      }
-      state = keyState;
+
+      state = std::accumulate(keys.begin(), keys.end(), false,
+        [](auto b, auto& key) { return b || sf::Keyboard::isKeyPressed(key); });
     }
   }
   void Controller::updateState(const std::string state, int val)
