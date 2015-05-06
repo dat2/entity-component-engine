@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <SFML/System/Vector3.hpp>
 #include <json/json.h>
+#include <LinearMath/btTransform.h>
 
 // engine
 #include <components/component.hpp>
@@ -16,6 +17,8 @@ namespace components
   {
   public:
     Transform(Json::Value value);
+
+    void set(const btTransform &worldTrans);
 
     void setPosition(const sf::Vector3f position);
     // void rotate();

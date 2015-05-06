@@ -6,6 +6,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include <SFML/System/Vector3.hpp>
+#include <LinearMath/btVector3.h>
 
 #define printGlError() printOglError(__FILE__, __LINE__)
 int printOglError(const char *file, int line);
@@ -26,6 +27,8 @@ namespace utils
    * @return   the equivalent sfml vector
    */
   sf::Vector3f glmToSfml(glm::vec3 v);
+
+  sf::Vector3f bulletToSfml(btVector3 v);
 
   std::string toString(sf::Vector3f v);
   std::string toString(glm::vec3 v);

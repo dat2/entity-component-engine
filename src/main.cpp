@@ -7,7 +7,6 @@
 #include <SFML/OpenGL.hpp>
 #include <SFML/Window.hpp>
 #include <json/json.h>
-#include <BulletDynamics/btBulletDynamicsCommon.h>
 
 // engine
 #include <assets/textureasset.hpp>
@@ -17,6 +16,7 @@
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
 #include <systems/input.hpp>
+#include <systems/physics/physics.hpp>
 #include <systems/render/program.hpp>
 #include <systems/render/shader.hpp>
 #include <systems/render/render.hpp>
@@ -160,10 +160,12 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 static void CreateSystems(Engine& engine, sf::Window& window)
 {
   auto inputSystem = std::make_shared<InputSystem>(window);
+  auto physicsSystem = std::make_shared<PhysicsSystem>();
   auto renderSystem = std::make_shared<RenderSystem>();
 
-  engine.addSystem(renderSystem);
   engine.addSystem(inputSystem);
+  engine.addSystem(physicsSystem);
+  engine.addSystem(renderSystem);
 }
 
 static void AddControllerToPlayer(Engine& engine)
@@ -196,51 +198,6 @@ int main()
 
   AddControllerToPlayer(engine);
 
-  // build the broadphase algorithm
-  btBroadphaseInterface* broadphase = new btDbvtBroadphase();
-
-  // build the collision config and dispatcher
-  btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-  btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-
-  // build the physics solver
-  btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-
-  // make the world
-  btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-  dynamicsWorld->setGravity(btVector3(0, -10, 0));
-
-  // do stuff in the world
-
-  // create ground plane
-  btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-
-  btDefaultMotionState* groundMotionState =
-    new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-
-  btRigidBody::btRigidBodyConstructionInfo
-    groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-  btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-
-  dynamicsWorld->addRigidBody(groundRigidBody);
-
-  // create falling ball
-  btCollisionShape* fallShape = new btSphereShape(1);
-
-  btDefaultMotionState* fallMotionState =
-    new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-
-  btScalar mass = 1;
-  btVector3 fallInertia(0, 0, 0);
-  fallShape->calculateLocalInertia(mass, fallInertia);
-
-  btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
-  btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
-
-  dynamicsWorld->addRigidBody(fallRigidBody);
-
-  // update world
-
   // TODO: move to window system?
   while (window.isOpen())
   {
@@ -257,45 +214,9 @@ int main()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     engine.run();
-    dynamicsWorld->stepSimulation(engine.getElapsed().asSeconds(), 10);
-
-    btTransform trans;
-    fallRigidBody->getMotionState()->getWorldTransform(trans);
-
-    auto o = trans.getOrigin();
-
-    auto e = engine.getEntity("tree");
-    if(e)
-    {
-      auto entity = *e;
-      auto t = entity.getComponent<Transform>();
-      if(t)
-      {
-        t->setPosition(sf::Vector3f(o.getX(), o.getY(), o.getZ()));
-      }
-    }
-    // std::cout << "sphere height: " << trans.getOrigin().getY() << std::endl;
 
     window.display();
   }
-
-  // Clean up behind ourselves like good little programmers
-  dynamicsWorld->removeRigidBody(fallRigidBody);
-  delete fallRigidBody->getMotionState();
-  delete fallRigidBody;
-
-  dynamicsWorld->removeRigidBody(groundRigidBody);
-  delete groundRigidBody->getMotionState();
-  delete groundRigidBody;
-
-  delete fallShape;
-  delete groundShape;
-
-  delete dynamicsWorld;
-  delete solver;
-  delete dispatcher;
-  delete collisionConfiguration;
-  delete broadphase;
 
   return 0;
 }

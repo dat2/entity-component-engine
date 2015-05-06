@@ -40,6 +40,11 @@ namespace utils
     return sf::Vector3f(v.x, v.y, v.z);
   }
 
+  sf::Vector3f bulletToSfml(btVector3 v)
+  {
+    return sf::Vector3f(v.getX(), v.getY(), v.getZ());
+  }
+
   std::string toString(sf::Vector3f v)
   {
     std::stringstream buf;

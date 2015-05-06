@@ -28,6 +28,16 @@ namespace components
     updateMatrix();
   }
 
+  void Transform::set(const btTransform &worldTrans)
+  {
+    mPosition = bulletToSfml(worldTrans.getOrigin());
+
+    auto rot = worldTrans.getRotation();
+    mRotation = sf::Vector3f(rot.x(), rot.y(), rot.z());
+
+    updateMatrix();
+  }
+
   void Transform::setPosition(const sf::Vector3f position)
   {
     mPosition = position;

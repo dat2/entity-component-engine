@@ -14,7 +14,7 @@
       "name": "L_1",
       "tags": ["level"],
       "components": [
-        { "type": "light", "position": { "x": 0, "y": 4, "z": 0 }, "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.06 }
+        { "type": "light", "position": { "x": 0, "y": 20, "z": 0 }, "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.01 }
       ]
     },
     // walls
