@@ -29,9 +29,11 @@ namespace utils
   sf::Vector3f glmToSfml(glm::vec3 v);
 
   sf::Vector3f bulletToSfml(btVector3 v);
+  btVector3 sfmlToBullet(sf::Vector3f v);
 
-  std::string toString(sf::Vector3f v);
   std::string toString(glm::vec3 v);
+  std::string toString(sf::Vector3f v);
+  std::string toString(btVector3 v);
 
   std::string ensureDirectory(const std::string filepath);
 }

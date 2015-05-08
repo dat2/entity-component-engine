@@ -13,7 +13,9 @@
 #include <components/component.hpp>
 #include <misc/printable.hpp>
 
-namespace components
+using namespace components;
+
+namespace render
 {
   class Camera : public Component
   {

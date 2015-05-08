@@ -49,7 +49,7 @@ namespace entities
     else
     {
       auto components = *csPtr;
-      printVector(where, ", components", components, [](auto& c) { return ToString(c->getType()); });
+      printVector(where, ", components", components, [](const ComponentPtr& c) { return ToString(c->getType()); });
     }
   }
 

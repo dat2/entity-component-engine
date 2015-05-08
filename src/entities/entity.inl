@@ -12,7 +12,7 @@ namespace entities
 
     auto result = std::find_if(
       components.begin(), components.end(),
-      [](auto& c)
+      [](const ComponentPtr& c)
       {
         return typeid(*c) == typeid(T);
       }

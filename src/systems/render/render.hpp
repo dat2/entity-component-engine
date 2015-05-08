@@ -6,18 +6,19 @@
 #include <unordered_map>
 
 // engine
-#include <components/camera.hpp>
-#include <components/transform.hpp>
-#include <components/texture.hpp>
-#include <components/model.hpp>
+#include <components/common/transform.hpp>
+#include <components/render/camera.hpp>
+#include <components/render/model.hpp>
+#include <components/render/texture.hpp>
 #include <engine/engine.hpp>
 #include <systems/system.hpp>
 #include <systems/render/program.hpp>
 
 using namespace components;
 using namespace engine;
+using namespace systems;
 
-namespace systems
+namespace render
 {
   class RenderSystem : public System
   {

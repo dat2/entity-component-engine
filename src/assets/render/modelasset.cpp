@@ -1,10 +1,10 @@
 //libraries
 
 //engine
-#include <assets/modelasset.hpp>
+#include <assets/render/modelasset.hpp>
 #include <utils/utils.hpp>
 
-namespace assets
+namespace render
 {
   ModelAsset::ModelAsset(Json::Value value)
     : Asset(value), mVertexBuffer(GL_ARRAY_BUFFER), mVertexArray(), mNumVertices(0)

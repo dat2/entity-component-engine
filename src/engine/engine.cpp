@@ -4,18 +4,23 @@
 #include <json/json.h>
 
 // engine
-#include <assets/modelasset.hpp>
-#include <assets/textureasset.hpp>
-#include <components/camera.hpp>
-#include <components/controller.hpp>
-#include <components/light.hpp>
-#include <components/model.hpp>
-#include <components/texture.hpp>
-#include <components/transform.hpp>
+#include <assets/render/modelasset.hpp>
+#include <assets/render/textureasset.hpp>
+#include <components/common/transform.hpp>
+#include <components/input/controller.hpp>
+#include <components/physics/rigidbody.hpp>
+#include <components/render/camera.hpp>
+#include <components/render/light.hpp>
+#include <components/render/model.hpp>
+#include <components/render/texture.hpp>
 #include <engine/engine.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
+
+using namespace input;
+using namespace physics;
+using namespace render;
 
 namespace engine
 {
@@ -80,19 +85,30 @@ namespace engine
     }
 
     auto& components = cs->second;
-    auto predicate = [&t](auto& c) { return c->getType() == t; };
-    components.erase(std::remove_if(std::begin(components), std::end(components), predicate), std::end(components));
+    auto predicate = [&t](const ComponentPtr& c) { return c->getType() == t; };
 
-    for( auto& system : mSystems )
+    bool needsChanging = false;
+    for(auto c : components)
     {
-      if(!system->hasTypes(entity))
+      needsChanging = needsChanging || predicate(c);
+    }
+
+    if(needsChanging)
+    {
+      for( auto& system : mSystems )
       {
-        auto entityPredicate = [&entity](auto& e) { return e.get().getName() == entity.getName(); };
-        system->mEntities.erase(
-          std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
-        system->entityRemoved(*this, entity);
+        if(system->hasTypes(entity))
+        {
+          system->entityRemoved(*this, entity);
+
+          auto entityPredicate = [&entity](const EntityRef& e) { return e.get().getName() == entity.getName(); };
+          system->mEntities.erase(
+            std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
+        }
+        system->entityChanged(*this, entity, t);
       }
-      system->entityChanged(*this, entity, t);
+
+      components.erase(std::remove_if(std::begin(components), std::end(components), predicate), std::end(components));
     }
   }
 
@@ -190,6 +206,8 @@ namespace engine
       {
         auto& entity = const_cast<Entity&>(kvs.first);
 
+        // for each system
+        // remove all its entities that have the same tag
         auto entityPredicate = [&entity, &tag](const EntityRef eref)
         {
           auto& e = eref.get();
@@ -197,7 +215,7 @@ namespace engine
         };
         system->mEntities.erase(
           std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
-        if(entityPredicate(entity))
+        if(entityPredicate(entity) && system->hasTypes(entity))
         {
           system->entityRemoved(*this, entity);
         }
@@ -216,6 +234,7 @@ namespace engine
         it++;
       }
     }
+    updateTime();
   }
 
   void Engine::unloadAssets()
@@ -233,6 +252,7 @@ namespace engine
     ADD_STRING(light,Light);
     ADD_STRING(camera,Camera);
     ADD_STRING(controller,Controller);
+    ADD_STRING(physics,RigidBody);
 
     return constructors;
   }

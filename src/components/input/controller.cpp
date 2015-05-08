@@ -4,9 +4,9 @@
 #include <numeric>
 
 // engine
-#include <components/controller.hpp>
+#include <components/input/controller.hpp>
 
-namespace components
+namespace input
 {
   Controller::Controller(Json::Value value)
     : Component(CONTROLLER)
@@ -42,7 +42,7 @@ namespace components
       auto& keys = iterator.second.second;
 
       state = std::accumulate(keys.begin(), keys.end(), false,
-        [](auto b, auto& key) { return b || sf::Keyboard::isKeyPressed(key); });
+        [](bool b, sf::Keyboard::Key& key) { return b || sf::Keyboard::isKeyPressed(key); });
     }
   }
   void Controller::updateState(const std::string state, int val)

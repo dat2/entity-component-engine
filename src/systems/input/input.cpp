@@ -2,13 +2,13 @@
 #include <SFML/System/Time.hpp>
 
 // engine
-#include <components/controller.hpp>
+#include <components/input/controller.hpp>
 #include <engine/engine.hpp>
-#include <systems/input.hpp>
+#include <systems/input/input.hpp>
 
 using namespace components;
 
-namespace systems
+namespace input
 {
   InputSystem::InputSystem(sf::Window& window)
     : System("input", CONTROLLER), mWindow(window)

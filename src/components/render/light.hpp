@@ -11,9 +11,9 @@
 #include <components/component.hpp>
 #include <systems/render/program.hpp>
 
-using namespace systems;
+using namespace components;
 
-namespace components
+namespace render
 {
   class Light : public Component
   {

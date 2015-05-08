@@ -4,7 +4,7 @@
 // libraries
 #include <GL/glew.h>
 
-namespace systems
+namespace render
 {
   /**
    * A simple wrapper class around VAO methods in OpenGL.

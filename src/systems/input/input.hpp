@@ -7,7 +7,9 @@
 // engine
 #include <systems/system.hpp>
 
-namespace systems
+using namespace systems;
+
+namespace input
 {
   class InputSystem : public System
   {

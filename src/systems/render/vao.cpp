@@ -1,7 +1,7 @@
 // engine
 #include <systems/render/vao.hpp>
 
-namespace systems
+namespace render
 {
   VertexArrayObject::VertexArrayObject()
     : mNArrays(0), mVao(NULL)

@@ -2,12 +2,12 @@
 #include <iostream>
 
 // engine
-#include <components/texture.hpp>
+#include <components/render/texture.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
 
-namespace components
+namespace render
 {
   Texture::Texture(Json::Value value)
     : Component(TEXTURE), Named(value["name"].asString()), mAsset(nullptr)

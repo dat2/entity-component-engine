@@ -3,6 +3,7 @@
 
 // libraries
 #include <iostream>
+#include <algorithm>
 
 // engine
 #include <misc/printable.hpp>
@@ -19,7 +20,8 @@ namespace components
     CONTROLLER  = 1 << 2,
     MODEL       = 1 << 3,
     TEXTURE     = 1 << 4,
-    LIGHT       = 1 << 5
+    LIGHT       = 1 << 5,
+    RIGIDBODY   = 1 << 6
   };
   inline ComponentType operator|(ComponentType a, ComponentType b)
   {
@@ -39,6 +41,7 @@ namespace components
       case MODEL: return "Model";
       case TEXTURE: return "Texture";
       case LIGHT: return "Light";
+      case RIGIDBODY: return "RigidBody";
       default: return "";
     }
   }

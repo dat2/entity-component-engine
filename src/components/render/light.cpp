@@ -2,12 +2,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // engine
-#include <components/light.hpp>
+#include <components/render/light.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
 
-namespace components
+namespace render
 {
   Light::Light(Json::Value value)
     : Component(LIGHT), mAmbientCoefficient(value["ambient"].asFloat()), mAttenuationFactor(value["attenuation"].asFloat())

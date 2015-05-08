@@ -9,6 +9,10 @@
       {
         "name": "Tree_01",
         "filepath": "nature/Tree_01.obj"
+      },
+      {
+        "name": "BasicSphere",
+        "filepath": "basic/sphere.obj"
       }
     ]
   },
@@ -26,6 +30,10 @@
         "filepath": "nature/Tree_01.png",
         "specular": { "r": 1, "g": 1, "b": 1 },
         "shininess": 40
+      },
+      {
+        "name": "BlackSphere",
+        "filepath": "basic/black-sphere.png"
       }
     ]
   }

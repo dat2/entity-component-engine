@@ -7,7 +7,9 @@
 // engine
 #include <systems/system.hpp>
 
-namespace systems
+using namespace systems;
+
+namespace physics
 {
 
   class PhysicsSystem : public System
@@ -18,8 +20,8 @@ namespace systems
 
     void createWorld();
 
-    void fillWorld();
-
+    void entityAdded(engine::Engine& engine, Entity& entity);
+    void entityRemoved(engine::Engine& engine, Entity& entity);
     void run(engine::Engine& engine);
   private:
     btBroadphaseInterface* mBroadphase;
@@ -30,13 +32,6 @@ namespace systems
     btSequentialImpulseConstraintSolver* mSolver;
 
     btDiscreteDynamicsWorld* mWorld;
-
-    // TODO delete
-    btCollisionShape* mGroundShape;
-    btRigidBody* mGroundRigidBody;
-
-    btCollisionShape* mFallShape;
-    btRigidBody* mFallRigidBody;
   };
 
 }

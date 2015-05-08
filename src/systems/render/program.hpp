@@ -7,7 +7,7 @@
 // engine
 #include <systems/render/shader.hpp>
 
-namespace systems
+namespace render
 {
   class Program
   {

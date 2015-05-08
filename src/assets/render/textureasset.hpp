@@ -11,9 +11,9 @@
 #include <assets/asset.hpp>
 #include <systems/render/program.hpp>
 
-using namespace systems;
+using namespace assets;
 
-namespace assets
+namespace render
 {
   class TextureAsset : public Asset
   {

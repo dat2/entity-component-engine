@@ -9,13 +9,11 @@
 #include <json/json.h>
 
 // engine
-#include <assets/textureasset.hpp>
-#include <assets/modelasset.hpp>
-#include <components/camera.hpp>
-#include <components/controller.hpp>
+#include <components/input/controller.hpp>
+#include <components/render/camera.hpp>
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
-#include <systems/input.hpp>
+#include <systems/input/input.hpp>
 #include <systems/physics/physics.hpp>
 #include <systems/render/program.hpp>
 #include <systems/render/shader.hpp>
@@ -28,6 +26,10 @@ using namespace engine;
 using namespace entities;
 using namespace systems;
 using namespace utils;
+
+using namespace input;
+using namespace physics;
+using namespace render;
 
 #define ASPECT_RATIO (16.0f / 9.0f)
 #define WINDOW_HEIGHT 1280
@@ -87,8 +89,9 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
   // TODO tie in physics somehow
   controller->addUpdateCallback(
-    [](auto& engine, auto& entity, auto& controller, auto& window, auto& time)
+    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
     {
+      std::cout << time.asSeconds() << std::endl;
       auto cam = entity.template getComponent<Camera>();
       if(cam == nullptr)
       {
@@ -116,7 +119,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
       }
 
       // rotate the camera
-      float rotateSpeed = 120.0f; // 360degrees / 3seconds;
+      float rotateSpeed = 60.0f; // 360degrees / 3seconds;
       float rotateDist = rotateSpeed * elapsed;
 
       int horizontal = controller.getKeyActionState("rotateRight") - controller.getKeyActionState("rotateLeft");
@@ -130,7 +133,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   );
 
   controller->addUpdateCallback(
-    [](auto& engine, auto& entity, auto& controller, auto& window, auto& time)
+    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
     {
       if(controller.getKeyActionState("quit"))
       {
@@ -143,15 +146,15 @@ static void FillController(const std::shared_ptr<Controller>& controller)
       auto newVal = controller.getState("refreshTime") + time.asMilliseconds();
       controller.updateState("refreshTime", newVal);
 
-      if(controller.getState("refreshTime") > 200 && controller.getKeyActionState("refresh"))
+      if(controller.getState("refreshTime") > 1000 && controller.getKeyActionState("refresh"))
       {
+        controller.updateState("refreshTime" , 0);
+
         engine.unloadAssets();
         engine.clearEntities("level");
 
         engine.loadAssetsJson("assets.json");
         engine.loadEntitiesJson("entities.json");
-
-        controller.updateState("refreshTime" , 0);
       }
     }
   );

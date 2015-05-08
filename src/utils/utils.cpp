@@ -44,16 +44,22 @@ namespace utils
   {
     return sf::Vector3f(v.getX(), v.getY(), v.getZ());
   }
-
-  std::string toString(sf::Vector3f v)
+  btVector3 sfmlToBullet(sf::Vector3f v)
   {
-    std::stringstream buf;
-    buf << "(" << v.x << "," << v.y << "," << v.z << ")";
-    return buf.str();
+    return btVector3(v.x, v.y, v.z);
   }
+
   std::string toString(glm::vec3 v)
   {
     return glm::to_string(v);
+  }
+  std::string toString(sf::Vector3f v)
+  {
+    return toString(sfmlToGlm(v));
+  }
+  std::string toString(btVector3 v)
+  {
+    return toString(bulletToSfml(v));
   }
 
   std::string ensureDirectory(const std::string filepath)

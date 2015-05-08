@@ -13,9 +13,9 @@
 #include <systems/render/vbo.hpp>
 #include <systems/render/program.hpp>
 
-using namespace systems;
+using namespace assets;
 
-namespace assets
+namespace render
 {
 
   class ModelAsset : public Asset

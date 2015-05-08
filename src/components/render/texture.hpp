@@ -7,14 +7,14 @@
 #include <json/json.h>
 
 // engine
-#include <assets/textureasset.hpp>
+#include <assets/render/textureasset.hpp>
 #include <components/component.hpp>
 #include <systems/render/program.hpp>
 
 using namespace assets;
-using namespace systems;
+using namespace components;
 
-namespace components
+namespace render
 {
   class Texture : public Component, public Named
   {

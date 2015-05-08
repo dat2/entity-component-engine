@@ -6,12 +6,13 @@
 #include <json/json.h>
 
 // engine
-#include <assets/modelasset.hpp>
+#include <assets/render/modelasset.hpp>
 #include <components/component.hpp>
 
+using namespace components;
 using namespace assets;
 
-namespace components
+namespace render
 {
   class Model : public Component, public Named
   {

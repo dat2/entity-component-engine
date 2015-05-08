@@ -5,9 +5,9 @@
 #include <glm/gtx/string_cast.hpp>
 
 // engine
-#include <assets/modelasset.hpp>
-#include <assets/textureasset.hpp>
-#include <components/light.hpp>
+#include <assets/render/modelasset.hpp>
+#include <assets/render/textureasset.hpp>
+#include <components/render/light.hpp>
 #include <systems/render/render.hpp>
 #include <utils/utils.hpp>
 
@@ -19,7 +19,7 @@ using namespace components;
 #define Y_AXIS glm::vec3(0, 1, 0)
 #define Z_AXIS glm::vec3(0, 0, 1)
 
-namespace systems
+namespace render
 {
   RenderSystem::RenderSystem()
     : System("render", TRANSFORM | MODEL | TEXTURE), mCamera(nullptr)

@@ -2,9 +2,9 @@
 #include <iostream>
 
 // engine
-#include <components/model.hpp>
+#include <components/render/model.hpp>
 
-namespace components
+namespace render
 {
   Model::Model(Json::Value value)
     : Component(MODEL), Named(value["name"].asString()), mAsset(nullptr)

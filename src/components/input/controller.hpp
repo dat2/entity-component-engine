@@ -11,8 +11,10 @@
 #include <json/json.h>
 
 // engine
+#include <components/component.hpp>
 #include <entities/entity.hpp>
 
+using namespace components;
 using namespace entities;
 
 namespace engine
@@ -20,7 +22,7 @@ namespace engine
   class Engine;
 }
 
-namespace components
+namespace input
 {
   class Controller;
 

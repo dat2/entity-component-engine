@@ -1,9 +1,10 @@
 // libraries
 #include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 // my own
-#include <components/transform.hpp>
+#include <components/common/transform.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
@@ -33,7 +34,7 @@ namespace components
     mPosition = bulletToSfml(worldTrans.getOrigin());
 
     auto rot = worldTrans.getRotation();
-    mRotation = sf::Vector3f(rot.x(), rot.y(), rot.z());
+    mRotation = sf::Vector3f(glm::degrees(rot.x()), glm::degrees(rot.y()), glm::degrees(rot.z()));
 
     updateMatrix();
   }
@@ -49,16 +50,16 @@ namespace components
   {
     mMatrix = glm::mat4();
 
-    // scale
-    mMatrix = glm::scale(mMatrix, sfmlToGlm(mScale));
+    // translate
+    mMatrix = glm::translate(mMatrix, sfmlToGlm(mPosition));
 
     // rotate
     mMatrix = glm::rotate(mMatrix, glm::radians(mRotation.x), X_AXIS);
     mMatrix = glm::rotate(mMatrix, glm::radians(mRotation.y), Y_AXIS);
     mMatrix = glm::rotate(mMatrix, glm::radians(mRotation.z), Z_AXIS);
 
-    // translate
-    mMatrix = glm::translate(mMatrix, sfmlToGlm(mPosition));
+    // scale
+    mMatrix = glm::scale(mMatrix, sfmlToGlm(mScale));
   }
 
   const sf::Vector3f& Transform::position() const

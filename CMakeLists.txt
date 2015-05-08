@@ -20,7 +20,7 @@ file(GLOB_RECURSE openglgame_SRCS
 )
 
 add_executable(openglgame ${openglgame_SRCS})
-target_compile_options(openglgame PUBLIC -Wall -std=c++1y -g -DMAGICKCORE_HDRI_ENABLE=false -DMAGICKCORE_QUANTUM_DEPTH=16)
+target_compile_options(openglgame PUBLIC -Wall -std=c++11 -g -DMAGICKCORE_HDRI_ENABLE=false -DMAGICKCORE_QUANTUM_DEPTH=16)
 target_link_libraries(openglgame sfml-window sfml-system GLEW m dl ${ImageMagick_LIBRARIES} ${TINYOBJLIB} ${JSONCPPLIB} ${BULLET_LIBRARIES} "-framework OpenGL")
 
 install(TARGETS openglgame DESTINATION bin)

@@ -6,7 +6,7 @@
 #include <systems/render/shader.hpp>
 #include <utils/utils.hpp>
 
-namespace systems
+namespace render
 {
   Program::Program()
   {

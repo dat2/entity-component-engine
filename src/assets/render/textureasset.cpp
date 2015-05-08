@@ -2,12 +2,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 //engine
-#include <assets/textureasset.hpp>
+#include <assets/render/textureasset.hpp>
 #include <utils/utils.hpp>
 
 using namespace utils;
 
-namespace assets
+namespace render
 {
   TextureAsset::TextureAsset(Json::Value value)
     : Asset(value), mTarget(GL_TEXTURE_2D), mNTextures(0), mShininess(value["shininess"].asFloat())

@@ -5,7 +5,7 @@
 #include <string>
 #include <GL/glew.h>
 
-namespace systems
+namespace render
 {
   class Shader;
   typedef std::shared_ptr<Shader> ShaderPtr;
