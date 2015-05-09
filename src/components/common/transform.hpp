@@ -4,7 +4,6 @@
 // libraries
 #include <iostream>
 #include <glm/glm.hpp>
-#include <SFML/System/Vector3.hpp>
 #include <json/json.h>
 #include <LinearMath/btTransform.h>
 
@@ -20,15 +19,18 @@ namespace components
 
     void set(const btTransform &worldTrans);
 
-    void setPosition(const sf::Vector3f position);
+    void setPosition(const glm::vec3 position);
     // void rotate();
     // void scale();
 
-    void updateMatrix();
+    void move(const glm::vec3 diff);
 
-    const sf::Vector3f& position() const;
-    const sf::Vector3f& rotation() const;
-    const sf::Vector3f& scale() const;
+    void updateMatrix();
+    bool isUpdated();
+
+    const glm::vec3& position() const;
+    const glm::vec3& rotation() const;
+    const glm::vec3& scale() const;
 
     const glm::mat4& matrix() const;
 
@@ -36,11 +38,12 @@ namespace components
     virtual void print(std::ostream& where) const;
 
   private:
-    sf::Vector3f mPosition;
-    sf::Vector3f mRotation;
-    sf::Vector3f mScale;
+    glm::vec3 mPosition;
+    glm::vec3 mRotation;
+    glm::vec3 mScale;
 
     glm::mat4 mMatrix;
+    bool mUpdated;
   };
 }
 

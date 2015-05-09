@@ -22,16 +22,14 @@ namespace render
   public:
     Camera(Json::Value value);
 
-    void move(const glm::vec3 diff);
     void rotate(float vertical, float horizontal);
-    void lookAt(sf::Vector3f pos);
+    void lookFrom(const glm::vec3 pos);
 
-    const bool needsUpdate() const;
-    void update();
+    bool isUpdated();
 
-    const glm::mat4 mwv() const;
+    const glm::mat4 mwv(const glm::vec3& position) const;
     const glm::mat4 mcv() const;
-    const glm::mat4 mwc() const;
+    const glm::mat4 mwc(const glm::vec3& position) const;
 
     const glm::mat4 orientation() const;
 
@@ -39,12 +37,10 @@ namespace render
     const glm::vec3 up() const;
     const glm::vec3 left() const;
 
-    const glm::vec3 position() const;
-
     void print(std::ostream& where) const;
 
   private:
-    glm::vec3 mPosition;
+    glm::vec3 mLookAtPos;
 
     float mFieldOfView;
     float mAspectRatio;
@@ -54,7 +50,7 @@ namespace render
     float mVerticalAngle;
     float mHorizontalAngle;
 
-    bool mNeedsUpdate;
+    bool mUpdated;
   };
 }
 

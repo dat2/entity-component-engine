@@ -31,7 +31,7 @@ namespace input
       auto callbacks = controller->getUpdateCallbacks();
       for(auto &callback : callbacks)
       {
-        callback(engine, e, *controller, mWindow, elapsed);
+        callback(engine, e, mWindow, elapsed);
       }
     }
   }

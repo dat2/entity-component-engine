@@ -26,7 +26,7 @@ namespace input
 {
   class Controller;
 
-  typedef std::function<void(engine::Engine&, Entity&, Controller&, sf::Window&, sf::Time&)> UpdateCallback;
+  typedef std::function<void(engine::Engine&, Entity&, sf::Window&, sf::Time&)> UpdateCallback;
   typedef std::vector<sf::Keyboard::Key> Keys;
 
   class Controller : public Component

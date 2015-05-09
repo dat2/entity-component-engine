@@ -36,7 +36,7 @@ namespace render
 
   private:
     Program mProgram;
-    std::shared_ptr<Camera> mCamera;
+    std::shared_ptr<Entity> mCameraEntity;
   };
 }
 

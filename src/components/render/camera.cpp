@@ -22,49 +22,40 @@ namespace render
     : Component(CAMERA),
       mFieldOfView(value["fov"].asFloat()), mAspectRatio(value["aspect"].asFloat()),
       mNear(value["near"].asFloat()), mFar(value["far"].asFloat()),
-      mVerticalAngle(0.0f), mHorizontalAngle(0.0f), mNeedsUpdate(false)
+      mVerticalAngle(0.0f), mHorizontalAngle(0.0f), mUpdated(false)
   {
-    auto pos = value["position"];
-    mPosition = glm::vec3(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
-
     auto lookAtPos = value["lookAt"];
-    lookAt(sf::Vector3f(lookAtPos["x"].asFloat(), lookAtPos["y"].asFloat(), lookAtPos["z"].asFloat()));
-  }
-
-  void Camera::move(glm::vec3 diff)
-  {
-    mPosition += diff;
-    mNeedsUpdate = true;
+    mLookAtPos = glm::vec3(lookAtPos["x"].asFloat(), lookAtPos["y"].asFloat(), lookAtPos["z"].asFloat());
   }
 
   void Camera::rotate(float vertical, float horizontal)
   {
     mVerticalAngle += glm::radians(vertical);
     mHorizontalAngle += glm::radians(horizontal);
-    mNeedsUpdate = true;
+    mUpdated = true;
   }
 
-  void Camera::lookAt(sf::Vector3f pos)
+  void Camera::lookFrom(const glm::vec3 pos)
   {
-    glm::vec3 dir = glm::normalize(sfmlToGlm(pos) - mPosition);
+    glm::vec3 dir = glm::normalize(mLookAtPos - pos);
     mVerticalAngle = glm::asin(-dir.y);
     mHorizontalAngle = -glm::atan(-dir.x, -dir.z);
-    mNeedsUpdate = true;
+    mUpdated = true;
   }
 
-  const bool Camera::needsUpdate() const
+  bool Camera::isUpdated()
   {
-    return mNeedsUpdate;
+    if(mUpdated)
+    {
+      mUpdated = false;
+      return true;
+    }
+    return mUpdated;
   }
 
-  void Camera::update()
+  const glm::mat4 Camera::mwv(const glm::vec3& position) const
   {
-    mNeedsUpdate = false;
-  }
-
-  const glm::mat4 Camera::mwv() const
-  {
-    return mcv() * mwc();
+    return mcv() * mwc(position);
   }
 
   const glm::mat4 Camera::mcv() const
@@ -72,9 +63,9 @@ namespace render
     return glm::perspective(glm::radians(mFieldOfView), mAspectRatio, mNear, mFar);
   }
 
-  const glm::mat4 Camera::mwc() const
+  const glm::mat4 Camera::mwc(const glm::vec3& position) const
   {
-    return glm::translate(orientation(), -mPosition);
+    return glm::translate(orientation(), -position);
   }
 
   const glm::mat4 Camera::orientation() const
@@ -100,15 +91,9 @@ namespace render
     return glm::vec3(glm::inverse(orientation()) * glm::vec4(CAMERA_H, 1.0));
   }
 
-  const glm::vec3 Camera::position() const
-  {
-    return mPosition;
-  }
-
   void Camera::print(std::ostream& where) const
   {
-    printField(where, "position", toString(mPosition));
-    printField(where, ", fov", mFieldOfView);
+    printField(where, "fov", mFieldOfView);
     printField(where, ", aspectRatio", mAspectRatio);
     printField(where, ", near", mNear);
     printField(where, ", far", mFar);

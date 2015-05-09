@@ -61,15 +61,14 @@ namespace physics
     else if(mShapeType == "box")
     {
       mShape = new btBoxShape(btVector3(0.5, 0.5, 0.5));
-      mShape->setLocalScaling(sfmlToBullet(scale));
+      mShape->setLocalScaling(glmToBullet(scale));
     }
     else if(mShapeType == "sphere")
     {
       mShape = new btSphereShape(mRadius);
     }
 
-    mState = new btDefaultMotionState(btTransform(rotationQ,
-      btVector3(position.x, position.y, position.z)));
+    mState = new btDefaultMotionState(btTransform(rotationQ, glmToBullet(position)));
   }
 
   void RigidBody::createRigidBody()

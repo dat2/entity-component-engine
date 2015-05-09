@@ -30,21 +30,15 @@ int printOglError(const char *file, int line)
 
 namespace utils
 {
-  glm::vec3 sfmlToGlm(sf::Vector3f v)
+  glm::vec3 sfmlToGlm(const sf::Vector3f v)
   {
     return glm::vec3(v.x, v.y, v.z);
   }
-
-  sf::Vector3f glmToSfml(glm::vec3 v)
+  glm::vec3 bulletToGlm(const btVector3 v)
   {
-    return sf::Vector3f(v.x, v.y, v.z);
+    return glm::vec3(v.getX(), v.getY(), v.getZ());
   }
-
-  sf::Vector3f bulletToSfml(btVector3 v)
-  {
-    return sf::Vector3f(v.getX(), v.getY(), v.getZ());
-  }
-  btVector3 sfmlToBullet(sf::Vector3f v)
+  btVector3 glmToBullet(const glm::vec3 v)
   {
     return btVector3(v.x, v.y, v.z);
   }
@@ -53,13 +47,9 @@ namespace utils
   {
     return glm::to_string(v);
   }
-  std::string toString(sf::Vector3f v)
-  {
-    return toString(sfmlToGlm(v));
-  }
   std::string toString(btVector3 v)
   {
-    return toString(bulletToSfml(v));
+    return toString(bulletToGlm(v));
   }
 
   std::string ensureDirectory(const std::string filepath)

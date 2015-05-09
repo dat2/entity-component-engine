@@ -7,6 +7,7 @@
 // engine
 #include <assets/render/modelasset.hpp>
 #include <assets/render/textureasset.hpp>
+#include <components/common/transform.hpp>
 #include <components/render/light.hpp>
 #include <systems/render/render.hpp>
 #include <utils/utils.hpp>
@@ -22,7 +23,7 @@ using namespace components;
 namespace render
 {
   RenderSystem::RenderSystem()
-    : System("render", TRANSFORM | MODEL | TEXTURE), mCamera(nullptr)
+    : System("render", TRANSFORM | MODEL | TEXTURE), mCameraEntity(nullptr)
   {
     // shaders!
     auto vertex = Shader::fromFile("src/systems/render/shaders/vertex.shader", GL_VERTEX_SHADER);
@@ -44,21 +45,23 @@ namespace render
 
   void RenderSystem::updateCamera()
   {
-    if(mCamera)
+    if(mCameraEntity)
     {
-      mProgram.use();
+      auto camera = mCameraEntity->getComponent<Camera>();
+      auto transform = mCameraEntity->getComponent<Transform>();
+      if(transform && (camera->isUpdated() || transform->isUpdated()) )
+      {
+        auto position = transform->position();
+        camera->lookFrom(position);
 
-      mCamera->update();
+        // set the camera matrix
+        GLint cameraIndex = mProgram.uniform("camera");
+        glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(camera->mwv(position)));
 
-      // set the camera matrix
-      GLint cameraIndex = mProgram.uniform("camera");
-      glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(mCamera->mwv()));
-
-      // set the position of the camera
-      GLint cameraPositionIndex = mProgram.uniform("cameraPosition");
-      glUniform3fv(cameraPositionIndex, 1, glm::value_ptr(mCamera->position()));
-
-      mProgram.unuse();
+        // set the position of the camera
+        GLint cameraPositionIndex = mProgram.uniform("cameraPosition");
+        glUniform3fv(cameraPositionIndex, 1, glm::value_ptr(position));
+      }
     }
   }
 
@@ -106,9 +109,13 @@ namespace render
 
   void RenderSystem::entityChanged(Engine& engine, Entity& entity, ComponentType newComponent)
   {
-    if(!mCamera && newComponent == CAMERA)
+    if(!mCameraEntity && newComponent == CAMERA)
     {
-      mCamera = entity.getComponent<Camera>();
+      mCameraEntity = std::shared_ptr<Entity>(&entity);
+      if(!mCameraEntity->getComponent<Camera>()) //if the component is being removed
+      {
+        mCameraEntity = nullptr;
+      }
       updateCamera();
     }
     if(newComponent == LIGHT)
@@ -123,25 +130,18 @@ namespace render
 
   void RenderSystem::entityRemoved(Engine& engine, Entity& entity)
   {
-    if( entity.getComponent<Camera>() == mCamera)
-    {
-      mCamera = nullptr;
-    }
   }
 
   void RenderSystem::run(Engine& engine)
   {
-    if(!mCamera)
+    if(!mCameraEntity)
     {
       return;
     }
 
-    if(mCamera->needsUpdate())
-    {
-      updateCamera();
-    }
-
     mProgram.use();
+
+    updateCamera(); // must be called within a (use / unuse block)
 
     for( auto &e : mEntities )
     {

@@ -16,32 +16,39 @@ using namespace utils;
 namespace components
 {
   Transform::Transform(Json::Value value)
-    : Component(TRANSFORM)
+    : Component(TRANSFORM), mUpdated(false)
   {
     auto name = value["name"];
     auto pos = value["position"];
     auto rot = value["rotation"];
     auto scale = value["scale"];
 
-    mPosition = sf::Vector3f(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
-    mRotation = sf::Vector3f(rot["x"].asFloat(), rot["y"].asFloat(), rot["z"].asFloat());
-    mScale = sf::Vector3f(scale["x"].asFloat(), scale["y"].asFloat(), scale["z"].asFloat());
+    mPosition = glm::vec3(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
+    mRotation = glm::vec3(rot["x"].asFloat(), rot["y"].asFloat(), rot["z"].asFloat());
+    mScale = glm::vec3(scale["x"].asFloat(), scale["y"].asFloat(), scale["z"].asFloat());
     updateMatrix();
   }
 
   void Transform::set(const btTransform &worldTrans)
   {
-    mPosition = bulletToSfml(worldTrans.getOrigin());
+    mPosition = bulletToGlm(worldTrans.getOrigin());
 
     auto rot = worldTrans.getRotation();
-    mRotation = sf::Vector3f(glm::degrees(rot.x()), glm::degrees(rot.y()), glm::degrees(rot.z()));
+    mRotation = glm::vec3(glm::degrees(rot.x()), glm::degrees(rot.y()), glm::degrees(rot.z()));
 
     updateMatrix();
   }
 
-  void Transform::setPosition(const sf::Vector3f position)
+  void Transform::setPosition(const glm::vec3 position)
   {
     mPosition = position;
+
+    updateMatrix();
+  }
+
+  void Transform::move(const glm::vec3 diff)
+  {
+    mPosition += diff;
 
     updateMatrix();
   }
@@ -51,7 +58,7 @@ namespace components
     mMatrix = glm::mat4();
 
     // translate
-    mMatrix = glm::translate(mMatrix, sfmlToGlm(mPosition));
+    mMatrix = glm::translate(mMatrix, mPosition);
 
     // rotate
     mMatrix = glm::rotate(mMatrix, glm::radians(mRotation.x), X_AXIS);
@@ -59,20 +66,31 @@ namespace components
     mMatrix = glm::rotate(mMatrix, glm::radians(mRotation.z), Z_AXIS);
 
     // scale
-    mMatrix = glm::scale(mMatrix, sfmlToGlm(mScale));
+    mMatrix = glm::scale(mMatrix, mScale);
+    mUpdated = true;
   }
 
-  const sf::Vector3f& Transform::position() const
+  bool Transform::isUpdated()
+  {
+    if(mUpdated)
+    {
+      mUpdated = false;
+      return true;
+    }
+    return mUpdated;
+  }
+
+  const glm::vec3& Transform::position() const
   {
     return mPosition;
   }
 
-  const sf::Vector3f& Transform::rotation() const
+  const glm::vec3& Transform::rotation() const
   {
     return mRotation;
   }
 
-  const sf::Vector3f& Transform::scale() const
+  const glm::vec3& Transform::scale() const
   {
     return mScale;
   }

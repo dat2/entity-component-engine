@@ -9,14 +9,13 @@
 #include <json/json.h>
 
 // engine
+#include <components/common/transform.hpp>
 #include <components/input/controller.hpp>
 #include <components/render/camera.hpp>
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
 #include <systems/input/input.hpp>
 #include <systems/physics/physics.hpp>
-#include <systems/render/program.hpp>
-#include <systems/render/shader.hpp>
 #include <systems/render/render.hpp>
 #include <utils/utils.hpp>
 
@@ -89,10 +88,11 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
   // TODO tie in physics somehow
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](Engine& engine, Entity& entity, sf::Window& window, sf::Time& time)
     {
-      std::cout << time.asSeconds() << std::endl;
+      auto controller = *entity.getComponent<Controller>();
       auto cam = entity.template getComponent<Camera>();
+      auto transform = entity.getComponent<Transform>();
       if(cam == nullptr)
       {
         return;
@@ -115,7 +115,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
       if(x || y || z)
       {
-        cam->move(xDiff + yDiff + zDiff);
+        transform->move(xDiff + yDiff + zDiff);
       }
 
       // rotate the camera
@@ -133,8 +133,9 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   );
 
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, Controller& controller, sf::Window& window, sf::Time& time)
+    [](Engine& engine, Entity& entity, sf::Window& window, sf::Time& time)
     {
+      auto controller = *entity.getComponent<Controller>();
       if(controller.getKeyActionState("quit"))
       {
         window.close();

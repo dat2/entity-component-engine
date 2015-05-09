@@ -19,20 +19,12 @@ namespace utils
    * @param  v any sfml vector
    * @return   the equivalent glm vector
    */
-  glm::vec3 sfmlToGlm(sf::Vector3f v);
+  glm::vec3 sfmlToGlm(const sf::Vector3f v);
+  glm::vec3 bulletToGlm(const btVector3 v);
 
-  /**
-   * Convert a vector from the GLM library to a vector for the SFML library.
-   * @param  v any glm vector
-   * @return   the equivalent sfml vector
-   */
-  sf::Vector3f glmToSfml(glm::vec3 v);
-
-  sf::Vector3f bulletToSfml(btVector3 v);
-  btVector3 sfmlToBullet(sf::Vector3f v);
+  btVector3 glmToBullet(const glm::vec3 v);
 
   std::string toString(glm::vec3 v);
-  std::string toString(sf::Vector3f v);
   std::string toString(btVector3 v);
 
   std::string ensureDirectory(const std::string filepath);
