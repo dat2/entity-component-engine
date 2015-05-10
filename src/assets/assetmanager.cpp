@@ -13,7 +13,7 @@ namespace assets
   {
   }
 
-  void AssetManager::unloadAssets()
+  void AssetManager::deleteAssets()
   {
     mAssets.clear();
   }

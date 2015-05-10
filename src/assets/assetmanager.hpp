@@ -22,7 +22,7 @@ namespace assets
   public:
     AssetManager(std::string baseDirectory);
 
-    void unloadAssets();
+    void deleteAssets();
 
     const std::string getBaseDirectory() const;
 

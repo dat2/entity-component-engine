@@ -12,7 +12,7 @@ using namespace utils;
 namespace physics
 {
   PhysicsSystem::PhysicsSystem()
-    : System("PhysicsSystem", TRANSFORM | RIGIDBODY),
+    : System("physics", TRANSFORM | RIGIDBODY),
     mBroadphase(nullptr), mCollisionConfiguration(nullptr), mDispatcher(nullptr),
     mSolver(nullptr), mWorld(nullptr)
   {
@@ -65,12 +65,12 @@ namespace physics
     auto seconds = engine.getElapsed().asSeconds();
     mWorld->stepSimulation(seconds, 10);
 
-    for( auto &e : mEntities )
+    for( auto &kv : mEntities )
     {
-      auto entity = e.get();
-      auto t = entity.getComponent<Transform>();
+      auto entity = kv.second;
+      auto t = entity->getComponent<Transform>();
 
-      auto p = entity.getComponent<RigidBody>();
+      auto p = entity->getComponent<RigidBody>();
       auto tr = p->getWorldTransform();
       t->set(*tr);
     }

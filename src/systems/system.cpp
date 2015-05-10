@@ -31,7 +31,8 @@ namespace systems
   }
 
   void System::entityAdded(engine::Engine& engine, Entity& entity) { }
-  void System::entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
+  void System::entityComponentAdded(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
+  void System::entityComponentRemoved(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
   void System::entityRemoved(engine::Engine& engine, Entity& entity) { }
   void System::run(engine::Engine& engine) { }
 

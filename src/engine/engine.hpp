@@ -5,7 +5,6 @@
 #include <vector>
 #include <unordered_map>
 #include <SFML/System/Clock.hpp>
-#include <boost/optional.hpp>
 
 // engine
 #include <assets/assetmanager.hpp>
@@ -20,7 +19,7 @@ using namespace assets;
 
 namespace engine
 {
-  typedef boost::optional< std::vector< ComponentPtr > > Components;
+  typedef std::shared_ptr< std::vector<ComponentPtr> > Components;
 
   class Engine
   {
@@ -29,7 +28,7 @@ namespace engine
 
     void addSystem(SystemPtr system);
 
-    boost::optional<Entity&> getEntity(const std::string name);
+    std::shared_ptr<Entity> getEntity(const std::string name);
 
     void updateTime();
     const sf::Time& getElapsed() const;
@@ -39,11 +38,14 @@ namespace engine
     const Components getComponents(const Entity& entity) const;
 
     void run();
+    void stop();
+
     void loadAssetsJson(const std::string filename);
     void loadEntitiesJson(const std::string filename);
 
-    void clearEntities(const std::string tag);
-    void unloadAssets();
+    void deleteAssets();
+    void deleteEntities(const std::string tag = "");
+    void deleteSystems();
 
     template <class T, typename ...Args>
     std::shared_ptr<T> getAsset(Args && ...args);
@@ -52,15 +54,18 @@ namespace engine
     std::shared_ptr<T> loadAsset(Args && ...args);
 
     template <typename ...Args>
-    Entity& createEntity(Args && ...args);
+    std::shared_ptr<Entity> createEntity(const std::string name, Args && ...args);
 
   private:
+    bool mStopped;
     sf::Clock mClock;
     sf::Time mTime;
 
     AssetManager mAssetManager;
     std::vector< SystemPtr > mSystems;
-    std::unordered_map< Entity, std::vector< ComponentPtr > > mEntities;
+
+    std::unordered_map< std::string, std::shared_ptr<Entity> > mEntities;
+    std::unordered_map< std::string, std::shared_ptr< std::vector<ComponentPtr> > > mComponents;
   };
 
   std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > makeComponentFactory();

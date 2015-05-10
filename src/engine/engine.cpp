@@ -1,6 +1,8 @@
 // libraries
 #include <fstream>
 #include <iostream>
+#include <numeric>
+#include <functional>
 #include <json/json.h>
 
 // engine
@@ -22,10 +24,12 @@ using namespace input;
 using namespace physics;
 using namespace render;
 
+using namespace std::placeholders;
+
 namespace engine
 {
   Engine::Engine(const std::string baseDirectory)
-    : mAssetManager(baseDirectory)
+    : mStopped(false), mAssetManager(baseDirectory)
   {
   }
 
@@ -34,15 +38,14 @@ namespace engine
     mSystems.push_back(std::move(system));
   }
 
-  boost::optional<Entity&> Engine::getEntity(const std::string name)
+  std::shared_ptr<Entity> Engine::getEntity(const std::string name)
   {
-    auto r = mEntities.find(Entity(*this, name));
+    auto r = mEntities.find(name);
     if(r != mEntities.end())
     {
-      return const_cast<Entity&>(r->first);
+      return (r->second);
     }
-
-    return boost::none;
+    return nullptr;
   }
 
   void Engine::updateTime()
@@ -56,79 +59,106 @@ namespace engine
 
   void Engine::addComponentToEntity(Entity &entity, ComponentPtr component)
   {
-    auto cs = mEntities.find(entity);
-    if(cs == mEntities.end())
+    auto cs = mComponents.find(entity.getName());
+    if(cs == mComponents.end())
     {
       return;
     }
 
     auto& components = cs->second;
-    components.push_back(component);
+    components->push_back(component);
 
     for( auto& system : mSystems )
     {
       if(system->hasTypes(entity))
       {
-        system->mEntities.push_back(std::ref(entity));
+        system->mEntities[entity.getName()] = mEntities[entity.getName()];
         system->entityAdded(*this, entity);
       }
-      system->entityChanged(*this, entity, component->getType());
+      system->entityComponentAdded(*this, entity, component->getType());
     }
   }
 
   void Engine::removeComponentFromEntity(Entity& entity, ComponentType t)
   {
-    auto cs = mEntities.find(entity);
-    if(cs == mEntities.end())
+    // find the components vector
+    auto cs = mComponents.find(entity.getName());
+    if(cs == mComponents.end())
     {
       return;
     }
-
     auto& components = cs->second;
-    auto predicate = [&t](const ComponentPtr& c) { return c->getType() == t; };
 
-    bool needsChanging = false;
-    for(auto c : components)
-    {
-      needsChanging = needsChanging || predicate(c);
-    }
+    // check if the components vector contains a component with the type requested
+    auto isType = [&t](const ComponentPtr& c) { return c->getType() == t; };
+    bool hasComponentType = std::accumulate(components->begin(), components->end(),
+      false, [&isType](const bool h, const ComponentPtr& c) { return h || isType(c); });
 
-    if(needsChanging)
+    // if the components vector has the type, then remove it from the vector
+    if(hasComponentType)
     {
+      std::vector<SystemPtr> entitySystems;
       for( auto& system : mSystems )
       {
+        system->entityComponentRemoved(*this, entity, t);
+        // if the entity is a part of the system, we may need to remove it from the system
         if(system->hasTypes(entity))
         {
-          system->entityRemoved(*this, entity);
-
-          auto entityPredicate = [&entity](const EntityRef& e) { return e.get().getName() == entity.getName(); };
-          system->mEntities.erase(
-            std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
+          entitySystems.push_back(system);
         }
-        system->entityChanged(*this, entity, t);
       }
 
-      components.erase(std::remove_if(std::begin(components), std::end(components), predicate), std::end(components));
+      components->erase(std::remove_if(components->begin(), components->end(), isType), components->end());
+
+      for( auto& system : entitySystems )
+      {
+        // if, after removing the entity, the entity is no longer valid for the system
+        // remove it from the system
+        if(!system->hasTypes(entity))
+        {
+          // if the entity can no longer be in the system, remove it
+          // call lifecycle method, in case system needs to prepare
+          system->entityRemoved(*this, entity);
+
+          // remove entity from system
+          system->mEntities.erase(entity.getName());
+        }
+      }
     }
   }
 
   const Components Engine::getComponents(const Entity& entity) const
   {
-    auto cs = mEntities.find(entity);
-    if(cs == mEntities.end())
+    auto cs = mComponents.find(entity.getName());
+    if(cs == mComponents.end())
     {
-      return boost::none;
+      return nullptr;
     }
     return cs->second;
   }
 
   void Engine::run()
   {
-    updateTime();
-    for( auto& system : mSystems )
+    if(!mStopped)
     {
-      system->run(*this);
+      updateTime();
+      for( auto& system : mSystems )
+      {
+        system->run(*this);
+      }
     }
+
+    if(mStopped)
+    {
+      deleteAssets();
+      deleteEntities();
+      deleteSystems();
+    }
+  }
+
+  void Engine::stop()
+  {
+    mStopped = true;
   }
 
   void Engine::loadAssetsJson(const std::string filename)
@@ -182,14 +212,14 @@ namespace engine
         {
           tags.insert(tag.asString());
         }
-        auto& entity = createEntity(name, tags);
+        auto entity = createEntity(name, tags);
 
         auto components = entityJson["components"];
         for(auto& component : components)
         {
           auto type = component["type"].asString();
 
-          entity.addComponent(constructors[type](component));
+          entity->addComponent(constructors[type](component));
         }
       }
     }
@@ -198,48 +228,51 @@ namespace engine
     }
   }
 
-  void Engine::clearEntities(const std::string tag)
+  void Engine::deleteAssets()
   {
-    for( auto& system : mSystems )
-    {
-      for(auto& kvs : mEntities)
-      {
-        auto& entity = const_cast<Entity&>(kvs.first);
+    mAssetManager.deleteAssets();
+  }
 
-        // for each system
-        // remove all its entities that have the same tag
-        auto entityPredicate = [&entity, &tag](const EntityRef eref)
+  void Engine::deleteEntities(const std::string tag)
+  {
+    bool deleteAll = tag.empty();
+
+    // TODO
+    auto iter = mEntities.begin();
+    auto end = mEntities.end();
+    while(iter != end)
+    {
+      auto& entity = const_cast<Entity&>(*(iter->second));
+      bool deleteEntity = deleteAll || entity.hasTag(tag);
+
+      if(deleteEntity)
+      {
+        auto cs = entity.getComponents();
+        if(cs)
         {
-          auto& e = eref.get();
-          return e.getName() == entity.getName() && e.hasTag(tag);
-        };
-        system->mEntities.erase(
-          std::remove_if(std::begin(system->mEntities), std::end(system->mEntities), entityPredicate), std::end(system->mEntities));
-        if(entityPredicate(entity) && system->hasTypes(entity))
-        {
-          system->entityRemoved(*this, entity);
+          // remove all entity's components
+          std::vector<ComponentType> types;
+          for(auto& c : *cs)
+          {
+            types.push_back(c->getType());
+          }
+          for(auto& t : types)
+          {
+            entity.removeComponent(t);
+          }
         }
-      }
-    }
-
-    auto it = mEntities.begin();
-    while(it != mEntities.end())
-    {
-      if(it->first.hasTag(tag))
-      {
-        it = mEntities.erase(it);
+        iter = mEntities.erase(iter);
       }
       else
       {
-        it++;
+        iter++;
       }
     }
     updateTime();
   }
-
-  void Engine::unloadAssets()
+  void Engine::deleteSystems()
   {
-    mAssetManager.unloadAssets();
+
   }
 
   #define ADD_STRING(name, Name) constructors[#name] = constructComponent<Name,Json::Value>;

@@ -19,18 +19,4 @@ private:
   const std::string mName;
 };
 
-
-namespace std
-{
-  template <> struct hash<Named>
-  {
-    size_t operator()(const Named& e) const
-    {
-      /* eg. return hash<int>()(x.value); */
-      return hash<std::string>()(e.getName());
-    }
-  };
-}
-
-
 #endif

@@ -14,14 +14,18 @@ namespace input
     : System("input", CONTROLLER), mWindow(window)
   {
   }
+  InputSystem::~InputSystem()
+  {
+    mWindow.close();
+  }
 
   void InputSystem::run(engine::Engine& engine)
   {
     auto elapsed = engine.getElapsed();
-    for( auto &e : mEntities )
+    for( auto &kv : mEntities )
     {
-      auto entity = e.get();
-      auto controller = entity.getComponent<Controller>();
+      auto entity = kv.second;
+      auto controller = entity->getComponent<Controller>();
 
       if(mWindow.hasFocus())
       {
@@ -31,7 +35,7 @@ namespace input
       auto callbacks = controller->getUpdateCallbacks();
       for(auto &callback : callbacks)
       {
-        callback(engine, e, mWindow, elapsed);
+        callback(engine, *entity, mWindow, elapsed);
       }
     }
   }

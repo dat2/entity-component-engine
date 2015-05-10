@@ -19,15 +19,19 @@ namespace engine
   }
 
   template <typename ...Args>
-  Entity& Engine::createEntity(Args && ...args)
+  std::shared_ptr<Entity> Engine::createEntity(const std::string name, Args && ...args)
   {
     auto result = mEntities.emplace(
+      name,
+      std::make_shared<Entity>(*this, name, std::forward<Args>(args)...)
+    );
+    mComponents.emplace(
       std::piecewise_construct,
-      std::forward_as_tuple(*this, std::forward<Args>(args)...),
-      std::forward_as_tuple()
+      std::forward_as_tuple(name),
+      std::forward_as_tuple(std::make_shared< std::vector<ComponentPtr> >())
     );
 
     // get rid of the const of first
-    return const_cast<Entity&>(result.first->first);
+    return result.first->second;
   }
 }

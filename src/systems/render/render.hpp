@@ -29,7 +29,8 @@ namespace render
     void activateTexture(GLenum activeTexture, GLint texture, const std::string uniform);
 
     void entityAdded(Engine& engine, Entity& entity);
-    void entityChanged(Engine& engine, Entity& entity, ComponentType newComponent);
+    void entityComponentAdded(Engine& engine, Entity& entity, ComponentType newComponent);
+    void entityComponentRemoved(Engine& engine, Entity& entity, ComponentType newComponent);
     void entityRemoved(Engine& engine, Entity& entity);
 
     void run(Engine& engine);

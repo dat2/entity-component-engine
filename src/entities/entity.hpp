@@ -18,7 +18,7 @@ using namespace components;
 namespace engine
 {
   class Engine;
-  typedef boost::optional< std::vector< ComponentPtr > > Components;
+  typedef std::shared_ptr< std::vector<ComponentPtr> > Components;
 }
 
 namespace entities
@@ -29,7 +29,7 @@ namespace entities
   friend class engine::Engine;
 
   public:
-    Entity(engine::Engine& engine, std::string name, const std::set<std::string> tags);
+    Entity(engine::Engine& engine, const std::string name, const std::set<std::string> tags);
 
     void addComponent(ComponentPtr c);
     void removeComponent(ComponentType t);
@@ -51,13 +51,6 @@ namespace entities
 
   typedef std::shared_ptr<Entity> EntityPtr;
   typedef std::reference_wrapper<Entity> EntityRef;
-}
-
-namespace std
-{
-  template <> struct hash<entities::Entity> : hash<Named>
-  {
-  };
 }
 #include <entities/entity.inl>
 

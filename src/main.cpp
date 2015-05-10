@@ -135,24 +135,24 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   controller->addUpdateCallback(
     [](Engine& engine, Entity& entity, sf::Window& window, sf::Time& time)
     {
-      auto controller = *entity.getComponent<Controller>();
-      if(controller.getKeyActionState("quit"))
+      auto controller = entity.getComponent<Controller>();
+      if(controller->getKeyActionState("quit"))
       {
-        window.close();
+        engine.stop();
       }
 
       // refresh entities so we can make changes to their position and not
       // need to restart the program
       // introduce some delay into refreshing
-      auto newVal = controller.getState("refreshTime") + time.asMilliseconds();
-      controller.updateState("refreshTime", newVal);
+      auto newVal = controller->getState("refreshTime") + time.asMilliseconds();
+      controller->updateState("refreshTime", newVal);
 
-      if(controller.getState("refreshTime") > 1000 && controller.getKeyActionState("refresh"))
+      if(controller->getState("refreshTime") > 200 && controller->getKeyActionState("refresh"))
       {
-        controller.updateState("refreshTime" , 0);
+        controller->updateState("refreshTime" , 0);
 
-        engine.unloadAssets();
-        engine.clearEntities("level");
+        engine.deleteEntities("level");
+        engine.deleteAssets();
 
         engine.loadAssetsJson("assets.json");
         engine.loadEntitiesJson("entities.json");

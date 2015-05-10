@@ -15,6 +15,7 @@ namespace input
   {
   public:
     InputSystem(sf::Window& window);
+    ~InputSystem();
 
     void run(engine::Engine& engine);
 

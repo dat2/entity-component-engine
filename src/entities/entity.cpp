@@ -11,7 +11,7 @@ using namespace engine;
 
 namespace entities
 {
-  Entity::Entity(Engine& engine, std::string name, const std::set<std::string> tags)
+  Entity::Entity(Engine& engine, const std::string name, const std::set<std::string> tags)
     : Printable("Entity"), Named(name), mEngine(engine), mTags(std::move(tags))
   {
   }

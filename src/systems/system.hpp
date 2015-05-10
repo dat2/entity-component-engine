@@ -2,6 +2,7 @@
 #define _SYSTEM_HPP
 
 // libraries
+#include <unordered_map>
 #include <functional>
 #include <vector>
 
@@ -31,7 +32,8 @@ namespace systems
     bool hasTypes(const Entity& entity) const;
 
     virtual void entityAdded(engine::Engine& engine, Entity& entity);
-    virtual void entityChanged(engine::Engine& engine, Entity& entity, ComponentType newComponent);
+    virtual void entityComponentAdded(engine::Engine& engine, Entity& entity, ComponentType newComponent);
+    virtual void entityComponentRemoved(engine::Engine& engine, Entity& entity, ComponentType newComponent);
     virtual void entityRemoved(engine::Engine& engine, Entity& entity);
 
     virtual void run(engine::Engine& engine);
@@ -39,7 +41,7 @@ namespace systems
     void print(std::ostream& where) const;
 
   protected:
-    std::vector< EntityRef > mEntities;
+    std::unordered_map< std::string, std::shared_ptr<Entity> > mEntities;
   private:
     ComponentType mRequiredTypes;
   };

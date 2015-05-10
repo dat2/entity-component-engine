@@ -73,8 +73,6 @@ namespace render
 
   void RenderSystem::entityAdded(Engine& engine, Entity& entity)
   {
-    System::entityAdded(engine, entity);
-
     // model asset association
     auto model = entity.getComponent<Model>();
     auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
@@ -107,15 +105,11 @@ namespace render
     }
   }
 
-  void RenderSystem::entityChanged(Engine& engine, Entity& entity, ComponentType newComponent)
+  void RenderSystem::entityComponentAdded(Engine& engine, Entity& entity, ComponentType newComponent)
   {
     if(!mCameraEntity && newComponent == CAMERA)
     {
       mCameraEntity = std::shared_ptr<Entity>(&entity);
-      if(!mCameraEntity->getComponent<Camera>()) //if the component is being removed
-      {
-        mCameraEntity = nullptr;
-      }
       updateCamera();
     }
     if(newComponent == LIGHT)
@@ -125,6 +119,15 @@ namespace render
       mProgram.use();
       light->setProgramVariables(mProgram, "light.position", "light.intensities", "light.ambientCoefficient", "light.attenuationFactor");
       mProgram.unuse();
+    }
+  }
+
+  void RenderSystem::entityComponentRemoved(Engine& engine, Entity& entity, ComponentType newComponent)
+  {
+    if(mCameraEntity && newComponent == CAMERA)
+    {
+      mCameraEntity = nullptr;
+      updateCamera();
     }
   }
 
@@ -143,13 +146,13 @@ namespace render
 
     updateCamera(); // must be called within a (use / unuse block)
 
-    for( auto &e : mEntities )
+    for( auto &kv : mEntities )
     {
-      auto entity = e.get();
+      auto entity = kv.second;
 
-      auto transform = entity.getComponent<Transform>();
-      auto model = entity.getComponent<Model>();
-      auto texture = entity.getComponent<Texture>();
+      auto transform = entity->getComponent<Transform>();
+      auto model = entity->getComponent<Model>();
+      auto texture = entity->getComponent<Texture>();
 
       // prepare matrices
       auto modelIndex = mProgram.uniform("model");
