@@ -5,9 +5,9 @@
       "name": "player",
       "tags": ["player"],
       "components": [
+        { "type": "transform", "position": { "x": 0, "y": 5, "z": 3 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } },
         { "type": "camera", "lookAt": { "x": 0, "y": 0, "z": 0 }, "fov": 45.0, "aspect": 1.777777, "near": 0.1, "far": 100.0 },
-        { "type": "controller", "actions": [ { } ] },
-        { "type": "transform", "position": { "x": 0, "y": 5, "z": 3 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } }
+        { "type": "controller", "actions": [ { } ] }
       ]
     },
     // lighting

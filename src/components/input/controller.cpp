@@ -8,7 +8,7 @@
 
 namespace input
 {
-  Controller::Controller(Json::Value value)
+  Controller::Controller(Json::Value value, EntityPtr entity)
     : Component(CONTROLLER)
   {
   }

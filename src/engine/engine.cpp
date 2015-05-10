@@ -221,7 +221,7 @@ namespace engine
         {
           auto type = component["type"].asString();
 
-          entity->addComponent(constructors[type](component));
+          entity->addComponent(constructors[type](component, entity));
         }
       }
     }
@@ -272,10 +272,10 @@ namespace engine
     mSystems.clear();
   }
 
-  #define ADD_STRING(name, Name) constructors[#name] = constructComponent<Name,Json::Value>;
-  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > makeComponentFactory()
+  #define ADD_STRING(name, Name) constructors[#name] = constructComponent<Name,Json::Value,EntityPtr>;
+  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value,EntityPtr) > > makeComponentFactory()
   {
-    std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > constructors;
+    std::unordered_map< std::string, std::function< ComponentPtr(Json::Value,EntityPtr) > > constructors;
     ADD_STRING(model,Model);
     ADD_STRING(texture,Texture);
     ADD_STRING(transform,Transform);

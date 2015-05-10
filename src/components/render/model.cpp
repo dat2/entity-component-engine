@@ -6,7 +6,7 @@
 
 namespace render
 {
-  Model::Model(Json::Value value)
+  Model::Model(Json::Value value, EntityPtr entity)
     : Component(MODEL), Named(value["name"].asString()), mAsset(nullptr)
   {
   }

@@ -15,17 +15,14 @@ using namespace utils;
 
 namespace components
 {
-  Transform::Transform(Json::Value value)
+  Transform::Transform(Json::Value value, EntityPtr entity)
     : Component(TRANSFORM), mUpdated(false)
   {
     auto name = value["name"];
-    auto pos = value["position"];
-    auto rot = value["rotation"];
-    auto scale = value["scale"];
 
-    mPosition = glm::vec3(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
-    mRotation = glm::vec3(rot["x"].asFloat(), rot["y"].asFloat(), rot["z"].asFloat());
-    mScale = glm::vec3(scale["x"].asFloat(), scale["y"].asFloat(), scale["z"].asFloat());
+    mPosition = jsonToVector(value, "position");
+    mRotation = jsonToVector(value, "rotation");
+    mScale = jsonToVector(value, "scale");
     updateMatrix();
   }
 

@@ -9,14 +9,11 @@ using namespace utils;
 
 namespace render
 {
-  Light::Light(Json::Value value)
+  Light::Light(Json::Value value, EntityPtr entity)
     : Component(LIGHT), mAmbientCoefficient(value["ambient"].asFloat()), mAttenuationFactor(value["attenuation"].asFloat())
   {
-    auto col = value["colour"];
-    mColour = glm::vec3(col["r"].asFloat(), col["g"].asFloat(), col["b"].asFloat());
-
-    auto pos = value["position"];
-    mPosition = glm::vec3(pos["x"].asFloat(), pos["y"].asFloat(), pos["z"].asFloat());
+    mColour = jsonToVector(value, "colour", "r", "g", "b");
+    mPosition = jsonToVector(value, "position");
   }
 
   void Light::setProgramVariables(Program &program, const GLchar* position, const GLchar* colour, const GLchar* ambient, const GLchar* attenuation)

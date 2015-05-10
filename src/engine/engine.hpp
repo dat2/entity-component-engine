@@ -68,7 +68,7 @@ namespace engine
     std::unordered_map< std::string, std::shared_ptr< std::vector<ComponentPtr> > > mComponents;
   };
 
-  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value) > > makeComponentFactory();
+  std::unordered_map< std::string, std::function< ComponentPtr(Json::Value,EntityPtr) > > makeComponentFactory();
 }
 
 #include <engine/engine.inl>

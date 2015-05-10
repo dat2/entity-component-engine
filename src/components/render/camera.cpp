@@ -6,9 +6,11 @@
 
 // engine
 #include <components/render/camera.hpp>
+#include <components/common/transform.hpp>
 #include <misc/printable.hpp>
 #include <utils/utils.hpp>
 
+using namespace components;
 using namespace utils;
 
 #define CAMERA_V glm::vec3(0,1,0)
@@ -18,14 +20,14 @@ using namespace utils;
 
 namespace render
 {
-  Camera::Camera(Json::Value value)
+  Camera::Camera(Json::Value value, EntityPtr entity)
     : Component(CAMERA),
       mFieldOfView(value["fov"].asFloat()), mAspectRatio(value["aspect"].asFloat()),
       mNear(value["near"].asFloat()), mFar(value["far"].asFloat()),
       mVerticalAngle(0.0f), mHorizontalAngle(0.0f), mUpdated(false)
   {
-    auto lookAtPos = value["lookAt"];
-    mLookAtPos = glm::vec3(lookAtPos["x"].asFloat(), lookAtPos["y"].asFloat(), lookAtPos["z"].asFloat());
+    mEntity = entity;
+    lookAt(jsonToVector(value, "lookAt"));
   }
 
   void Camera::rotate(float vertical, float horizontal)
@@ -35,9 +37,11 @@ namespace render
     mUpdated = true;
   }
 
-  void Camera::lookFrom(const glm::vec3 pos)
+  void Camera::lookAt(const glm::vec3 pos)
   {
-    glm::vec3 dir = glm::normalize(mLookAtPos - pos);
+    auto lookFromPos = mEntity->getComponent<Transform>()->position();
+
+    glm::vec3 dir = glm::normalize(pos - lookFromPos);
     mVerticalAngle = glm::asin(-dir.y);
     mHorizontalAngle = -glm::atan(-dir.x, -dir.z);
     mUpdated = true;
@@ -53,9 +57,9 @@ namespace render
     return mUpdated;
   }
 
-  const glm::mat4 Camera::mwv(const glm::vec3& position) const
+  const glm::mat4 Camera::mwv() const
   {
-    return mcv() * mwc(position);
+    return mcv() * mwc();
   }
 
   const glm::mat4 Camera::mcv() const
@@ -63,8 +67,9 @@ namespace render
     return glm::perspective(glm::radians(mFieldOfView), mAspectRatio, mNear, mFar);
   }
 
-  const glm::mat4 Camera::mwc(const glm::vec3& position) const
+  const glm::mat4 Camera::mwc() const
   {
+    auto position = mEntity->getComponent<Transform>()->position();
     return glm::translate(orientation(), -position);
   }
 

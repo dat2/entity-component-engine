@@ -9,7 +9,7 @@ using namespace utils;
 
 namespace render
 {
-  Texture::Texture(Json::Value value)
+  Texture::Texture(Json::Value value, EntityPtr entity)
     : Component(TEXTURE), Named(value["name"].asString()), mAsset(nullptr)
   {
   }

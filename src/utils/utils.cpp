@@ -61,4 +61,11 @@ namespace utils
     }
     return rtn;
   }
+
+  glm::vec3 jsonToVector(Json::Value val, const std::string jsonMember,
+    const std::string x, const std::string y, const std::string z)
+  {
+    auto member = val[jsonMember];
+    return glm::vec3(member[x].asFloat(), member[y].asFloat(), member[z].asFloat());
+  }
 }

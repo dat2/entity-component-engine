@@ -51,16 +51,13 @@ namespace render
       auto transform = mCameraEntity->getComponent<Transform>();
       if(transform && (camera->isUpdated() || transform->isUpdated()) )
       {
-        auto position = transform->position();
-        camera->lookFrom(position);
-
         // set the camera matrix
         GLint cameraIndex = mProgram.uniform("camera");
-        glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(camera->mwv(position)));
+        glUniformMatrix4fv(cameraIndex, 1, GL_FALSE, glm::value_ptr(camera->mwv()));
 
         // set the position of the camera
         GLint cameraPositionIndex = mProgram.uniform("cameraPosition");
-        glUniform3fv(cameraPositionIndex, 1, glm::value_ptr(position));
+        glUniform3fv(cameraPositionIndex, 1, glm::value_ptr(transform->position()));
       }
     }
   }

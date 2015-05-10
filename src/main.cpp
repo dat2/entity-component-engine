@@ -88,12 +88,12 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
   // TODO tie in physics somehow
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, sf::Window& window, sf::Time& time)
+    [](Engine& engine, EntityPtr entity, sf::Window& window, sf::Time& time)
     {
-      auto controller = *entity.getComponent<Controller>();
-      auto cam = entity.template getComponent<Camera>();
-      auto transform = entity.getComponent<Transform>();
-      if(cam == nullptr)
+      auto controller = entity->getComponent<Controller>();
+      auto cam = entity->template getComponent<Camera>();
+      auto transform = entity->getComponent<Transform>();
+      if(!cam)
       {
         return;
       }
@@ -104,13 +104,13 @@ static void FillController(const std::shared_ptr<Controller>& controller)
       float moveSpeed = 3.0; // units/s
       float moveDist = moveSpeed * elapsed; // m/s * s == m
 
-      int x = controller.getKeyActionState("moveRight") - controller.getKeyActionState("moveLeft");
+      int x = controller->getKeyActionState("moveRight") - controller->getKeyActionState("moveLeft");
       glm::vec3 xDiff = x * moveDist * cam->left();
 
-      int y = controller.getKeyActionState("moveUp") - controller.getKeyActionState("moveDown");
+      int y = controller->getKeyActionState("moveUp") - controller->getKeyActionState("moveDown");
       glm::vec3 yDiff = y * moveDist * cam->up();
 
-      int z = controller.getKeyActionState("moveForward") - controller.getKeyActionState("moveBackward");
+      int z = controller->getKeyActionState("moveForward") - controller->getKeyActionState("moveBackward");
       glm::vec3 zDiff = z * moveDist * cam->forward();
 
       if(x || y || z)
@@ -122,8 +122,8 @@ static void FillController(const std::shared_ptr<Controller>& controller)
       float rotateSpeed = 60.0f; // 360degrees / 3seconds;
       float rotateDist = rotateSpeed * elapsed;
 
-      int horizontal = controller.getKeyActionState("rotateRight") - controller.getKeyActionState("rotateLeft");
-      int vertical = controller.getKeyActionState("rotateUp") - controller.getKeyActionState("rotateDown");
+      int horizontal = controller->getKeyActionState("rotateRight") - controller->getKeyActionState("rotateLeft");
+      int vertical = controller->getKeyActionState("rotateUp") - controller->getKeyActionState("rotateDown");
 
       if(horizontal || vertical)
       {
@@ -133,9 +133,9 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   );
 
   controller->addUpdateCallback(
-    [](Engine& engine, Entity& entity, sf::Window& window, sf::Time& time)
+    [](Engine& engine, EntityPtr entity, sf::Window& window, sf::Time& time)
     {
-      auto controller = entity.getComponent<Controller>();
+      auto controller = entity->getComponent<Controller>();
       if(controller->getKeyActionState("quit"))
       {
         engine.stop();

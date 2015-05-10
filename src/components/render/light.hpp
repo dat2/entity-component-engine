@@ -9,16 +9,18 @@
 
 //engine
 #include <components/component.hpp>
+#include <entities/entity.hpp>
 #include <systems/render/program.hpp>
 
 using namespace components;
+using namespace entities;
 
 namespace render
 {
   class Light : public Component
   {
   public:
-    Light(Json::Value value);
+    Light(Json::Value value, EntityPtr entity);
 
     void setProgramVariables(Program &program, const GLchar* position, const GLchar* colour, const GLchar* ambient, const GLchar* attenuation);
 

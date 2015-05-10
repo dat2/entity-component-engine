@@ -8,16 +8,18 @@
 // engine
 #include <assets/render/modelasset.hpp>
 #include <components/component.hpp>
+#include <entities/entity.hpp>
 
 using namespace components;
 using namespace assets;
+using namespace entities;
 
 namespace render
 {
   class Model : public Component, public Named
   {
   public:
-    Model(Json::Value value);
+    Model(Json::Value value, EntityPtr entity);
 
     void draw();
     void setAsset(std::shared_ptr<ModelAsset> asset);

@@ -8,8 +8,10 @@
 //engine
 #include <components/component.hpp>
 #include <components/common/transform.hpp>
+#include <entities/entity.hpp>
 
 using namespace components;
+using namespace entities;
 
 namespace physics
 {
@@ -17,7 +19,7 @@ namespace physics
   class RigidBody : public Component
   {
   public:
-    RigidBody(Json::Value value);
+    RigidBody(Json::Value value, EntityPtr entity);
     ~RigidBody();
 
     const btTransform* getWorldTransform() const;

@@ -9,13 +9,16 @@
 
 // engine
 #include <components/component.hpp>
+#include <entities/entity.hpp>
+
+using namespace entities;
 
 namespace components
 {
   class Transform : public Component
   {
   public:
-    Transform(Json::Value value);
+    Transform(Json::Value value, EntityPtr entity);
 
     void set(const btTransform &worldTrans);
 

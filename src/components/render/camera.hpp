@@ -11,25 +11,27 @@
 
 // engine
 #include <components/component.hpp>
+#include <entities/entity.hpp>
 #include <misc/printable.hpp>
 
 using namespace components;
+using namespace entities;
 
 namespace render
 {
   class Camera : public Component
   {
   public:
-    Camera(Json::Value value);
+    Camera(Json::Value value, EntityPtr entity);
 
     void rotate(float vertical, float horizontal);
-    void lookFrom(const glm::vec3 pos);
+    void lookAt(const glm::vec3 pos);
 
     bool isUpdated();
 
-    const glm::mat4 mwv(const glm::vec3& position) const;
+    const glm::mat4 mwv() const;
     const glm::mat4 mcv() const;
-    const glm::mat4 mwc(const glm::vec3& position) const;
+    const glm::mat4 mwc() const;
 
     const glm::mat4 orientation() const;
 
@@ -40,7 +42,7 @@ namespace render
     void print(std::ostream& where) const;
 
   private:
-    glm::vec3 mLookAtPos;
+    EntityPtr mEntity;
 
     float mFieldOfView;
     float mAspectRatio;

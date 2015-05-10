@@ -9,17 +9,19 @@
 // engine
 #include <assets/render/textureasset.hpp>
 #include <components/component.hpp>
+#include <entities/entity.hpp>
 #include <systems/render/program.hpp>
 
 using namespace assets;
 using namespace components;
+using namespace entities;
 
 namespace render
 {
   class Texture : public Component, public Named
   {
   public:
-    Texture(Json::Value value);
+    Texture(Json::Value value, EntityPtr entity);
 
     void bind(int n);
     void unbind();

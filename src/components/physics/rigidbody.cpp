@@ -10,7 +10,7 @@ using namespace utils;
 
 namespace physics
 {
-  RigidBody::RigidBody(Json::Value value)
+  RigidBody::RigidBody(Json::Value value, EntityPtr entity)
     : Component(RIGIDBODY),
     mShapeType(value["shape"].asString()), mMass(value["mass"].asFloat()),
     mRadius(value["radius"].asFloat()),
