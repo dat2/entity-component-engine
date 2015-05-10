@@ -95,9 +95,18 @@ namespace physics
       world->removeRigidBody(mRigidBody);
     }
   }
+  void RigidBody::applyForce(const glm::vec3 force, const glm::vec3 position)
+  {
+    if(mRigidBody != nullptr)
+    {
+      mRigidBody->applyForce(glmToBullet(force), glmToBullet(position));
+    }
+  }
 
   void RigidBody::print(std::ostream& where) const
   {
-
+    auto transform = getWorldTransform();
+    printField(where, "position", toString(bulletToGlm(transform->getOrigin())));
+    // printField(where ,", rotation", )
   }
 }

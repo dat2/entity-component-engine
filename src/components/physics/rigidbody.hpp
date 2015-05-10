@@ -23,12 +23,14 @@ namespace physics
     ~RigidBody();
 
     const btTransform* getWorldTransform() const;
-
     void setTransform(Transform& transform);
+
     void createRigidBody();
 
     void addToWorld(btDiscreteDynamicsWorld* world);
     void removeFromWorld(btDiscreteDynamicsWorld* world);
+
+    void applyForce(const glm::vec3 force, const glm::vec3 position = glm::vec3());
 
     void print(std::ostream& where) const;
   private:

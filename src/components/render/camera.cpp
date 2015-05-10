@@ -39,9 +39,7 @@ namespace render
 
   void Camera::lookAt(const glm::vec3 pos)
   {
-    auto lookFromPos = mEntity->getComponent<Transform>()->position();
-
-    glm::vec3 dir = glm::normalize(pos - lookFromPos);
+    glm::vec3 dir = glm::normalize(pos - position());
     mVerticalAngle = glm::asin(-dir.y);
     mHorizontalAngle = -glm::atan(-dir.x, -dir.z);
     mUpdated = true;
@@ -57,6 +55,19 @@ namespace render
     return mUpdated;
   }
 
+  const glm::vec3 Camera::position() const
+  {
+    if(mEntity)
+    {
+      auto transform = mEntity->getComponent<Transform>();
+      if(transform)
+      {
+        return transform->position();
+      }
+    }
+    return glm::vec3();
+  }
+
   const glm::mat4 Camera::mwv() const
   {
     return mcv() * mwc();
@@ -69,8 +80,7 @@ namespace render
 
   const glm::mat4 Camera::mwc() const
   {
-    auto position = mEntity->getComponent<Transform>()->position();
-    return glm::translate(orientation(), -position);
+    return glm::translate(orientation(), -position());
   }
 
   const glm::mat4 Camera::orientation() const

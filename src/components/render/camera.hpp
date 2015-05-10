@@ -29,6 +29,8 @@ namespace render
 
     bool isUpdated();
 
+    const glm::vec3 position() const;
+
     const glm::mat4 mwv() const;
     const glm::mat4 mcv() const;
     const glm::mat4 mwc() const;
@@ -42,6 +44,7 @@ namespace render
     void print(std::ostream& where) const;
 
   private:
+
     EntityPtr mEntity;
 
     float mFieldOfView;

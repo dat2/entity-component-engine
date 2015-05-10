@@ -5,9 +5,10 @@
       "name": "player",
       "tags": ["player"],
       "components": [
-        { "type": "transform", "position": { "x": 0, "y": 5, "z": 3 }, "rotation": { "x": 0, "y": 0, "z": 0 }, "scale": { "x": 10, "y": 10, "z": 10 } },
+        { "type": "transform", "position": { "x": 0, "y": -4, "z": 6 }, "rotation": { "x": 0, "y": 0, "z": 0 } },
         { "type": "camera", "lookAt": { "x": 0, "y": 0, "z": 0 }, "fov": 45.0, "aspect": 1.777777, "near": 0.1, "far": 100.0 },
-        { "type": "controller", "actions": [ { } ] }
+        { "type": "controller", "actions": [ { } ] },
+        { "type": "physics", "shape": "sphere", "radius": 1, "mass": 10 }
       ]
     },
     // lighting
@@ -15,7 +16,8 @@
       "name": "L_1",
       "tags": ["level"],
       "components": [
-        { "type": "light", "position": { "x": 0, "y": 3, "z": 0 }, "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.01 }
+        { "type": "transform", "position": { "x": 0, "y": 3, "z": 0 } },
+        { "type": "light", "colour": { "r": 1, "g": 0, "b": 1 }, "ambient": 0.2, "attenuation": 0.01 }
       ]
     },
     // walls

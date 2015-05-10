@@ -209,6 +209,12 @@ namespace engine
       for(auto& entityJson : entities)
       {
         auto name = entityJson["name"].asString();
+        // we can't reload entities we already have
+        if(mEntities.find(name) != mEntities.end())
+        {
+          continue;
+        }
+
         std::set<std::string> tags;
         for(auto& tag : entityJson["tags"])
         {

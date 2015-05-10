@@ -10,7 +10,6 @@
 //engine
 #include <components/component.hpp>
 #include <entities/entity.hpp>
-#include <systems/render/program.hpp>
 
 using namespace components;
 using namespace entities;
@@ -22,12 +21,13 @@ namespace render
   public:
     Light(Json::Value value, EntityPtr entity);
 
-    void setProgramVariables(Program &program, const GLchar* position, const GLchar* colour, const GLchar* ambient, const GLchar* attenuation);
+    const glm::vec3 colour() const;
+    const float ambient() const;
+    const float attenuation() const;
 
     void print(std::ostream& where) const;
 
   private:
-    glm::vec3 mPosition;
     glm::vec3 mColour;
     float mAmbientCoefficient;
     float mAttenuationFactor;

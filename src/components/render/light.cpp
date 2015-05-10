@@ -13,28 +13,24 @@ namespace render
     : Component(LIGHT), mAmbientCoefficient(value["ambient"].asFloat()), mAttenuationFactor(value["attenuation"].asFloat())
   {
     mColour = jsonToVector(value, "colour", "r", "g", "b");
-    mPosition = jsonToVector(value, "position");
   }
 
-  void Light::setProgramVariables(Program &program, const GLchar* position, const GLchar* colour, const GLchar* ambient, const GLchar* attenuation)
+  const glm::vec3 Light::colour() const
   {
-    GLint lightPositionIndex = program.uniform(position);
-    glUniform3fv(lightPositionIndex, 1, glm::value_ptr(mPosition));
-
-    GLint intensityIndex = program.uniform(colour);
-    glUniform3fv(intensityIndex, 1, glm::value_ptr(mColour));
-
-    GLint ambientCoefficientIndex = program.uniform(ambient);
-    glUniform1f(ambientCoefficientIndex, mAmbientCoefficient);
-
-    GLint attenuationIndex = program.uniform(attenuation);
-    glUniform1f(attenuationIndex, mAttenuationFactor);
+    return mColour;
+  }
+  const float Light::ambient() const
+  {
+    return mAmbientCoefficient;
+  }
+  const float Light::attenuation() const
+  {
+    return mAttenuationFactor;
   }
 
   void Light::print(std::ostream& where) const
   {
-    printField(where, "position", toString(mPosition));
-    printField(where, ", colour", toString(mColour));
+    printField(where, "colour", toString(mColour));
     printField(where, ", ambientCoefficient", mAmbientCoefficient);
     printField(where, ", attenuationFactor", mAttenuationFactor);
   }

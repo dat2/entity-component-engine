@@ -111,10 +111,23 @@ namespace render
     }
     if(newComponent == LIGHT)
     {
+      auto transform = entity-> getComponent<Transform>();
       auto light = entity->getComponent<Light>();
 
       mProgram.use();
-      light->setProgramVariables(mProgram, "light.position", "light.intensities", "light.ambientCoefficient", "light.attenuationFactor");
+
+      GLint lightPositionIndex = mProgram.uniform("light.position");
+      glUniform3fv(lightPositionIndex, 1, glm::value_ptr(transform->position()));
+
+      GLint intensityIndex = mProgram.uniform("light.intensities");
+      glUniform3fv(intensityIndex, 1, glm::value_ptr(light->colour()));
+
+      GLint ambientCoefficientIndex = mProgram.uniform("light.ambientCoefficient");
+      glUniform1f(ambientCoefficientIndex, light->ambient());
+
+      GLint attenuationIndex = mProgram.uniform("light.attenuationFactor");
+      glUniform1f(attenuationIndex, light->attenuation());
+
       mProgram.unuse();
     }
   }

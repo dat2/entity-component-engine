@@ -11,6 +11,7 @@
 // engine
 #include <components/common/transform.hpp>
 #include <components/input/controller.hpp>
+#include <components/physics/rigidbody.hpp>
 #include <components/render/camera.hpp>
 #include <engine/engine.hpp>
 #include <entities/entity.hpp>
@@ -73,8 +74,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
   controller->createKeyAction("moveRight", { sf::Keyboard::Right, sf::Keyboard::D });
   controller->createKeyAction("moveForward", { sf::Keyboard::Up, sf::Keyboard::W });
   controller->createKeyAction("moveBackward", { sf::Keyboard::Down, sf::Keyboard::S });
-  controller->createKeyAction("moveUp", { sf::Keyboard::Q });
-  controller->createKeyAction("moveDown", { sf::Keyboard::E });
+  controller->createKeyAction("jump", { sf::Keyboard::Space });
 
   controller->createKeyAction("rotateLeft", { sf::Keyboard::J });
   controller->createKeyAction("rotateRight", { sf::Keyboard::L });
@@ -91,8 +91,9 @@ static void FillController(const std::shared_ptr<Controller>& controller)
     [](Engine& engine, EntityPtr entity, sf::Window& window, sf::Time& time)
     {
       auto controller = entity->getComponent<Controller>();
-      auto cam = entity->template getComponent<Camera>();
+      auto cam = entity->getComponent<Camera>();
       auto transform = entity->getComponent<Transform>();
+      auto rigidbody = entity->getComponent<RigidBody>();
       if(!cam)
       {
         return;
@@ -101,22 +102,20 @@ static void FillController(const std::shared_ptr<Controller>& controller)
       float elapsed = time.asSeconds();
 
       // move the camera
-      float moveSpeed = 3.0; // units/s
-      float moveDist = moveSpeed * elapsed; // m/s * s == m
+      float moveForce = 200; // newtons
+      float jumpForce = 1000;
 
       int x = controller->getKeyActionState("moveRight") - controller->getKeyActionState("moveLeft");
-      glm::vec3 xDiff = x * moveDist * cam->left();
+      glm::vec3 xForce = x * moveForce * cam->left();
 
-      int y = controller->getKeyActionState("moveUp") - controller->getKeyActionState("moveDown");
-      glm::vec3 yDiff = y * moveDist * cam->up();
+      int y = controller->getKeyActionState("jump");
+      glm::vec3 yForce = y * jumpForce * glm::vec3(0,1,0);
 
       int z = controller->getKeyActionState("moveForward") - controller->getKeyActionState("moveBackward");
-      glm::vec3 zDiff = z * moveDist * cam->forward();
+      glm::vec3 zForce = z * moveForce * cam->forward();
 
-      if(x || y || z)
-      {
-        transform->move(xDiff + yDiff + zDiff);
-      }
+      auto force = xForce + yForce + zForce;
+      rigidbody->applyForce(force);
 
       // rotate the camera
       float rotateSpeed = 60.0f; // 360degrees / 3seconds;
