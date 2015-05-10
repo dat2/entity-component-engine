@@ -45,18 +45,18 @@ namespace physics
     mWorld->setGravity(btVector3(0, -10, 0));
   }
 
-  void PhysicsSystem::entityAdded(engine::Engine& engine, Entity& entity)
+  void PhysicsSystem::entityAdded(engine::Engine& engine, EntityPtr entity)
   {
-    auto t = entity.getComponent<Transform>();
-    auto p = entity.getComponent<RigidBody>();
+    auto t = entity->getComponent<Transform>();
+    auto p = entity->getComponent<RigidBody>();
     p->setTransform(*t);
     p->createRigidBody();
 
     p->addToWorld(mWorld);
   }
-  void PhysicsSystem::entityRemoved(engine::Engine& engine, Entity& entity)
+  void PhysicsSystem::entityRemoved(engine::Engine& engine, EntityPtr entity)
   {
-    auto p = entity.getComponent<RigidBody>();
+    auto p = entity->getComponent<RigidBody>();
     p->removeFromWorld(mWorld);
   }
 

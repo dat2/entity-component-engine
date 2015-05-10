@@ -31,10 +31,10 @@ namespace systems
 
     bool hasTypes(const Entity& entity) const;
 
-    virtual void entityAdded(engine::Engine& engine, Entity& entity);
-    virtual void entityComponentAdded(engine::Engine& engine, Entity& entity, ComponentType newComponent);
-    virtual void entityComponentRemoved(engine::Engine& engine, Entity& entity, ComponentType newComponent);
-    virtual void entityRemoved(engine::Engine& engine, Entity& entity);
+    virtual void entityAdded(engine::Engine& engine, EntityPtr entity);
+    virtual void entityComponentAdded(engine::Engine& engine, EntityPtr entity, ComponentType newComponent);
+    virtual void entityComponentRemoved(engine::Engine& engine, EntityPtr entity, ComponentType newComponent);
+    virtual void entityRemoved(engine::Engine& engine, EntityPtr entity);
 
     virtual void run(engine::Engine& engine);
 

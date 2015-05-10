@@ -50,7 +50,6 @@ namespace entities
   };
 
   typedef std::shared_ptr<Entity> EntityPtr;
-  typedef std::reference_wrapper<Entity> EntityRef;
 }
 #include <entities/entity.inl>
 

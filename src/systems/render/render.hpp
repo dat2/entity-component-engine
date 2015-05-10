@@ -28,16 +28,16 @@ namespace render
     void updateCamera();
     void activateTexture(GLenum activeTexture, GLint texture, const std::string uniform);
 
-    void entityAdded(Engine& engine, Entity& entity);
-    void entityComponentAdded(Engine& engine, Entity& entity, ComponentType newComponent);
-    void entityComponentRemoved(Engine& engine, Entity& entity, ComponentType newComponent);
-    void entityRemoved(Engine& engine, Entity& entity);
+    void entityAdded(Engine& engine, EntityPtr entity);
+    void entityComponentAdded(Engine& engine, EntityPtr entity, ComponentType newComponent);
+    void entityComponentRemoved(Engine& engine, EntityPtr entity, ComponentType newComponent);
+    void entityRemoved(Engine& engine, EntityPtr entity);
 
     void run(Engine& engine);
 
   private:
     Program mProgram;
-    std::shared_ptr<Entity> mCameraEntity;
+    EntityPtr mCameraEntity;
   };
 }
 

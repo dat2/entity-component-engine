@@ -30,10 +30,10 @@ namespace systems
     return ((mRequiredTypes & allComponentTypes) == mRequiredTypes);
   }
 
-  void System::entityAdded(engine::Engine& engine, Entity& entity) { }
-  void System::entityComponentAdded(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
-  void System::entityComponentRemoved(engine::Engine& engine, Entity& entity, ComponentType newComponent) { }
-  void System::entityRemoved(engine::Engine& engine, Entity& entity) { }
+  void System::entityAdded(engine::Engine& engine, EntityPtr entity) { }
+  void System::entityComponentAdded(engine::Engine& engine, EntityPtr entity, ComponentType newComponent) { }
+  void System::entityComponentRemoved(engine::Engine& engine, EntityPtr entity, ComponentType newComponent) { }
+  void System::entityRemoved(engine::Engine& engine, EntityPtr entity) { }
   void System::run(engine::Engine& engine) { }
 
   void System::print(std::ostream& where) const

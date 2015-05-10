@@ -67,15 +67,16 @@ namespace engine
 
     auto& components = cs->second;
     components->push_back(component);
+    auto entityptr = mEntities[entity.getName()];
 
     for( auto& system : mSystems )
     {
       if(system->hasTypes(entity))
       {
         system->mEntities[entity.getName()] = mEntities[entity.getName()];
-        system->entityAdded(*this, entity);
+        system->entityAdded(*this, entityptr);
       }
-      system->entityComponentAdded(*this, entity, component->getType());
+      system->entityComponentAdded(*this, entityptr, component->getType());
     }
   }
 
@@ -88,6 +89,7 @@ namespace engine
       return;
     }
     auto& components = cs->second;
+    auto entityptr = mEntities[entity.getName()];
 
     // check if the components vector contains a component with the type requested
     auto isType = [&t](const ComponentPtr& c) { return c->getType() == t; };
@@ -100,7 +102,7 @@ namespace engine
       std::vector<SystemPtr> entitySystems;
       for( auto& system : mSystems )
       {
-        system->entityComponentRemoved(*this, entity, t);
+        system->entityComponentRemoved(*this, entityptr, t);
         // if the entity is a part of the system, we may need to remove it from the system
         if(system->hasTypes(entity))
         {
@@ -118,7 +120,7 @@ namespace engine
         {
           // if the entity can no longer be in the system, remove it
           // call lifecycle method, in case system needs to prepare
-          system->entityRemoved(*this, entity);
+          system->entityRemoved(*this, entityptr);
 
           // remove entity from system
           system->mEntities.erase(entity.getName());
@@ -237,42 +239,37 @@ namespace engine
   {
     bool deleteAll = tag.empty();
 
-    // TODO
-    auto iter = mEntities.begin();
-    auto end = mEntities.end();
-    while(iter != end)
+    for( auto it = mEntities.begin(); it != mEntities.end() ; )
     {
-      auto& entity = const_cast<Entity&>(*(iter->second));
-      bool deleteEntity = deleteAll || entity.hasTag(tag);
+      auto& entity = it->second;
+      bool deleteEntity = deleteAll || entity->hasTag(tag);
 
       if(deleteEntity)
       {
-        auto cs = entity.getComponents();
-        if(cs)
+        // remove all entity's components
+        auto cs = *entity->getComponents();
+        std::vector<ComponentType> types;
+        for(auto& c : cs)
         {
-          // remove all entity's components
-          std::vector<ComponentType> types;
-          for(auto& c : *cs)
-          {
-            types.push_back(c->getType());
-          }
-          for(auto& t : types)
-          {
-            entity.removeComponent(t);
-          }
+          types.push_back(c->getType());
         }
-        iter = mEntities.erase(iter);
+
+        for(auto& t : types)
+        {
+          entity->removeComponent(t);
+        }
+
+        it = mEntities.erase(it);
       }
       else
       {
-        iter++;
+        ++it;
       }
     }
-    updateTime();
   }
   void Engine::deleteSystems()
   {
-
+    mSystems.clear();
   }
 
   #define ADD_STRING(name, Name) constructors[#name] = constructComponent<Name,Json::Value>;

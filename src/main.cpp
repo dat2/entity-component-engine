@@ -156,6 +156,7 @@ static void FillController(const std::shared_ptr<Controller>& controller)
 
         engine.loadAssetsJson("assets.json");
         engine.loadEntitiesJson("entities.json");
+        engine.updateTime();
       }
     }
   );

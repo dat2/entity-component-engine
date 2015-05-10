@@ -64,7 +64,7 @@ namespace engine
     AssetManager mAssetManager;
     std::vector< SystemPtr > mSystems;
 
-    std::unordered_map< std::string, std::shared_ptr<Entity> > mEntities;
+    std::unordered_map< std::string, EntityPtr > mEntities;
     std::unordered_map< std::string, std::shared_ptr< std::vector<ComponentPtr> > > mComponents;
   };
 

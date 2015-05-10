@@ -20,8 +20,8 @@ namespace physics
 
     void createWorld();
 
-    void entityAdded(engine::Engine& engine, Entity& entity);
-    void entityRemoved(engine::Engine& engine, Entity& entity);
+    void entityAdded(engine::Engine& engine, EntityPtr entity);
+    void entityRemoved(engine::Engine& engine, EntityPtr entity);
     void run(engine::Engine& engine);
   private:
     btBroadphaseInterface* mBroadphase;

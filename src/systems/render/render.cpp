@@ -71,10 +71,10 @@ namespace render
     glUniform1i(mProgram.uniform((GLchar *)uniform.c_str()), texture);
   }
 
-  void RenderSystem::entityAdded(Engine& engine, Entity& entity)
+  void RenderSystem::entityAdded(Engine& engine, EntityPtr entity)
   {
     // model asset association
-    auto model = entity.getComponent<Model>();
+    auto model = entity->getComponent<Model>();
     auto modelAsset = engine.getAsset<ModelAsset>(model->getName());
 
     if(modelAsset)
@@ -89,7 +89,7 @@ namespace render
     }
 
     // texture asset association
-    auto texture = entity.getComponent<Texture>();
+    auto texture = entity->getComponent<Texture>();
     if(texture)
     {
       auto textureAsset = engine.getAsset<TextureAsset>(texture->getName());
@@ -105,16 +105,16 @@ namespace render
     }
   }
 
-  void RenderSystem::entityComponentAdded(Engine& engine, Entity& entity, ComponentType newComponent)
+  void RenderSystem::entityComponentAdded(Engine& engine, EntityPtr entity, ComponentType newComponent)
   {
     if(!mCameraEntity && newComponent == CAMERA)
     {
-      mCameraEntity = std::shared_ptr<Entity>(&entity);
+      mCameraEntity = entity;
       updateCamera();
     }
     if(newComponent == LIGHT)
     {
-      auto light = entity.getComponent<Light>();
+      auto light = entity->getComponent<Light>();
 
       mProgram.use();
       light->setProgramVariables(mProgram, "light.position", "light.intensities", "light.ambientCoefficient", "light.attenuationFactor");
@@ -122,7 +122,7 @@ namespace render
     }
   }
 
-  void RenderSystem::entityComponentRemoved(Engine& engine, Entity& entity, ComponentType newComponent)
+  void RenderSystem::entityComponentRemoved(Engine& engine, EntityPtr entity, ComponentType newComponent)
   {
     if(mCameraEntity && newComponent == CAMERA)
     {
@@ -131,7 +131,7 @@ namespace render
     }
   }
 
-  void RenderSystem::entityRemoved(Engine& engine, Entity& entity)
+  void RenderSystem::entityRemoved(Engine& engine, EntityPtr entity)
   {
   }
 
