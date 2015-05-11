@@ -1,3 +1,6 @@
+# Gifs!
+![Gif](http://imgur.com/IGUzCy0.gif)
+
 # Dependencies
 1. GLEW
 2. GLM
