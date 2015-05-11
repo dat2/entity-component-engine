@@ -1,5 +1,5 @@
 # Gifs!
-![Screenshot](http://imgur.com/IGUzCy0.gifv)
+![Screenshot](http://i.imgur.com/IGUzCy0.gifv)
 
 # Dependencies
 1. GLEW
