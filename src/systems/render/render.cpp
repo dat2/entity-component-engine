@@ -62,6 +62,28 @@ namespace render
     }
   }
 
+  void RenderSystem::updateLights()
+  {
+    // TODO actually make multiple lights
+    for( auto& entity : mLightEntities )
+    {
+      auto transform = entity-> getComponent<Transform>();
+      auto light = entity->getComponent<Light>();
+
+      GLint lightPositionIndex = mProgram.uniform("light.position");
+      glUniform3fv(lightPositionIndex, 1, glm::value_ptr(transform->position()));
+
+      GLint intensityIndex = mProgram.uniform("light.intensities");
+      glUniform3fv(intensityIndex, 1, glm::value_ptr(light->colour()));
+
+      GLint ambientCoefficientIndex = mProgram.uniform("light.ambientCoefficient");
+      glUniform1f(ambientCoefficientIndex, light->ambient());
+
+      GLint attenuationIndex = mProgram.uniform("light.attenuationFactor");
+      glUniform1f(attenuationIndex, light->attenuation());
+    }
+  }
+
   void RenderSystem::activateTexture(GLenum activeTexture, GLint texture, const std::string uniform)
   {
     glActiveTexture(activeTexture);
@@ -111,24 +133,7 @@ namespace render
     }
     if(newComponent == LIGHT)
     {
-      auto transform = entity-> getComponent<Transform>();
-      auto light = entity->getComponent<Light>();
-
-      mProgram.use();
-
-      GLint lightPositionIndex = mProgram.uniform("light.position");
-      glUniform3fv(lightPositionIndex, 1, glm::value_ptr(transform->position()));
-
-      GLint intensityIndex = mProgram.uniform("light.intensities");
-      glUniform3fv(intensityIndex, 1, glm::value_ptr(light->colour()));
-
-      GLint ambientCoefficientIndex = mProgram.uniform("light.ambientCoefficient");
-      glUniform1f(ambientCoefficientIndex, light->ambient());
-
-      GLint attenuationIndex = mProgram.uniform("light.attenuationFactor");
-      glUniform1f(attenuationIndex, light->attenuation());
-
-      mProgram.unuse();
+      mLightEntities.push_back(entity);
     }
   }
 
@@ -154,7 +159,9 @@ namespace render
 
     mProgram.use();
 
-    updateCamera(); // must be called within a (use / unuse block)
+    // must be called within a (use / unuse block)
+    updateCamera();
+    updateLights();
 
     for( auto &kv : mEntities )
     {

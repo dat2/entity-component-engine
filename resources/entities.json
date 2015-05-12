@@ -16,8 +16,11 @@
       "name": "L_1",
       "tags": ["level"],
       "components": [
-        { "type": "transform", "position": { "x": 0, "y": 3, "z": 0 } },
-        { "type": "light", "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.01 }
+        { "type": "model", "name": "BasicSphere" },
+        { "type": "texture", "name": "BlackSphere" },
+        { "type": "transform", "position": { "x": 0, "y": 3, "z": 0 }, "scale": { "x": 1, "y": 1, "z": 1 } },
+        { "type": "light", "colour": { "r": 1, "g": 1, "b": 1 }, "ambient": 0.2, "attenuation": 0.01 },
+        { "type": "physics", "shape": "sphere", "radius": 1, "mass": 10 }
       ]
     },
     // walls

@@ -26,6 +26,7 @@ namespace render
     RenderSystem();
 
     void updateCamera();
+    void updateLights();
     void activateTexture(GLenum activeTexture, GLint texture, const std::string uniform);
 
     void entityAdded(Engine& engine, EntityPtr entity);
@@ -37,7 +38,9 @@ namespace render
 
   private:
     Program mProgram;
+
     EntityPtr mCameraEntity;
+    std::vector<EntityPtr> mLightEntities;
   };
 }
 
